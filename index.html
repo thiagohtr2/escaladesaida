@@ -67,6 +67,10 @@ body.publico .next-team-top .lnk{display:none}
 #pub-url{font-size:12px;font-family:ui-monospace,Menlo,monospace}a.btn{text-decoration:none}
 .fix-ed{display:grid;gap:8px;margin-top:4px}.fix-row{display:grid;grid-template-columns:90px minmax(0,1fr);gap:10px;align-items:center}.fix-row .sel{height:40px;font-size:13px}
 .fix-prev{border-radius:10px;padding:10px 12px;font-size:12px;display:grid;gap:6px;justify-items:start}.fix-prev.ok{background:var(--surface-2);color:var(--ink-2)}.fix-prev.warn{background:var(--warn-soft);color:var(--warn)}.fix-prev b{color:var(--ink);font-weight:600}
+.lid-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 22px 0;padding:10px 14px;border-radius:10px;background:var(--ac-s,#eef0ff);border:1px solid var(--ac-m,#dce1ff);color:var(--ac-d,var(--accent));font-size:12px}
+.lid-bar .ic{width:16px;height:16px}.lid-bar span{font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:10px}.lid-bar b{font-size:14px;color:var(--ink)}.lid-bar small{color:var(--ink-3);font-size:11px;margin-left:auto}
+.duty-lid{font-size:11px;color:var(--ink-2);margin-top:4px}.duty-lid b{color:var(--ink)}.nt-lid{font-weight:500;color:var(--ink-3)}.nt-lid b{color:var(--ink)}
+@media(max-width:760px){.lid-bar{margin:10px 14px 0}.lid-bar small{margin-left:0;width:100%}}
 dialog[open]{display:flex;flex-direction:column;position:fixed;top:50%;left:50%;right:auto;bottom:auto;margin:0;height:auto;transform:translate(-50%,-50%);z-index:1001}#dlgc[open]{z-index:1003}#scrim{position:fixed;inset:0;z-index:1000;background:#17244269;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}#scrim[hidden]{display:none}body.modal-aberto{overflow:hidden}dialog::backdrop{background:#17244269;backdrop-filter:blur(3px)}body:has(dialog[open]){overflow:hidden}.dlg-in{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}.dlg-h,.dlg-f{flex:none}.dlg-b{flex:0 1 auto}.dlg-h{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;padding:25px 26px 20px;border-bottom:1px solid var(--line)}.dlg-h h2{font-size:22px;font-weight:650;letter-spacing:-.04em}.dlg-h p{font-size:11px;color:var(--ink-3);margin-top:7px}.dlg-b{padding:24px 26px;display:grid;gap:22px;overflow:auto;min-height:0}.dlg-f{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:17px 26px;border-top:1px solid var(--line);background:#fafbfe;border-radius:0 0 20px 20px}.dlg-f .sp{flex:1}.fld{display:grid;gap:8px;border:0;margin:0;padding:0;min-width:0}.fld>label,.fld>legend{font-size:12px;font-weight:600;padding:0;margin-bottom:1px}.fld small{font-size:10px;color:var(--ink-3);line-height:1.7}.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.team-ed{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:7px}.team-ed li{display:grid;grid-template-columns:80px minmax(0,1fr) 36px 36px 36px;gap:5px;align-items:center}.team-ed li.team-hd{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-weight:600;padding-bottom:3px}.team-ed li.team-hd span:last-child{grid-column:2/-1}.team-ed .posn{background:var(--pb);color:var(--pi);font-weight:650;text-align:center;border-color:transparent;padding:0 4px;font-size:11px}.team-ed .inp{height:39px;font-size:12px;padding-left:8px;padding-right:8px}.team-ed .ib{width:36px;height:36px;border-radius:8px}.team-ed .ib .ic{width:16px;height:16px}.add-row{display:flex;gap:7px;margin-top:8px}.add-row .inp{flex:1}.radios{display:grid;gap:10px}.radio{display:flex;align-items:flex-start;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;font-size:12px;cursor:pointer}.radio:has(input:checked){background:var(--accent-soft);border-color:#cbd2fc}.radio input{margin-top:3px;accent-color:var(--accent)}.radio b{display:block;font-weight:600;margin-bottom:4px}.radio span{color:var(--ink-2)}.radio span span{font-size:10px}.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.types label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:14px 5px;font-size:11px;font-weight:600;cursor:pointer}.types label:has(input:checked){border-color:#bdc7ff;background:var(--accent-soft);color:var(--accent)}.types input,.swatches input{position:absolute;opacity:0;pointer-events:none}.types label:has(input:focus-visible),.swatches label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:3px}.swatches{display:flex;gap:13px;flex-wrap:wrap;padding:5px}.swatches label{width:33px;height:33px;border-radius:11px;display:grid;place-items:center;background:var(--c);cursor:pointer}.swatches label:has(input:checked){outline:2px solid var(--c);outline-offset:3px}.prev{border:1px solid var(--line);border-radius:12px;overflow:hidden}.prev h3{padding:12px 15px;background:var(--surface-2);font:650 10px var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}.prev-r{display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;padding:14px;border-top:1px solid var(--line);align-items:start}.prev-r>span{font-size:10px;font-weight:650;color:var(--ink-2);padding-top:3px}.prev-c{display:flex;flex-wrap:wrap;gap:7px}.pc{display:inline-flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border-radius:6px;background:var(--surface-2);font-size:11px;font-weight:550}.pc .pos{min-width:0;font-size:9px;padding:3px 5px}.pc.ch{outline:1px solid #d3af57;background:var(--warn-soft)}.pc.gone{text-decoration:line-through;opacity:.6}.info{padding:13px 15px;background:var(--surface-2);border-radius:10px;font-size:11px;color:var(--ink-2);line-height:1.8}.info b{color:var(--ink);font-weight:600}.warnbox{font-size:11px;line-height:1.8;background:var(--warn-soft);color:var(--warn);padding:13px 15px;border-radius:10px}.err{font-size:11px;color:var(--danger);min-height:0}.err:empty{display:none}.copy-ta{width:100%;min-height:260px;border:1px solid var(--line);border-radius:10px;padding:12px;font:12px/1.7 ui-monospace,monospace;background:var(--surface-2)}.aff{list-style:none;margin:0;padding:0;display:grid;gap:8px}.aff li{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;background:var(--surface-2);border-radius:9px;padding:12px}.aff .mini{white-space:normal;overflow-wrap:anywhere;text-align:right}.empty-all{max-width:470px;min-height:60vh;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px}.empty-all h1{font-size:28px}.empty-all p{font-size:13px;color:var(--ink-2);line-height:1.8}.loading{display:grid;gap:16px;max-width:800px}.sk{height:120px;border-radius:16px;background:linear-gradient(90deg,#edf0f6,#fff,#edf0f6);background-size:200% 100%;animation:sh 1.5s linear infinite}.sk.short{height:38px;width:50%}@keyframes sh{to{background-position:-200% 0}}#toast{position:fixed;bottom:28px;left:calc(50% + 112px);transform:translate(-50%,15px);opacity:0;z-index:100;max-width:calc(100% - 32px);padding:13px 20px;border-radius:10px;background:var(--ink);color:#fff;font-size:12px;font-weight:550;box-shadow:0 6px 24px #18223820;transition:opacity .18s,transform .18s;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}#toast.erro{background:var(--danger)}
 /* Tablet */
 @media(min-width:1700px){main{margin-right:auto;margin-left:max(224px,calc((100vw - 1416px)/2));max-width:1416px}.workspace-top{padding-left:max(42px,calc((100vw - 1416px)/2 - 182px))}}
@@ -291,7 +295,7 @@ function destLab(e,lab){return destMapa(e)[lab]||''}
 function destCls(e,lab){const d=destLab(e,lab);return d==='faixa'?'fx':d==='borda'?'bd':''}
 const cor=e=>CORES[e.cor]||CORES.verde;
 const LS_DADOS='rodizio-plantoes-local-v1',LS_EU='rodizio-plantoes-eu';
-const S={limpa:false,visao:(['planilha','siglas','cartoes','pessoas'].includes(lsGet('rodizio-visao'))?lsGet('rodizio-visao'):'planilha'),modo:'carregando',aviso:'',podeEditar:false,escalas:[],config:{},view:'escalas',dia:hojeStr(),escalaSel:null,faixa:'proximos',destaque:null,busca:'',pessoaSel:null,eu:lsGet(LS_EU)||''};
+const S={faixaTemp:{},limpa:false,visao:(['planilha','siglas','cartoes','pessoas'].includes(lsGet('rodizio-visao'))?lsGet('rodizio-visao'):'planilha'),modo:'carregando',aviso:'',podeEditar:false,escalas:[],config:{},view:'escalas',dia:hojeStr(),escalaSel:null,faixa:'proximos',destaque:null,busca:'',pessoaSel:null,eu:lsGet(LS_EU)||''};
 let db=null;const filas={};
 
 function escalasOrd(){return [...S.escalas].filter(e=>validaData(e.inicio)).sort((a,b)=>(a.ordem||0)-(b.ordem||0)||String(a.nome).localeCompare(String(b.nome),'pt'))}
@@ -391,7 +395,7 @@ async function decodificar(code){
   if(code[0]==='z'){if(typeof DecompressionStream!=='function')throw new Error('Este navegador é antigo demais para abrir o link. Atualize o navegador e tente de novo.');const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));bytes=new Uint8Array(await new Response(st).arrayBuffer())}
   return JSON.parse(new TextDecoder().decode(bytes));
 }
-function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','eventos'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
+function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','fixas','fixasFim','periodo','lideranca','eventos'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
 async function iniciarPublico(){
   S.publico=null;S.publicoErro=null;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';
   try{
@@ -407,10 +411,10 @@ function vPublico(){
   const e=S.escalas[0],P=S.publico,nomes=todosNomes(),dest=S.destaque===null?(nomes.includes(S.eu)?S.eu:''):S.destaque;
   const VIS=[['planilha','escalas','Planilha'],['siglas','layers','Siglas'],['cartoes','painel','Cartões'],['pessoas','plantonistas','Por pessoa']];
   const vis=`<div class="vis-bar"><span>Visualizar</span><div class="seg" role="group" aria-label="Visualização">${VIS.map(([v,i,t])=>`<button data-act="visao" data-v="${v}" aria-pressed="${S.visao===v}">${icon(i)}${t}</button>`).join('')}</div></div>`;
-  const tool=`<div class="sheet-tool box"><div class="seg" role="group" aria-label="Período">${[['proximos','A partir de hoje'],['24','24 meses'],['tudo','Desde o início']].map(([v,t])=>`<button data-act="faixa" data-v="${v}" aria-pressed="${S.faixa===v}">${t}</button>`).join('')}</div>
+  const tool=`<div class="sheet-tool box">${segPeriodo(e.id,periodoDe(e))}
     <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button></div></div>`;
   return `<header class="pub-head" style="--ac:${cor(e)}"><div class="pub-brand"><span class="mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.6 4.2v3.9h-3.9"/></svg></span><span>${esc(P.servico||'Rodízio de Plantões')}</span><span class="pub-tag">${icon('me')} Somente visualização</span></div>
-    <h1>${esc(e.nome)}</h1><p>Toda ${esc(DIAS[dow(e.inicio)])}${dow(e.inicio)%6?'-feira':''} · ${esc(freqTxt(e.frequencia))}</p>${P.g?`<p class="pub-meta">Versão publicada em ${esc(dataHora(P.g))}</p>`:''}</header>
+    <h1>${esc(e.nome)}</h1><p>Toda ${esc(DIAS[dow(e.inicio)])}${dow(e.inicio)%6?'-feira':''} · ${esc(freqTxt(e.frequencia))}${e.lideranca?` · Liderança: <b>${esc(e.lideranca)}</b>`:''}</p>${P.g?`<p class="pub-meta">Versão publicada em ${esc(dataHora(P.g))}</p>`:''}</header>
     ${resumoProximo(e)}<div class="schedule-workspace" style="--ac:${cor(e)}"><div class="workspace-heading"><div><h2>Escala completa</h2><p>Escolha como prefere ver.</p></div>${vis}</div>${tool}${folha(e,true)}</div>`;
 }
 async function abrirLinkPublico(e){
@@ -428,10 +432,11 @@ function hue(n){let h=7;for(const c of String(n))h=(h*31+c.charCodeAt(0))%360;re
 function iniciais(n){const p=String(n).trim().split(/\s+/);return((p[0]||'')[0]||'').toUpperCase()+((p[1]||'')[0]||'').toUpperCase()||'?'}
 const av=(n,c='')=>`<span class="av ${c}" style="--h:${hue(n)}" aria-hidden="true">${esc(iniciais(n))}</span>`;
 
+function lidHtml(e){return e.lideranca?`<div class="lid-bar">${icon('me')}<span>Liderança</span><b>${esc(e.lideranca)}</b><small>todos os plantões · fora do rodízio</small></div>`:''}
 function cardPlantao(e,l,tag){
   const r=rotulos(e,l.equipe.length),nv=novosDe(l);
   return `<article class="duty" style="--ec:${cor(e)}">
-    <header class="duty-h"><div><h3>${esc(e.nome)}</h3><p>${esc(cap(DIAS[dow(l.data)]))} · ${esc(freqTxt(e.frequencia))} · ${l.equipe.length} plantonistas</p></div>${tag?`<span class="tag">${esc(tag)}</span>`:''}</header>
+    <header class="duty-h"><div><h3>${esc(e.nome)}</h3><p>${esc(cap(DIAS[dow(l.data)]))} · ${esc(freqTxt(e.frequencia))} · ${l.equipe.length} plantonistas</p>${e.lideranca?`<p class="duty-lid">Liderança: <b>${esc(e.lideranca)}</b></p>`:''}</div>${tag?`<span class="tag">${esc(tag)}</span>`:''}</header>
     <ol class="duty-list">${l.equipe.map((n,i)=>`<li class="${n===S.eu?'eu':''}"><span class="pos ${pc(i)}">${esc(r[i])}</span>${av(n)}<span class="nm">${esc(nomeOuVago(n))}</span><span class="tags">${nv.has(n)?'<span class="mini new">entrou</span>':''}${n===S.eu?'<span class="mini acc">você</span>':''}</span></li>`).join('')}</ol>
     ${notas(l).length?`<p class="duty-note">${icon('swap')}<span>${notas(l).map(ev=>esc(descEv(ev,e,l))).join(' · ')}</span></p>`:''}
     <footer class="duty-f"><button class="lnk" data-act="ver-escala" data-id="${esc(e.id)}">Ver escala completa ${icon('ar')}</button></footer>
@@ -489,7 +494,7 @@ function resumoProximo(e){
   const d=proxima(e,hojeStr()),l=linhaEm(e,d);if(!l)return '';
   const r=rotulos(e,l.equipe.length),dias=diff(hojeStr(),d);
   const quando=dias===0?'Hoje':dias===1?'Amanhã':'Em '+dias+' dias';
-  return `<section class="next-overview" style="--ac:${cor(e)}" aria-label="Equipe do próximo plantão"><div class="next-intro"><div class="eyebrow">${icon('cal')} Próximo plantão</div><h2>${brC(d)} <span style="font-size:.5em;font-weight:500">/ ${d.slice(0,4)}</span></h2><p>${cap(DIAS[dow(d)])} · ${quando}</p><span>${esc(freqTxt(e.frequencia))}<i></i>${l.equipe.length} plantonistas</span></div><div class="next-team"><div class="next-team-top"><h3>Quem está na equipe</h3><button class="lnk" data-act="dia-painel" data-d="${d}">Ver dia ${icon('ar')}</button></div><div class="next-members">${l.equipe.map((n,i)=>`<div class="next-member ${n===S.eu?'eu':''}">${av(n)}<span><b>${esc(n)}</b><span class="pos ${pc(i)}">${esc(r[i])}</span></span></div>`).join('')}</div></div></section>`;
+  return `<section class="next-overview" style="--ac:${cor(e)}" aria-label="Equipe do próximo plantão"><div class="next-intro"><div class="eyebrow">${icon('cal')} Próximo plantão</div><h2>${brC(d)} <span style="font-size:.5em;font-weight:500">/ ${d.slice(0,4)}</span></h2><p>${cap(DIAS[dow(d)])} · ${quando}</p><span>${esc(freqTxt(e.frequencia))}<i></i>${l.equipe.length} plantonistas</span></div><div class="next-team"><div class="next-team-top"><h3>Quem está na equipe${e.lideranca?` <span class="nt-lid">· Liderança: <b>${esc(e.lideranca)}</b></span>`:''}</h3><button class="lnk" data-act="dia-painel" data-d="${d}">Ver dia ${icon('ar')}</button></div><div class="next-members">${l.equipe.map((n,i)=>`<div class="next-member ${n===S.eu?'eu':''}">${av(n)}<span><b>${esc(n)}</b><span class="pos ${pc(i)}">${esc(r[i])}</span></span></div>`).join('')}</div></div></section>`;
 }
 
 /* ================= escalas ================= */
@@ -509,12 +514,16 @@ function textoRegras(e,n){
     ['cal','Toda mudança vale a partir da data escolhida. Os plantões anteriores ficam como estavam.']
   ];
 }
+/* Período salvo em cada escala: 'hoje' (dia atual), 'tudo' (desde o início) ou '24' (24 meses à frente). Vale para todos e para o link público. */
+const PERIODOS=[['hoje','Dia atual'],['tudo','Desde o início'],['24','24 meses à frente']];
+function periodoDe(e){const v=(S.faixaTemp&&S.faixaTemp[e.id])||e.periodo||'hoje';return v==='proximos'?'hoje':v}
 function faixaDatas(e){
-  const hoje=hojeStr();
-  if(S.faixa==='tudo'&&!S.limpa)return [e.inicio,addDias(hoje,365)];
-  if(S.faixa==='24')return [hoje,addDias(hoje,730)];
+  const hoje=hojeStr(),per=periodoDe(e);
+  if(per==='tudo'&&!S.limpa)return [e.inicio,addDias(hoje,365)];
+  if(per==='24')return [hoje,addDias(hoje,730)];
   return [hoje,addDias(hoje,365)];
 }
+function segPeriodo(ids,atual){return `<div class="seg" role="group" aria-label="Período">${PERIODOS.map(([v,t])=>`<button data-act="faixa" data-id="${esc(ids)}" data-v="${v}" aria-pressed="${atual===v}">${t}</button>`).join('')}</div>`}
 function mapaSiglas(){
   const m={},usadas=new Set();
   for(const n of todosNomes()){
@@ -570,7 +579,7 @@ function folha(e,unica){
   return `<section class="sheet" style="--ac:${cor(e)}" aria-label="${esc(e.nome)}">
     <div class="sheet-bar"><p>${unica?'':`<b>${esc(e.nome)}</b> · `}Toda ${esc(DIAS[dow(e.inicio)])}${dow(e.inicio)%6?'-feira':''} · ${esc(freqTxt(e.frequencia))} · ${D.n} plantonistas · próximo <b>${brC(D.proxD)}</b></p>
       ${S.podeEditar&&!S.limpa?`<div class="acts"><button class="btn pri sm" data-act="movimentar" data-id="${esc(e.id)}">${icon('swap')} Movimentar equipe</button><button class="btn ghost sm" data-act="incluir" data-id="${esc(e.id)}">${icon('entra')} Incluir plantonista</button><button class="btn ghost sm" data-act="editar-escala" data-id="${esc(e.id)}">${icon('edit')} Editar</button><button class="btn ghost sm" data-act="link-publico" data-id="${esc(e.id)}">${icon('ar')} Link público</button></div>`:''}</div>
-    ${conteudo}
+    ${lidHtml(e)}${conteudo}
     ${S.limpa?`<div class="legend"><span><i class="sw"></i>Próximo plantão</span><span>${D.linhas.length} plantões a partir de hoje</span></div></section>`:`<div class="legend"><span><i class="sw"></i>Próximo plantão</span><span><i class="newdot" style="margin:0"></i>Entrou na equipe nesta data</span><span>${D.linhas.length} plantões</span><span><i class="vg-sw"></i>Ausência no dia</span>${dicaEd}${dica?`<span class="zoom" style="display:inline-flex">${dica}</span>`:''}</div></section>`}`;
 }
 function ajustarTabelas(){
@@ -586,13 +595,16 @@ function desenharBordas(){
   document.querySelectorAll('.grade-wrap').forEach(w=>{
     w.querySelectorAll('.col-borda').forEach(x=>x.remove());
     const t=w.querySelector('.grade');if(!t)return;
-    const ths=t.querySelectorAll('thead th.bd');if(!ths.length)return;
+    const cab=[...t.querySelectorAll('thead tr:last-child th')];if(!cab.some(th=>th.classList.contains('bd')))return;
+    /* Posições com borda lado a lado viram um contorno só, sem divisória entre elas. */
+    const grupos=[];let g=null;
+    cab.forEach(th=>{if(th.classList.contains('bd')){if(!g){g=[];grupos.push(g)}g.push(th)}else g=null});
     const wr=w.getBoundingClientRect(),tb=t.getBoundingClientRect();
-    ths.forEach(th=>{
-      const r=th.getBoundingClientRect(),d=document.createElement('div');
+    grupos.forEach(gr=>{
+      const r1=gr[0].getBoundingClientRect(),r2=gr[gr.length-1].getBoundingClientRect(),d=document.createElement('div');
       d.className='col-borda';d.setAttribute('aria-hidden','true');
-      d.style.left=(r.left-wr.left+w.scrollLeft)+'px';d.style.top=(r.top-wr.top+w.scrollTop)+'px';
-      d.style.width=r.width+'px';d.style.height=(tb.bottom-r.top)+'px';
+      d.style.left=(r1.left-wr.left+w.scrollLeft)+'px';d.style.top=(r1.top-wr.top+w.scrollTop)+'px';
+      d.style.width=(r2.right-r1.left)+'px';d.style.height=(tb.bottom-r1.top)+'px';
       w.appendChild(d);
     });
   });
@@ -608,7 +620,8 @@ function vEscalas(){
   const nomes=todosNomes(),dest=S.destaque===null?(nomes.includes(S.eu)?S.eu:''):S.destaque;
   const head=pageHead('Escalas de plantão','Acompanhe as posições, organize a equipe e deixe o rodízio fluir.',S.podeEditar?`<button class="btn pri" data-act="nova-escala">${icon('plus')} Nova escala</button>`:'');
   const tabs=`<div class="esc-tabs" role="group" aria-label="Selecionar escala">${ess.length>1?`<button class="et" data-act="sel-escala" data-id="__todas" aria-pressed="${todas}">${icon('layers')} Todas</button>`:''}${ess.map(x=>`<button class="et" style="--ec:${cor(x)}" data-act="sel-escala" data-id="${esc(x.id)}" aria-pressed="${!todas&&x.id===e.id}"><span class="dot"></span>${esc(x.nome)}</button>`).join('')}</div>`;
-  const tool=`<div class="sheet-tool box"><div class="seg" role="group" aria-label="Período">${[['proximos','Próximos 12 meses'],['24','24 meses'],['tudo','Desde o início']].map(([v,t])=>`<button data-act="faixa" data-v="${v}" aria-pressed="${S.faixa===v}">${t}</button>`).join('')}</div>
+  const perAtual=todas?(()=>{const ps=[...new Set(ess.map(periodoDe))];return ps.length===1?ps[0]:''})():periodoDe(e);
+  const tool=`<div class="sheet-tool box">${segPeriodo(todas?'__todas':e.id,perAtual)}
     <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn pri sm" data-act="limpa" data-v="1" title="Mostra só a partir de hoje, sem os dias antigos e sem as marcações de mudança">${icon('cal')} Escala atualizada</button>${!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap" aria-label="Copiar escala como texto">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv" aria-label="Copiar escala para planilha">${icon('copy')} Planilha</button>`:''}</div></div>`;
   const VIS=[['planilha','escalas','Planilha'],['siglas','layers','Siglas'],['cartoes','painel','Cartões'],['pessoas','plantonistas','Por pessoa']];
   const vis=`<div class="vis-bar"><span>Visualizar</span><div class="seg" role="group" aria-label="Visualização">${VIS.map(([v,i,t])=>`<button data-act="visao" data-v="${v}" aria-pressed="${S.visao===v}">${icon(i)}${t}</button>`).join('')}</div></div>`;
@@ -701,7 +714,7 @@ const dl=()=>`<datalist id="dl-nomes">${todosNomes().map(n=>`<option value="${es
 function abrirFormEscala(e,dup){
   const novo=!e||dup;
   const base=e||{nome:'',inicio:proximaSemana(3),frequencia:14,rotulos:['Plus','Semi'],prefixo:'P',equipe:[],sentido:'desce',entradaPadrao:'ultima',cor:'anil',destaques:['faixa'],eventos:[]};
-  S.form={id:novo?uid('esc-'):e.id,novo,nome:dup?base.nome+' (semana alternada)':base.nome,inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
+  S.form={id:novo?uid('esc-'):e.id,novo,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',periodo:base.periodo||'hoje',inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
     posicoes:rotulos(base,(base.equipe||[]).length),rotulosBase:rotulos(base,(base.equipe||[]).length),fixas:(()=>{const fx=fixasDe(base);return rotulos(base,(base.equipe||[]).length).map(l=>{const f=fx.find(x=>x.rot===l);return f?(f.ancora==='fim'?'fim':'depois:'+f.ancora):''})})(),prefixo:base.prefixo||'P',equipe:dup?[]:[...(base.equipe||[])],sentido:base.sentido||'desce',entradaPadrao:base.entradaPadrao||'ultima',
     cor:dup?(Object.keys(CORES).find(k=>k!==base.cor)||'azul'):(base.cor||'verde'),destaques:rotulos(base,Math.max((base.equipe||[]).length,1)).map(l=>destLab(base,l)),eventos:dup?[]:[...(base.eventos||[])],ordem:base.ordem||Date.now(),dupDe:dup?base.nome:null};
   renderForm();
@@ -730,6 +743,7 @@ function renderForm(){
   abrir(`<form class="dlg-in" id="f-escala" novalidate>${cab(f.novo?(f.dupDe?'Escala da semana alternada':'Nova escala'):'Editar escala',f.dupDe?'Mesmo formato de '+f.dupDe+', começando uma semana depois. Ajuste a equipe.':'')}
   <div class="dlg-b">
     <div class="fld"><label for="fe-nome">Nome da escala</label><input class="inp" id="fe-nome" data-f="nome" value="${esc(f.nome)}" placeholder="Ex.: Quarta quinzenal, equipe A" ${f.novo?'autofocus':''}></div>
+    <div class="fld"><label for="fe-lid">Liderança</label><input class="inp" id="fe-lid" data-f="lideranca" value="${esc(f.lideranca)}" placeholder="Ex.: Dr. Pedro" list="dl-nomes" autocomplete="off"><small>Fica em todos os plantões, do primeiro ao último, e não entra no rodízio das posições. Deixe vazio se a escala não tiver liderança.</small></div>
     <div class="row2"><div class="fld"><label for="fe-inicio">Data do primeiro plantão</label><input class="inp" type="date" id="fe-inicio" data-f="inicio" value="${esc(f.inicio)}"><small id="fe-dow">${esc(dowTxt())}</small></div>
       <div class="fld"><label for="fe-freq">Repetição</label><select class="sel" id="fe-freq" data-f="frequencia">${[7,14,21,28].map(v=>`<option value="${v}" ${f.frequencia===v?'selected':''}>${cap(FREQ[v])}</option>`).join('')}</select><small>Duas equipes que se alternam no mesmo dia são duas escalas quinzenais.</small></div></div>
     <fieldset class="fld"><legend>Posições e equipe</legend><small>Cada posição tem seu nome (Plus, Semi, P1…). Ao lado, quem ocupa a posição no primeiro plantão; o rodízio parte daqui. As setas mudam a pessoa de posição.</small>
@@ -781,6 +795,7 @@ function salvarForm(){
   if(!validaData(f.inicio)){er.textContent='Informe a data do primeiro plantão.';$('#fe-inicio').focus();return}
   if(!eq.length){er.textContent='Adicione pelo menos um plantonista.';$('#fe-novo').focus();return}
   if(new Set(eq.map(s=>s.toLowerCase())).size!==eq.length){er.textContent='Há nomes repetidos na equipe.';return}
+  const lid=(f.lideranca||'').trim().toLowerCase();if(lid&&eq.some(n=>n.toLowerCase()===lid)){er.textContent='A liderança não entra no rodízio: tire '+f.lideranca.trim()+' da lista de posições ou deixe a liderança vazia.';$('#fe-lid').focus();return}
   const fe=formEsc();const rs=rotulos(fe,eq.length);
   if(new Set(rs.map(x=>x.toLowerCase())).size!==rs.length){er.textContent='Duas posições estão com o mesmo nome.';return}
   if(fe.fixas.length&&rs.join('|')!==fe.rotulos.join('|')){er.textContent='A ordem das posições não bate com as posições fixas. Em "Posições fixas", toque em "Usar essa ordem" ou ajuste as fixas.';$('#fe-fixas').scrollIntoView({block:'center'});return}
@@ -788,11 +803,18 @@ function salvarForm(){
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao=mapa(f.entradaPadrao);
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao='ultima';
   f.eventos=f.eventos.map(ev=>ev.tipo==='entrada'&&ev.posicao&&!['ultima','primeira'].includes(ev.posicao)?Object.assign({},ev,{posicao:mapa(ev.posicao)}):ev);
-  const e={id:f.id,nome:f.nome.trim(),inicio:f.inicio,frequencia:f.frequencia,rotulos:fe.rotulos,prefixo:fe.prefixo,equipe:eq,sentido:f.sentido,entradaPadrao:f.entradaPadrao,cor:f.cor,fixas:fe.fixas,destaques:rs.reduce((m,l,i)=>{if(f.destaques[i])m[l]=f.destaques[i];return m},{}),eventos:f.eventos,ordem:f.ordem};
+  const e={id:f.id,nome:f.nome.trim(),lideranca:(f.lideranca||'').trim().replace(/\s+/g,' '),periodo:f.periodo||'hoje',inicio:f.inicio,frequencia:f.frequencia,rotulos:fe.rotulos,prefixo:fe.prefixo,equipe:eq,sentido:f.sentido,entradaPadrao:f.entradaPadrao,cor:f.cor,fixas:fe.fixas,destaques:rs.reduce((m,l,i)=>{if(f.destaques[i])m[l]=f.destaques[i];return m},{}),eventos:f.eventos,ordem:f.ordem};
   const novo=f.novo;fechar();S.escalaSel=e.id;salvarEscala(e);toast(novo?'Escala criada.':'Escala atualizada.');irPara('escalas');
 }
 
 /* ---- movimentar equipe ---- */
+/* Só as datas dos plantões desta escala: os próximos 12 meses (e a data escolhida, se for anterior). */
+function datasPlantao(e,sel){
+  const hoje=hojeStr(),f=+e.frequencia||14,out=[];let d=proxima(e,hoje);const fim=addDias(hoje,366);
+  while(d&&d<=fim&&out.length<120){out.push(d);d=addDias(d,f)}
+  const s=sel&&proxima(e,sel);if(s&&!out.includes(s))out.unshift(s);
+  return out;
+}
 function abrirMov(e,o){o=o||{};const d=o.data?proxima(e,o.data):proxima(e,hojeStr());S.mov={id:e.id,tipo:o.tipo||'troca',data:d,sai:'',entra:'',nome:'',posicao:e.entradaPadrao||'ultima'};renderMov()}
 function movEsc(){return S.escalas.find(x=>x.id===S.mov.id)}
 function movEvento(){
@@ -823,7 +845,7 @@ function renderMov(){
   const ev=movEvento();
   abrir(`<form class="dlg-in" id="f-mov" novalidate>${cab('Movimentar equipe',e.nome)}<div class="dlg-b">
     <fieldset class="fld"><legend class="sr">Tipo de mudança</legend><div class="types">${[['troca','swap','Substituição'],['entrada','entra','Entrada'],['saida','sai','Saída']].map(([v,i,t])=>`<label>${icon(i)}<input type="radio" name="mv-tipo" value="${v}" ${m.tipo===v?'checked':''}>${t}</label>`).join('')}</div></fieldset>
-    <div class="fld"><label for="mv-data">A partir de</label><input class="inp" type="date" id="mv-data" value="${esc(m.data)}"><small>${d?'Vale a partir do plantão de '+esc(extenso(d))+' de '+d.slice(0,4)+'. Os plantões anteriores não mudam.':''}</small></div>
+    <div class="fld"><label for="mv-data">A partir de</label><select class="sel" id="mv-data">${datasPlantao(e,m.data).map(x=>`<option value="${x}" ${x===d?'selected':''}>${esc(cap(DIAS_C[dow(x)]))} · ${br(x)}${x===proxima(e,hojeStr())?' · próximo':''}</option>`).join('')}</select><small>${d?'Vale a partir do plantão de '+esc(extenso(d))+' de '+d.slice(0,4)+'. Os plantões anteriores não mudam.':''}</small></div>
     ${campos}<div id="mv-prev">${prevHtml()}</div></div>
     <div class="dlg-f"><span class="sp"></span><button type="button" class="btn ghost" data-act="fechar">Cancelar</button><button type="submit" class="btn pri" id="mv-ok" ${!ev||ev.erro?'disabled':''}>Aplicar mudança</button></div>${dl()}</form>`);
 }
@@ -942,10 +964,13 @@ function copiarTexto(t){
 }
 function textoEscala(modo){
   const e=S.escalas.find(x=>x.id===S.escalaSel);if(!e)return '';
-  const hoje=hojeStr(),ate=S.faixa==='24'?addDias(hoje,730):addDias(hoje,365),de=S.faixa==='tudo'?e.inicio:hoje;
+  const [de,ate]=faixaDatas(e);
   const ls=gerar(e,ate).filter(l=>l.data>=de),maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
-  if(modo==='tsv')return ['Data\t'+rM.join('\t'),...ls.map(l=>br(l.data)+'\t'+rM.map(lab=>{const i=rotulos(e,l.equipe.length).indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])}).join('\t'))].join('\n');
-  return '*'+e.nome.toUpperCase()+'*\n'+ls.map(l=>{const r=rotulos(e,l.equipe.length);return br(l.data)+' | '+l.equipe.map((n,i)=>r[i]+': '+nomeOuVago(n)).join(' · ')}).join('\n');
+  if(modo==='tsv'){
+    const linhas=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return br(l.data)+'\t'+rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])}).join('\t')});
+    return (e.lideranca?'Liderança\t'+e.lideranca+'\n':'')+['Data\t'+rM.join('\t'),...linhas].join('\n');
+  }
+  return '*'+e.nome.toUpperCase()+'*\n'+(e.lideranca?'Liderança: '+e.lideranca+'\n':'')+ls.map(l=>{const r=rotulos(e,l.equipe.length);return br(l.data)+' | '+l.equipe.map((n,i)=>r[i]+': '+nomeOuVago(n)).join(' · ')}).join('\n');
 }
 
 /* ================= eventos ================= */
@@ -960,7 +985,9 @@ document.addEventListener('click',async ev=>{
     case 'dia-painel':S.dia=b.dataset.d;irPara('painel');break;
     case 'dia-mv':S.dia=addDias(S.dia,+b.dataset.n);render();break;
     case 'ver-escala':case 'sel-escala':S.escalaSel=b.dataset.id;if(S.view!=='escalas')irPara('escalas');else{render();}break;
-    case 'faixa':S.faixa=b.dataset.v;render();break;
+    case 'faixa':{const v=b.dataset.v,alvo=b.dataset.id==='__todas'?escalasOrd():[S.escalas.find(x=>x.id===b.dataset.id)].filter(Boolean);
+      if(S.podeEditar&&!S.publico&&!S.publicoErro){let mudou=0;alvo.forEach(x=>{delete S.faixaTemp[x.id];if(periodoDe(x)!==v||x.periodo!==v){mudou++;salvarEscala(Object.assign({},x,{periodo:v}))}});if(mudou)toast('Período salvo: '+PERIODOS.find(p=>p[0]===v)[1]+'. Vale para todos e para o link público.');else render()}
+      else{alvo.forEach(x=>S.faixaTemp[x.id]=v);render()}}break;
     case 'visao':S.visao=b.dataset.v;lsSet('rodizio-visao',S.visao);render();break;
     case 'nova-escala':abrirFormEscala(null);break;
     case 'editar-escala':{const e=esc0();if(e)abrirFormEscala(e)}break;
