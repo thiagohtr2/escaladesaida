@@ -10,10 +10,6 @@
   node_bundler = "esbuild"
 
 # /api/escalas, /api/link, /api/publico -> funções
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
 
 # Link público curto: /e/nome-da-escala-abcd abre o próprio site
 [[redirects]]

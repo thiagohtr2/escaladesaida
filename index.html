@@ -105,6 +105,13 @@ body.publico .prox-ver{display:none}
 .sheet .ppl td.bd{box-shadow:none!important}
 .sheet .ppl td.bd .pv{border-color:var(--ac);color:var(--ac-d);font-weight:650}
 .zap-prev{display:grid;gap:3px;padding:12px 14px;border-radius:12px;background:#e7f7e3;border:1px solid #cfe9c8;font-size:13px;color:#1f2d1c;max-width:420px}.zap-prev span{color:#3c4a39}.zap-prev .zap-link{color:#1a6fb5;word-break:break-all;font-size:12px}
+/* Conta no menu */
+.top-bts{display:flex;gap:8px}.top-r [hidden],.conta-lin[hidden]{display:none!important}
+.conta-lin{display:grid;gap:2px;margin:0 6px 14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:11px;color:var(--ink-3);min-width:0}
+.conta-lin b{font-size:12px;font-weight:650;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.conta-lin span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.conta-lin .lnk{margin-top:8px;color:var(--danger);font-size:12px}
+@media(max-width:760px){.conta-lin{display:none!important}.top-bts{gap:6px}}
+@media(min-width:761px){#btn-sair{display:none!important}}
 /* Telas de entrada */
 .auth{min-height:80vh;display:grid;place-items:center;align-content:center;gap:16px;padding:24px 0}
 .auth-card{--ac:var(--accent);width:min(420px,100%);background:#fff;border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:18px;padding:26px;box-shadow:var(--shadow);display:grid;gap:14px}
@@ -145,9 +152,10 @@ dialog[open]{display:flex;flex-direction:column;position:fixed;top:50%;left:50%;
       <button class="tab" data-act="nav" data-v="plantonistas"></button>
     </nav>
     <div class="nav-note"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.6 4.2v3.9h-3.9"/></svg><b>Cada plantão, no seu lugar.</b>Um rodízio organizado para toda a equipe.</div>
+    <p class="conta-lin" id="conta-lin" hidden></p>
     <div class="top-r">
       <span class="status" id="status" role="status"><i></i><span class="lbl">Carregando</span></span>
-      <button class="ib" data-act="ajustes" aria-label="Ajustes"></button>
+      <span class="top-bts"><button class="ib" data-act="ajustes" aria-label="Ajustes" title="Ajustes"></button><button class="ib" data-act="sair" id="btn-sair" aria-label="Sair da conta" title="Sair da conta" hidden></button></span>
     </div>
   </div>
 </header>
@@ -530,7 +538,7 @@ function vLogin(){
     <h1>${titulo}</h1>${sub?`<p class="auth-sub">${sub}</p>`:''}${msg}${err}
     <form id="f-auth" data-modo="${t}" novalidate>${corpo}${botao?`<button type="submit" class="btn pri auth-btn">${botao}</button>`:''}</form>
     ${links?`<div class="auth-links">${links}</div>`:''}</div>
-    <p class="auth-pe">Quem só precisa ver a escala não precisa de conta: use o link público que a coordenação envia.</p></section>`;
+    <p class="auth-pe">Qualquer pessoa pode criar a própria conta e montar as suas escalas. Quem só precisa ver uma escala não precisa de conta: basta abrir o link público.</p></section>`;
 }
 async function enviarAuth(form){
   const t=form.dataset.modo,v=id=>(($('#'+id)||{}).value||'').trim(),btn=form.querySelector('button[type=submit]');
@@ -695,8 +703,9 @@ function cardPlantao(e,l,tag){
 }
 function vazioGeral(){
   if(S.modo==='carregando')return `<section class="loading" aria-busy="true"><div class="sk short"></div><div class="sk"></div><div class="sk"></div><p class="muted">Carregando escalas…</p>${S.aviso?`<p class="banner warn">${icon('alert')}<span>${esc(S.aviso)}</span></p>`:''}</section>`;
+  if(S.modo==='erro'&&NUVEM.sessao)return `<section class="empty-all">${icon('alert','big')}<h1>Não foi possível carregar suas escalas</h1><p>${esc(S.aviso||'O servidor não respondeu.')} Suas escalas não foram apagadas.</p><div class="acts" style="justify-content:center"><button class="btn pri" data-act="recarregar">Tentar de novo</button><button class="btn ghost" data-act="sair">Sair da conta</button></div></section>`;
   if(S.modo==='nuvem'&&S.importavel){const n=S.importavel.escalas.length;return `<section class="empty-all">${icon('layers','big')}<h1>Trazer suas escalas?</h1><p>Encontramos <b>${n} ${n>1?'escalas salvas':'escala salva'}</b> neste navegador, de antes do login (${esc(S.importavel.escalas.map(e=>e.nome).join(', '))}). Quer levar para a sua conta? Assim elas ficam salvas na nuvem e abrem em qualquer aparelho.</p><div class="acts" style="justify-content:center"><button class="btn pri" data-act="importar">Importar para a minha conta</button><button class="btn ghost" data-act="importar-nao">Começar do zero</button></div></section>`}
-  return `<section class="empty-all">${icon('ring','big')}<h1>Nenhuma escala cadastrada</h1><p>Cadastre a escala com a equipe na ordem das posições do primeiro plantão. A partir daí o rodízio é calculado sozinho, inclusive quando alguém entra ou sai.</p>${S.podeEditar?`<button class="btn pri" data-act="nova-escala">${icon('plus')} Criar escala</button>`:'<p class="muted">Peça à coordenação para cadastrar as escalas.</p>'}</section>`;
+  return `<section class="empty-all">${icon('ring','big')}<h1>Nenhuma escala cadastrada</h1><p>Cadastre a escala com a equipe na ordem das posições do primeiro plantão. A partir daí o rodízio é calculado sozinho, inclusive quando alguém entra ou sai.</p>${S.podeEditar?`<button class="btn pri" data-act="nova-escala">${icon('plus')} Criar escala</button>`:'<p class="muted">Este acesso é só para ver as escalas.</p>'}</section>`;
 }
 function bannerAviso(){return (S.modo==='nuvem'&&S.importavel?`<div class="banner imp">${icon('layers')}<span>Encontramos <b>${S.importavel.escalas.length} ${S.importavel.escalas.length>1?'escalas salvas':'escala salva'}</b> neste navegador, de antes do login. Quer levar para a sua conta?</span><button class="btn pri sm" data-act="importar">Importar para a minha conta</button><button class="btn ghost sm" data-act="importar-nao">Agora não</button></div>`:'')+(S.aviso&&S.modo!=='carregando'?`<p class="banner ${S.modo==='local'?'':'warn'}">${icon('alert')}<span>${esc(S.aviso)}</span></p>`:'')}
 
@@ -943,6 +952,8 @@ function render(){
   statusUI();
   document.querySelectorAll('[data-act="nav"][data-v]').forEach(b=>{if(b.classList.contains('brand'))return;const v=b.dataset.v;b.innerHTML=icon(v)+'<span>'+VIEWS[v]+'</span>';if(S.view===v)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   $('[data-act="ajustes"]').innerHTML=icon('ajustes');
+  const logado=S.modo!=='publico'&&!S.tela&&!!NUVEM.sessao;$('#btn-sair').hidden=!logado;$('#btn-sair').innerHTML=icon('sai');
+  const cl=$('#conta-lin');cl.hidden=!logado;cl.innerHTML=logado?`<span>Conectado como</span><b>${esc(NUVEM.sessao.nome||NUVEM.sessao.email||'')}</b>${NUVEM.sessao.nome?`<span>${esc(NUVEM.sessao.email||'')}</span>`:''}<button type="button" class="lnk" data-act="sair">${icon('sai')} Sair da conta</button>`:'';
   const pub=!!(S.publico||S.publicoErro),auth=!!S.tela;document.body.classList.toggle('publico',pub||auth);
   if(pub){document.title=(S.publico?S.escalas[0].nome+' · ':'')+'Escala de plantão'}
   main.innerHTML=auth?vLogin():pub?vPublico():S.view==='painel'?vPainel():S.view==='plantonistas'?vPlantonistas():vEscalas();
@@ -1268,6 +1279,7 @@ document.addEventListener('click',async ev=>{
     case 'link-publico':{const e=esc0();if(e)abrirLinkPublico(e)}break;
     case 'auth':S.tela=b.dataset.v;S.authErro='';S.authMsg='';render();$('#au-email')?.focus();break;
     case 'sair':sairConta(false);break;
+    case 'recarregar':carregarNuvem();break;
     case 'importar':{const loc=S.importavel;if(!loc)break;S.escalas=loc.escalas;S.config=Object.assign({},loc.config||{},S.config);S.importavel=null;render();await enviarNuvem();toast('Escalas importadas para a sua conta.')}break;
     case 'importar-nao':S.importavel=null;render();break;
     case 'copiar-zap':{const t=b.dataset.msg;try{navigator.clipboard.writeText(t).then(()=>toast('Mensagem copiada. É só colar no WhatsApp.'),()=>copiarTexto(t))}catch(err){copiarTexto(t)}}break;
