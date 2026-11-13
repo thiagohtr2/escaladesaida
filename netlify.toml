@@ -1,0 +1,22 @@
+# Site estático (index.html na raiz) + funções do Netlify para login e escalas na nuvem.
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+
+# /api/escalas, /api/link, /api/publico -> funções
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Link público curto: /e/nome-da-escala-abcd abre o próprio site
+[[redirects]]
+  from = "/e/*"
+  to = "/index.html"
+  status = 200

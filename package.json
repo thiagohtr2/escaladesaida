@@ -1,0 +1,9 @@
+{
+  "name": "escaladesaida",
+  "private": true,
+  "type": "module",
+  "description": "Rodízio de Plantões: escalas com rodízio automático, login pelo Netlify Identity e dados no Netlify Blobs.",
+  "dependencies": {
+    "@netlify/blobs": "8.2.0"
+  }
+}
