@@ -36,11 +36,11 @@ button.cel-data{text-align:left;color:inherit}button.cel-data:hover{color:var(--
 .limpa-bar .eyebrow{color:var(--ac)}.schedule-workspace .dica-ed{color:var(--ac-d)}
 .sheet .grade td.c0{color:inherit;font-weight:inherit;background:inherit}
 .sheet .grade thead th.fx{background:var(--ac-m);color:var(--ac-d)}
-.sheet .grade thead th.bd{color:var(--ac-d);box-shadow:inset 2px 0 0 var(--ac),inset -2px 0 0 var(--ac),inset 0 2px 0 var(--ac)}
+.sheet .grade thead th.bd{color:var(--ac-d)}
 .sheet .grade td.fx{background:var(--ac-s);color:var(--ac-d);font-weight:650}
 .sheet .grade tbody tr:nth-child(even of .lin) td.fx{background:var(--ac-m)}
-.sheet .grade td.bd{box-shadow:inset 2px 0 0 var(--ac),inset -2px 0 0 var(--ac);font-weight:650}
-.sheet .grade tbody tr.lin:last-of-type td.bd{box-shadow:inset 2px 0 0 var(--ac),inset -2px 0 0 var(--ac),inset 0 -2px 0 var(--ac)}
+.sheet .grade td.bd{font-weight:650;color:var(--ac-d)}
+.grade-wrap{position:relative}.col-borda{position:absolute;z-index:4;pointer-events:none;border:2px solid var(--ac);border-radius:8px;box-sizing:border-box}
 .sheet .grade tr.next td,.sheet .grade tr.next .dc{background:color-mix(in srgb,var(--ac) 12%,#fff)!important;color:var(--ac-d)!important;border-bottom-color:color-mix(in srgb,var(--ac) 28%,#fff)}
 .sheet .grade tr.next td.fx{background:color-mix(in srgb,var(--ac) 24%,#fff)!important}
 .sheet .grade tr.next .dc{box-shadow:inset 3px 0 var(--ac)}
@@ -480,6 +480,23 @@ function ajustarTabelas(){
     const t=w.querySelector('.grade');if(!t)return;t.style.fontSize='';
     let fs=parseFloat(getComputedStyle(t).fontSize)||15;
     for(let i=0;i<8;i++){const disp=w.clientWidth-parseFloat(getComputedStyle(w).paddingLeft)-parseFloat(getComputedStyle(w).paddingRight);if(disp<=0)break;const r=disp/t.offsetWidth;if(r>=0.999)break;fs=Math.max(1,fs*r*0.98);t.style.fontSize=fs.toFixed(2)+'px';}
+  });
+  desenharBordas();
+}
+/* Borda de posição: um único contorno por cima da tabela, do cabeçalho até a última linha, sem ser cortado pelas linhas. */
+function desenharBordas(){
+  document.querySelectorAll('.grade-wrap').forEach(w=>{
+    w.querySelectorAll('.col-borda').forEach(x=>x.remove());
+    const t=w.querySelector('.grade');if(!t)return;
+    const ths=t.querySelectorAll('thead th.bd');if(!ths.length)return;
+    const wr=w.getBoundingClientRect(),tb=t.getBoundingClientRect();
+    ths.forEach(th=>{
+      const r=th.getBoundingClientRect(),d=document.createElement('div');
+      d.className='col-borda';d.setAttribute('aria-hidden','true');
+      d.style.left=(r.left-wr.left+w.scrollLeft)+'px';d.style.top=(r.top-wr.top+w.scrollTop)+'px';
+      d.style.width=r.width+'px';d.style.height=(tb.bottom-r.top)+'px';
+      w.appendChild(d);
+    });
   });
 }
 let larguraLayout=window.innerWidth;
