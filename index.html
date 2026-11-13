@@ -20,7 +20,12 @@
 /* Today and people */
 .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:23px}.hero h1{font-size:clamp(26px,3vw,36px);font-weight:700;letter-spacing:-.045em;margin-top:8px}.hero .sub{font-size:12px;color:var(--ink-2);margin-top:9px}.hero-c{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.date-pick input{height:38px;max-width:165px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 10px;font-size:12px}.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-bottom:24px}.wd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px 3px;min-height:88px}.wd-n{font-size:9px;color:var(--ink-3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}.wd-d{font-size:21px;line-height:1.3;font-weight:650;letter-spacing:-.05em;font-variant-numeric:tabular-nums}.wd-dots{display:flex;gap:3px;height:5px}.wd-dots i{width:4px;height:4px;border-radius:50%;background:var(--ec)}.wd.today{border-color:#a0acec}.wd.on{background:var(--accent);border-color:var(--accent);color:#fff}.wd.on .wd-n{color:#e2e7ff}.wd.on .wd-dots i{background:#e2e7ff}.painel{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:22px;align-items:start}.painel>div{min-width:0}.cards{display:grid;gap:17px;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr))}.duty{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative;min-width:0;box-shadow:var(--shadow)}.duty:before{content:'';position:absolute;top:0;left:22px;width:28px;height:3px;background:var(--ec);border-radius:0 0 3px 3px}.duty-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:23px 22px 18px}.duty-h h3{font-size:17px;font-weight:650;overflow-wrap:anywhere}.duty-h p{font-size:10px;color:var(--ink-3);margin-top:5px}.duty-list{list-style:none;margin:0;padding:0}.duty-list li{display:grid;grid-template-columns:49px 31px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px 22px;border-top:1px solid #f0f2f7}.duty-list li .nm{font-size:12px;font-weight:550;overflow-wrap:anywhere}.duty-list li.eu{background:var(--accent-soft)}.duty-list li .tags{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}.duty-note{display:flex;gap:7px;padding:11px 22px;background:var(--warn-soft);color:var(--warn);font-size:10px}.duty-note .ic{width:14px;height:14px;flex:none;margin-top:1px}.duty-f{padding:14px 22px;border-top:1px solid var(--line)}.empty-day{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:20px;border:1px dashed #d2d9e8;background:#f1f3fb;border-radius:14px;margin-bottom:18px}.empty-day p+p{margin-top:8px;color:var(--ink-2);font-size:11px;line-height:1.7}.side{display:grid;gap:18px}.lst{list-style:none;padding:0;margin:0}.lst li+li{border-top:1px solid #edf0f5}.lst button{width:100%;display:grid;grid-template-columns:45px minmax(0,1fr) auto;gap:10px;align-items:center;background:none;border:0;text-align:left;padding:12px 0}.lst button:hover .t1{color:var(--accent)}.dbox{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;line-height:1.1;border-radius:9px;background:var(--surface-2);padding:9px 0}.dbox b{font-size:12px;font-weight:650;font-variant-numeric:tabular-nums}.dbox span{font-size:8px;font-weight:600;text-transform:uppercase;color:var(--ink-3)}.t1{display:block;font-size:11px;font-weight:600;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.t2{display:block;font-size:9px;color:var(--ink-3);white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin-top:4px}.who{display:grid;gap:14px}.who label{font-size:11px;color:var(--ink-2);line-height:1.8}.pp{display:grid;grid-template-columns:285px minmax(0,1fr);gap:25px;align-items:start}.pp>div{min-width:0}.plist{list-style:none;padding:0;margin:0}.plist li+li{border-top:1px solid #edf0f5}.plist button{display:grid;grid-template-columns:31px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;padding:14px 18px;border:0;background:none;text-align:left;min-height:64px}.plist button:hover{background:var(--surface-2)}.plist button[aria-current=true]{background:var(--accent-soft);box-shadow:inset 3px 0 var(--accent)}.plist .off .t1{color:var(--ink-3)}.pd-h{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:22px;scroll-margin-top:25px}.pd-h h1{font-size:27px;overflow-wrap:anywhere}.pd-h .meta{font-size:11px;color:var(--ink-3);line-height:1.8}.duo{display:grid;gap:18px;margin-bottom:18px}.bars{display:grid;gap:15px}.bar{display:grid;grid-template-columns:43px minmax(0,1fr) 25px;gap:10px;align-items:center;font-size:11px}.bar .tr{height:6px;border-radius:4px;background:var(--surface-2);overflow:hidden}.bar .tr i{display:block;height:100%;border-radius:4px;background:var(--pi)}.bar b{text-align:right;font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
 /* Dialogs and forms */
-dialog{width:min(650px,calc(100% - 40px));max-height:calc(100dvh - 64px);border:1px solid var(--line);padding:0;border-radius:20px;background:#fff;color:var(--ink);box-shadow:0 24px 100px #16244d26;overscroll-behavior:contain}dialog[open]{display:flex;flex-direction:column;position:fixed;top:50%;left:50%;right:auto;bottom:auto;margin:0;height:auto;transform:translate(-50%,-50%);z-index:1001}#dlgc[open]{z-index:1003}#scrim{position:fixed;inset:0;z-index:1000;background:#17244269;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}#scrim[hidden]{display:none}body.modal-aberto{overflow:hidden}dialog::backdrop{background:#17244269;backdrop-filter:blur(3px)}body:has(dialog[open]){overflow:hidden}.dlg-in{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}.dlg-h,.dlg-f{flex:none}.dlg-b{flex:0 1 auto}.dlg-h{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;padding:25px 26px 20px;border-bottom:1px solid var(--line)}.dlg-h h2{font-size:22px;font-weight:650;letter-spacing:-.04em}.dlg-h p{font-size:11px;color:var(--ink-3);margin-top:7px}.dlg-b{padding:24px 26px;display:grid;gap:22px;overflow:auto;min-height:0}.dlg-f{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:17px 26px;border-top:1px solid var(--line);background:#fafbfe;border-radius:0 0 20px 20px}.dlg-f .sp{flex:1}.fld{display:grid;gap:8px;border:0;margin:0;padding:0;min-width:0}.fld>label,.fld>legend{font-size:12px;font-weight:600;padding:0;margin-bottom:1px}.fld small{font-size:10px;color:var(--ink-3);line-height:1.7}.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.team-ed{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:7px}.team-ed li{display:grid;grid-template-columns:80px minmax(0,1fr) 36px 36px 36px;gap:5px;align-items:center}.team-ed li.team-hd{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-weight:600;padding-bottom:3px}.team-ed li.team-hd span:last-child{grid-column:2/-1}.team-ed .posn{background:var(--pb);color:var(--pi);font-weight:650;text-align:center;border-color:transparent;padding:0 4px;font-size:11px}.team-ed .inp{height:39px;font-size:12px;padding-left:8px;padding-right:8px}.team-ed .ib{width:36px;height:36px;border-radius:8px}.team-ed .ib .ic{width:16px;height:16px}.add-row{display:flex;gap:7px;margin-top:8px}.add-row .inp{flex:1}.radios{display:grid;gap:10px}.radio{display:flex;align-items:flex-start;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;font-size:12px;cursor:pointer}.radio:has(input:checked){background:var(--accent-soft);border-color:#cbd2fc}.radio input{margin-top:3px;accent-color:var(--accent)}.radio b{display:block;font-weight:600;margin-bottom:4px}.radio span{color:var(--ink-2)}.radio span span{font-size:10px}.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.types label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:14px 5px;font-size:11px;font-weight:600;cursor:pointer}.types label:has(input:checked){border-color:#bdc7ff;background:var(--accent-soft);color:var(--accent)}.types input,.swatches input{position:absolute;opacity:0;pointer-events:none}.types label:has(input:focus-visible),.swatches label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:3px}.swatches{display:flex;gap:13px;flex-wrap:wrap;padding:5px}.swatches label{width:33px;height:33px;border-radius:11px;display:grid;place-items:center;background:var(--c);cursor:pointer}.swatches label:has(input:checked){outline:2px solid var(--c);outline-offset:3px}.prev{border:1px solid var(--line);border-radius:12px;overflow:hidden}.prev h3{padding:12px 15px;background:var(--surface-2);font:650 10px var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}.prev-r{display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;padding:14px;border-top:1px solid var(--line);align-items:start}.prev-r>span{font-size:10px;font-weight:650;color:var(--ink-2);padding-top:3px}.prev-c{display:flex;flex-wrap:wrap;gap:7px}.pc{display:inline-flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border-radius:6px;background:var(--surface-2);font-size:11px;font-weight:550}.pc .pos{min-width:0;font-size:9px;padding:3px 5px}.pc.ch{outline:1px solid #d3af57;background:var(--warn-soft)}.pc.gone{text-decoration:line-through;opacity:.6}.info{padding:13px 15px;background:var(--surface-2);border-radius:10px;font-size:11px;color:var(--ink-2);line-height:1.8}.info b{color:var(--ink);font-weight:600}.warnbox{font-size:11px;line-height:1.8;background:var(--warn-soft);color:var(--warn);padding:13px 15px;border-radius:10px}.err{font-size:11px;color:var(--danger);min-height:0}.err:empty{display:none}.copy-ta{width:100%;min-height:260px;border:1px solid var(--line);border-radius:10px;padding:12px;font:12px/1.7 ui-monospace,monospace;background:var(--surface-2)}.aff{list-style:none;margin:0;padding:0;display:grid;gap:8px}.aff li{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;background:var(--surface-2);border-radius:9px;padding:12px}.aff .mini{white-space:normal;overflow-wrap:anywhere;text-align:right}.empty-all{max-width:470px;min-height:60vh;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px}.empty-all h1{font-size:28px}.empty-all p{font-size:13px;color:var(--ink-2);line-height:1.8}.loading{display:grid;gap:16px;max-width:800px}.sk{height:120px;border-radius:16px;background:linear-gradient(90deg,#edf0f6,#fff,#edf0f6);background-size:200% 100%;animation:sh 1.5s linear infinite}.sk.short{height:38px;width:50%}@keyframes sh{to{background-position:-200% 0}}#toast{position:fixed;bottom:28px;left:calc(50% + 112px);transform:translate(-50%,15px);opacity:0;z-index:100;max-width:calc(100% - 32px);padding:13px 20px;border-radius:10px;background:var(--ink);color:#fff;font-size:12px;font-weight:550;box-shadow:0 6px 24px #18223820;transition:opacity .18s,transform .18s;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}#toast.erro{background:var(--danger)}
+dialog{width:min(650px,calc(100% - 40px));max-height:calc(100dvh - 64px);border:1px solid var(--line);padding:0;border-radius:20px;background:#fff;color:var(--ink);box-shadow:0 24px 100px #16244d26;overscroll-behavior:contain}button.cel{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;border-radius:6px;padding:.15em .1em;text-align:inherit;color:inherit;font:inherit}button.cel:hover{background:rgba(71,88,214,.09);color:var(--accent)}button.cel:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.grade td.vago,.grade td.vago button.cel{color:#b43845;font-style:italic;font-weight:600}.grade td.pont{box-shadow:inset 0 0 0 2px #e0b04f}.grade td.pont:not(.vago){color:#7a5410}
+.dcard-b>div.pont{background:#fff7e6}.dcard-b>div.vago span{color:#b43845;font-style:italic}.cel-card{display:flex!important;align-items:center;gap:8px;text-align:left!important}.dcard-b>div:has(>.cel-card){padding:4px 6px}.cel-card{padding:8px 4px!important}
+.vg-sw{display:inline-block;width:10px;height:10px;border-radius:3px;box-shadow:inset 0 0 0 2px #e0b04f;background:#fff7e6}.dica-ed{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:600}.dica-ed .ic{width:14px;height:14px}
+.cel-quem{display:flex;align-items:center;gap:14px}.cel-quem b{display:block;font-size:17px}.cel-quem span{font-size:12px;color:var(--ink-3)}.cel-aus{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.fld>legend .ic{width:15px;height:15px;vertical-align:-3px;margin-right:4px;color:var(--accent)}
+dialog[open]{display:flex;flex-direction:column;position:fixed;top:50%;left:50%;right:auto;bottom:auto;margin:0;height:auto;transform:translate(-50%,-50%);z-index:1001}#dlgc[open]{z-index:1003}#scrim{position:fixed;inset:0;z-index:1000;background:#17244269;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}#scrim[hidden]{display:none}body.modal-aberto{overflow:hidden}dialog::backdrop{background:#17244269;backdrop-filter:blur(3px)}body:has(dialog[open]){overflow:hidden}.dlg-in{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}.dlg-h,.dlg-f{flex:none}.dlg-b{flex:0 1 auto}.dlg-h{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;padding:25px 26px 20px;border-bottom:1px solid var(--line)}.dlg-h h2{font-size:22px;font-weight:650;letter-spacing:-.04em}.dlg-h p{font-size:11px;color:var(--ink-3);margin-top:7px}.dlg-b{padding:24px 26px;display:grid;gap:22px;overflow:auto;min-height:0}.dlg-f{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:17px 26px;border-top:1px solid var(--line);background:#fafbfe;border-radius:0 0 20px 20px}.dlg-f .sp{flex:1}.fld{display:grid;gap:8px;border:0;margin:0;padding:0;min-width:0}.fld>label,.fld>legend{font-size:12px;font-weight:600;padding:0;margin-bottom:1px}.fld small{font-size:10px;color:var(--ink-3);line-height:1.7}.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.team-ed{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:7px}.team-ed li{display:grid;grid-template-columns:80px minmax(0,1fr) 36px 36px 36px;gap:5px;align-items:center}.team-ed li.team-hd{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-weight:600;padding-bottom:3px}.team-ed li.team-hd span:last-child{grid-column:2/-1}.team-ed .posn{background:var(--pb);color:var(--pi);font-weight:650;text-align:center;border-color:transparent;padding:0 4px;font-size:11px}.team-ed .inp{height:39px;font-size:12px;padding-left:8px;padding-right:8px}.team-ed .ib{width:36px;height:36px;border-radius:8px}.team-ed .ib .ic{width:16px;height:16px}.add-row{display:flex;gap:7px;margin-top:8px}.add-row .inp{flex:1}.radios{display:grid;gap:10px}.radio{display:flex;align-items:flex-start;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;font-size:12px;cursor:pointer}.radio:has(input:checked){background:var(--accent-soft);border-color:#cbd2fc}.radio input{margin-top:3px;accent-color:var(--accent)}.radio b{display:block;font-weight:600;margin-bottom:4px}.radio span{color:var(--ink-2)}.radio span span{font-size:10px}.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.types label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:14px 5px;font-size:11px;font-weight:600;cursor:pointer}.types label:has(input:checked){border-color:#bdc7ff;background:var(--accent-soft);color:var(--accent)}.types input,.swatches input{position:absolute;opacity:0;pointer-events:none}.types label:has(input:focus-visible),.swatches label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:3px}.swatches{display:flex;gap:13px;flex-wrap:wrap;padding:5px}.swatches label{width:33px;height:33px;border-radius:11px;display:grid;place-items:center;background:var(--c);cursor:pointer}.swatches label:has(input:checked){outline:2px solid var(--c);outline-offset:3px}.prev{border:1px solid var(--line);border-radius:12px;overflow:hidden}.prev h3{padding:12px 15px;background:var(--surface-2);font:650 10px var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}.prev-r{display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;padding:14px;border-top:1px solid var(--line);align-items:start}.prev-r>span{font-size:10px;font-weight:650;color:var(--ink-2);padding-top:3px}.prev-c{display:flex;flex-wrap:wrap;gap:7px}.pc{display:inline-flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border-radius:6px;background:var(--surface-2);font-size:11px;font-weight:550}.pc .pos{min-width:0;font-size:9px;padding:3px 5px}.pc.ch{outline:1px solid #d3af57;background:var(--warn-soft)}.pc.gone{text-decoration:line-through;opacity:.6}.info{padding:13px 15px;background:var(--surface-2);border-radius:10px;font-size:11px;color:var(--ink-2);line-height:1.8}.info b{color:var(--ink);font-weight:600}.warnbox{font-size:11px;line-height:1.8;background:var(--warn-soft);color:var(--warn);padding:13px 15px;border-radius:10px}.err{font-size:11px;color:var(--danger);min-height:0}.err:empty{display:none}.copy-ta{width:100%;min-height:260px;border:1px solid var(--line);border-radius:10px;padding:12px;font:12px/1.7 ui-monospace,monospace;background:var(--surface-2)}.aff{list-style:none;margin:0;padding:0;display:grid;gap:8px}.aff li{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;background:var(--surface-2);border-radius:9px;padding:12px}.aff .mini{white-space:normal;overflow-wrap:anywhere;text-align:right}.empty-all{max-width:470px;min-height:60vh;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px}.empty-all h1{font-size:28px}.empty-all p{font-size:13px;color:var(--ink-2);line-height:1.8}.loading{display:grid;gap:16px;max-width:800px}.sk{height:120px;border-radius:16px;background:linear-gradient(90deg,#edf0f6,#fff,#edf0f6);background-size:200% 100%;animation:sh 1.5s linear infinite}.sk.short{height:38px;width:50%}@keyframes sh{to{background-position:-200% 0}}#toast{position:fixed;bottom:28px;left:calc(50% + 112px);transform:translate(-50%,15px);opacity:0;z-index:100;max-width:calc(100% - 32px);padding:13px 20px;border-radius:10px;background:var(--ink);color:#fff;font-size:12px;font-weight:550;box-shadow:0 6px 24px #18223820;transition:opacity .18s,transform .18s;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}#toast.erro{background:var(--danger)}
 /* Tablet */
 @media(min-width:1700px){main{margin-right:auto;margin-left:max(224px,calc((100vw - 1416px)/2));max-width:1416px}.workspace-top{padding-left:max(42px,calc((100vw - 1416px)/2 - 182px))}}
 @media(max-width:1200px){.top{width:196px}.top-in{padding-left:13px;padding-right:13px}.workspace-top{margin-left:196px;padding:0 28px}main{margin-left:196px;padding:30px 28px 60px}.next-overview{grid-template-columns:180px minmax(0,1fr)}.next-intro{padding:20px}.next-intro h2{font-size:22px}.next-team{padding:20px}.next-members{grid-template-columns:repeat(auto-fit,minmax(85px,1fr))}.below{grid-template-columns:1fr 1fr}.painel{grid-template-columns:minmax(0,1fr) 265px}.pp{grid-template-columns:250px minmax(0,1fr);gap:20px}#toast{left:calc(50% + 98px)}}
@@ -164,13 +169,21 @@ function aplicar(e,st,ev){
 /* Gera todos os plantões do primeiro até "ate". A cada data: gira, depois aplica as mudanças com data ≤ data do plantão. */
 function gerar(e,ate,extra){
   const out=[]; if(!e||!validaData(e.inicio)) return out;
-  const evs=ordenarEventos(extra?[...(e.eventos||[]),extra]:e.eventos);
+  const todosEv=extra?[...(e.eventos||[]),extra]:(e.eventos||[]);
+  const evs=ordenarEventos(todosEv.filter(x=>x.tipo!=='ausencia'));
+  const aus={};ordenarEventos(todosEv.filter(x=>x.tipo==='ausencia')).forEach(x=>{(aus[x.data]=aus[x.data]||[]).push(x)});
   const freq=+e.frequencia||14; let st=[...(e.equipe||[])], ei=0, d=e.inicio, k=0;
   while(d<=ate&&k<1200){
     if(k>0) st=girar(st,e.sentido);
     const aplicados=[],avisos=[];
     while(ei<evs.length&&evs[ei].data<=d){const ev=evs[ei++];const er=aplicar(e,st,ev);if(er)avisos.push({data:d,msg:er,ev});else aplicados.push(ev)}
-    out.push({data:d,k,equipe:st.slice(),eventos:aplicados,avisos});
+    /* Ausência de um dia: só este plantão muda (vago ou outra pessoa cobre); o rodízio segue igual. */
+    const eq=st.slice(),pontuais=[];
+    for(const a of (aus[d]||[])){const i=eq.indexOf(a.nome);
+      if(i<0){avisos.push({data:d,msg:a.nome+' não estava neste plantão; a ausência foi ignorada.',ev:a});continue}
+      if(a.cobre&&eq.includes(a.cobre)){avisos.push({data:d,msg:a.cobre+' já estava neste plantão; a cobertura de '+a.nome+' foi ignorada.',ev:a});continue}
+      eq[i]=a.cobre||'';pontuais.push(a)}
+    out.push({data:d,k,equipe:eq,base:st.slice(),eventos:aplicados,pontuais,avisos});
     d=addDias(d,freq);k++;
   }
   return out;
@@ -182,10 +195,14 @@ function proxima(e,de){
   const f=+e.frequencia||14;return addDias(e.inicio,Math.ceil(diff(e.inicio,de)/f)*f);
 }
 function linhaEm(e,d,extra){if(!temPlantao(e,d))return null;const l=gerar(e,d,extra);return l[l.length-1]||null}
+function notas(l){return [...(l.eventos||[]),...(l.pontuais||[])]}
+function mudouNoDia(l,i){return !!l.base&&l.base[i]!==l.equipe[i]}
+const nomeOuVago=n=>n||'Vago';
 function novosDe(l){const s=new Set();for(const ev of l.eventos){if(ev.tipo==='troca')s.add(ev.entra);if(ev.tipo==='entrada')s.add(ev.nome)}return s}
 function descEv(ev,e,l){
   if(ev.tipo==='troca') return ev.entra+' entra no lugar de '+ev.sai;
   if(ev.tipo==='saida') return ev.nome+' deixa a equipe; quem estava abaixo sobe uma posição';
+  if(ev.tipo==='ausencia') return ev.nome+' fora só neste plantão'+(ev.cobre?'; '+ev.cobre+' cobre':'; posição vaga');
   if(ev.tipo==='entrada'){const i=l?l.equipe.indexOf(ev.nome):-1;return ev.nome+' entra na equipe'+(i>=0?' em '+rotulos(e,l.equipe.length)[i]:'')}
   return '';
 }
@@ -198,13 +215,13 @@ const S={visao:(['planilha','siglas','cartoes','pessoas'].includes(lsGet('rodizi
 let db=null;const filas={};
 
 function escalasOrd(){return [...S.escalas].filter(e=>validaData(e.inicio)).sort((a,b)=>(a.ordem||0)-(b.ordem||0)||String(a.nome).localeCompare(String(b.nome),'pt'))}
-function todosNomes(){const s=new Set();for(const e of S.escalas){(e.equipe||[]).forEach(n=>s.add(n));(e.eventos||[]).forEach(ev=>[ev.nome,ev.sai,ev.entra].forEach(n=>n&&s.add(n)))}return [...s].sort((a,b)=>a.localeCompare(b,'pt'))}
+function todosNomes(){const s=new Set();for(const e of S.escalas){(e.equipe||[]).forEach(n=>s.add(n));(e.eventos||[]).forEach(ev=>[ev.nome,ev.sai,ev.entra,ev.cobre].forEach(n=>n&&s.add(n)))}return [...s].sort((a,b)=>a.localeCompare(b,'pt'))}
 function indice(){
   const hoje=hojeStr(),ate=addDias(hoje,365),m=new Map();
   const get=n=>{if(!m.has(n))m.set(n,{nome:n,plantoes:[],escalas:new Set()});return m.get(n)};
   for(const e of escalasOrd()){
-    (e.equipe||[]).forEach(n=>get(n));(e.eventos||[]).forEach(ev=>[ev.nome,ev.sai,ev.entra].forEach(n=>n&&get(n)));
-    for(const l of gerar(e,ate)){if(l.data<hoje)continue;const r=rotulos(e,l.equipe.length);l.equipe.forEach((n,i)=>{const p=get(n);p.plantoes.push({data:l.data,e,i,rot:r[i]});p.escalas.add(e.id)})}
+    (e.equipe||[]).forEach(n=>get(n));(e.eventos||[]).forEach(ev=>[ev.nome,ev.sai,ev.entra,ev.cobre].forEach(n=>n&&get(n)));
+    for(const l of gerar(e,ate)){if(l.data<hoje)continue;const r=rotulos(e,l.equipe.length);l.equipe.forEach((n,i)=>{if(!n)return;const p=get(n);p.plantoes.push({data:l.data,e,i,rot:r[i]});p.escalas.add(e.id)})}
   }
   for(const p of m.values())p.plantoes.sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:0);
   return [...m.values()].sort((a,b)=>a.nome.localeCompare(b.nome,'pt'));
@@ -286,8 +303,8 @@ function cardPlantao(e,l,tag){
   const r=rotulos(e,l.equipe.length),nv=novosDe(l);
   return `<article class="duty" style="--ec:${cor(e)}">
     <header class="duty-h"><div><h3>${esc(e.nome)}</h3><p>${esc(cap(DIAS[dow(l.data)]))} · ${esc(freqTxt(e.frequencia))} · ${l.equipe.length} plantonistas</p></div>${tag?`<span class="tag">${esc(tag)}</span>`:''}</header>
-    <ol class="duty-list">${l.equipe.map((n,i)=>`<li class="${n===S.eu?'eu':''}"><span class="pos ${pc(i)}">${esc(r[i])}</span>${av(n)}<span class="nm">${esc(n)}</span><span class="tags">${nv.has(n)?'<span class="mini new">entrou</span>':''}${n===S.eu?'<span class="mini acc">você</span>':''}</span></li>`).join('')}</ol>
-    ${l.eventos.length?`<p class="duty-note">${icon('swap')}<span>${l.eventos.map(ev=>esc(descEv(ev,e,l))).join(' · ')}</span></p>`:''}
+    <ol class="duty-list">${l.equipe.map((n,i)=>`<li class="${n===S.eu?'eu':''}"><span class="pos ${pc(i)}">${esc(r[i])}</span>${av(n)}<span class="nm">${esc(nomeOuVago(n))}</span><span class="tags">${nv.has(n)?'<span class="mini new">entrou</span>':''}${n===S.eu?'<span class="mini acc">você</span>':''}</span></li>`).join('')}</ol>
+    ${notas(l).length?`<p class="duty-note">${icon('swap')}<span>${notas(l).map(ev=>esc(descEv(ev,e,l))).join(' · ')}</span></p>`:''}
     <footer class="duty-f"><button class="lnk" data-act="ver-escala" data-id="${esc(e.id)}">Ver escala completa ${icon('ar')}</button></footer>
   </article>`;
 }
@@ -385,13 +402,18 @@ function dadosFolha(e){
   const nomes=todosNomes(),dest=S.destaque===null?(nomes.includes(S.eu)?S.eu:''):S.destaque;
   return {hoje,linhas,proxD,lp,n:lp.equipe.length,maxN,rMax:rotulos(e,maxN),dest};
 }
+function celBtn(e,l,i,conteudo,extra){
+  if(!S.podeEditar)return conteudo;
+  const quem=l.base?l.base[i]:l.equipe[i];
+  return `<button type="button" class="cel ${extra||''}" data-act="celula" data-id="${esc(e.id)}" data-d="${l.data}" data-i="${i}" aria-label="Ajustar ${esc(quem)} em ${br(l.data)}">${conteudo}</button>`;
+}
 function vPlanilha(e,D,sig){
   const sg=sig?mapaSiglas():null;
-  const usados=sig?[...new Set(D.linhas.flatMap(l=>l.equipe))].sort((a,b)=>a.localeCompare(b,'pt')):[];
+  const usados=sig?[...new Set(D.linhas.flatMap(l=>l.equipe).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt')):[];
   const body=D.linhas.map(l=>{
     const past=l.data<D.hoje,nx=l.data===D.proxD,nv=novosDe(l);
-    const cells=D.rMax.map((_,i)=>{const p=l.equipe[i];const c0=i===0?'c0':'';if(p===undefined)return `<td class="na ${c0}">—</td>`;const c=[c0,p===D.dest?'hl':'',p===S.eu?'eu':''].join(' ').trim();return `<td${c?` class="${c}"`:''}${sig?` title="${esc(p)}"`:''}>${esc(sig?sg[p]:p)}${nv.has(p)?'<i class="newdot" title="Entrou nesta data"></i>':''}</td>`}).join('');
-    const note=l.eventos.length?`<tr class="note"><td colspan="${D.maxN+1}">${icon('swap')}${br(l.data)}: ${l.eventos.map(ev=>esc(descEv(ev,e,l))).join(' · ')}</td></tr>`:'';
+    const cells=D.rMax.map((_,i)=>{const p=l.equipe[i];const c0=i===0?'c0':'';if(p===undefined)return `<td class="na ${c0}">—</td>`;const c=[c0,p===D.dest?'hl':'',p===S.eu?'eu':'',p===''?'vago':'',mudouNoDia(l,i)?'pont':''].join(' ').replace(/\s+/g,' ').trim();const txt=p===''?(sig?'—':'Vago'):esc(sig?sg[p]:p);return `<td${c?` class="${c}"`:''}${sig&&p?` title="${esc(p)}"`:''}>${celBtn(e,l,i,txt+(nv.has(p)?'<i class="newdot" title="Entrou nesta data"></i>':''))}</td>`}).join('');
+    const ns=notas(l);const note=ns.length?`<tr class="note"><td colspan="${D.maxN+1}">${icon('swap')}${br(l.data)}: ${ns.map(ev=>esc(descEv(ev,e,l))).join(' · ')}</td></tr>`:'';
     return `<tr class="lin ${past?'past':''} ${nx?'next':''}"><th scope="row" class="dc"><span class="dl">${br(l.data)}</span><span class="ds">${brC(l.data)}/${l.data.slice(2,4)}</span></th>${cells}</tr>${note}`;
   }).join('');
   return `${sig?`<div class="leg-sig" aria-label="Legenda das siglas">${usados.map(n=>`<span><b>${esc(sg[n])}</b>${esc(n)}</span>`).join('')}</div>`:''}<div class="grade-wrap" tabindex="0" role="region" aria-label="Planilha de posições da escala"><table class="grade${sig?' sig':''}"><caption>${esc(e.nome)}</caption><thead><tr><th scope="col" class="dc">DATA</th>${D.rMax.map(r=>`<th scope="col">${esc(r)}</th>`).join('')}</tr></thead><tbody>${body||`<tr><td colspan="${D.maxN+1}" class="na">Nenhum plantão no período.</td></tr>`}</tbody></table></div>`;
@@ -399,11 +421,11 @@ function vPlanilha(e,D,sig){
 function vCartoes(e,D){
   return `<div class="dcards">${D.linhas.map(l=>{
     const past=l.data<D.hoje,nx=l.data===D.proxD,nv=novosDe(l),r=rotulos(e,l.equipe.length);
-    return `<article class="dcard ${past?'past':''} ${nx?'next':''}"><div class="dcard-h">${br(l.data)}<span>${nx?'Próximo plantão':esc(DIAS[dow(l.data)])}</span></div><div class="dcard-b">${l.equipe.map((p,i)=>`<div class="${[i===0?'c0':'',p===D.dest?'hl':'',p===S.eu?'eu':''].join(' ').trim()}"><em>${esc(r[i])}</em><span>${esc(p)}${nv.has(p)?'<i class="newdot"></i>':''}</span></div>`).join('')}</div>${l.eventos.length?`<p class="dcard-n">${l.eventos.map(ev=>esc(descEv(ev,e,l))).join(' · ')}</p>`:''}</article>`;
+    return `<article class="dcard ${past?'past':''} ${nx?'next':''}"><div class="dcard-h">${br(l.data)}<span>${nx?'Próximo plantão':esc(DIAS[dow(l.data)])}</span></div><div class="dcard-b">${l.equipe.map((p,i)=>{const inner=`<em>${esc(r[i])}</em><span>${esc(nomeOuVago(p))}${nv.has(p)?'<i class="newdot"></i>':''}</span>`;return `<div class="${[i===0?'c0':'',p===D.dest?'hl':'',p===S.eu?'eu':'',p===''?'vago':'',mudouNoDia(l,i)?'pont':''].join(' ').replace(/\s+/g,' ').trim()}">${S.podeEditar?celBtn(e,l,i,inner,'cel-card'):inner}</div>`}).join('')}</div>${notas(l).length?`<p class="dcard-n">${notas(l).map(ev=>esc(descEv(ev,e,l))).join(' · ')}</p>`:''}</article>`;
   }).join('')||'<p class="muted">Nenhum plantão no período.</p>'}</div>`;
 }
 function vPessoas(e,D){
-  const ordem=[...D.lp.equipe];D.linhas.forEach(l=>l.equipe.forEach(p=>{if(!ordem.includes(p))ordem.push(p)}));
+  const ordem=[...(D.lp.base||D.lp.equipe)].filter(Boolean);D.linhas.forEach(l=>l.equipe.forEach(p=>{if(p&&!ordem.includes(p))ordem.push(p)}));
   const head=D.linhas.map(l=>`<th scope="col" class="${l.data===D.proxD?'nx':''}">${brC(l.data)}<small>${l.data.slice(0,4)}</small></th>`).join('');
   const rows=ordem.map(p=>`<tr class="${p===D.dest?'hl':''}"><th scope="row">${esc(p)}${p===S.eu?' · você':''}</th>${D.linhas.map(l=>{const i=l.equipe.indexOf(p);if(i<0)return `<td class="na">—</td>`;const r=rotulos(e,l.equipe.length);return `<td class="${[i===0?'f0':'',l.data===D.proxD?'nx':''].join(' ').trim()}">${esc(r[i])}</td>`}).join('')}</tr>`).join('');
   return `<div class="ppl-wrap" tabindex="0" role="region" aria-label="Posições por pessoa, deslize para ver mais datas"><table class="ppl"><caption class="sr">${esc(e.nome)} por plantonista</caption><thead><tr><th scope="col">${esc(e.nome)}</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
@@ -411,12 +433,13 @@ function vPessoas(e,D){
 function folha(e,unica){
   const D=dadosFolha(e);
   const conteudo=S.visao==='siglas'?vPlanilha(e,D,true):S.visao==='cartoes'?vCartoes(e,D):S.visao==='pessoas'?vPessoas(e,D):vPlanilha(e,D,false);
+  const dicaEd=S.podeEditar&&S.visao!=='pessoas'?`<span class="dica-ed">${icon('edit')}Clique no nome de qualquer dia para registrar ausência ou saída da escala</span>`:'';
   const dica=S.visao==='pessoas'?'Deslize para o lado para ver mais datas':S.visao==='planilha'?'Todos os nomes na tela · amplie com dois dedos':'';
   return `<section class="sheet" aria-label="${esc(e.nome)}">
     <div class="sheet-bar"><p>${unica?'':`<b>${esc(e.nome)}</b> · `}Toda ${esc(DIAS[dow(e.inicio)])}${dow(e.inicio)%6?'-feira':''} · ${esc(freqTxt(e.frequencia))} · ${D.n} plantonistas · próximo <b>${brC(D.proxD)}</b></p>
       ${S.podeEditar?`<div class="acts"><button class="btn pri sm" data-act="movimentar" data-id="${esc(e.id)}">${icon('swap')} Movimentar equipe</button><button class="btn ghost sm" data-act="editar-escala" data-id="${esc(e.id)}">${icon('edit')} Editar</button></div>`:''}</div>
     ${conteudo}
-    <div class="legend"><span><i class="sw"></i>Próximo plantão</span><span><i class="newdot" style="margin:0"></i>Entrou na equipe nesta data</span><span>${D.linhas.length} plantões</span>${dica?`<span class="zoom" style="display:inline-flex">${dica}</span>`:''}</div></section>`;
+    <div class="legend"><span><i class="sw"></i>Próximo plantão</span><span><i class="newdot" style="margin:0"></i>Entrou na equipe nesta data</span><span>${D.linhas.length} plantões</span><span><i class="vg-sw"></i>Ausência no dia</span>${dicaEd}${dica?`<span class="zoom" style="display:inline-flex">${dica}</span>`:''}</div></section>`;
 }
 function ajustarTabelas(){
   document.querySelectorAll('.grade-wrap').forEach(w=>{
@@ -447,7 +470,7 @@ function vEscalas(){
   const ring=`<div class="ring">${lp.equipe.map((p,i)=>`${i?`<span class="arr">${icon('cr')}</span>`:''}<span class="step">${av(p)}${esc(p)}</span>`).join('')}<span class="back">${icon('ring')} repete</span></div>`;
   const ciclo=n?`<div class="cyc"><div><b>${n}</b><span>plantões por ciclo</span></div><div><b>${Math.round(n*freq/7)}</b><span>semanas até repetir</span></div><div><b>${br(e.inicio)}</b><span>primeiro plantão</span></div></div>`:'';
   const evs=ordenarEventos(e.eventos).reverse();
-  const hist=`<section class="card"><div class="card-h"><h2>Histórico de mudanças</h2><span class="mini">${evs.length}</span></div><div class="card-b">${evs.length?`<ul class="hist">${evs.map(ev=>{const ef=proxima(e,ev.data),l=linhaEm(e,ef);const cls=ev.tipo==='entrada'?'in':ev.tipo==='saida'?'out':'sw',ic=ev.tipo==='entrada'?'entra':ev.tipo==='saida'?'sai':'swap';return `<li><span class="hi ${cls}">${icon(ic)}</span><span><span class="t1" style="white-space:normal">${esc(descEv(ev,e,l))}</span><span class="t2">A partir do plantão de ${br(ef)}</span></span>${S.podeEditar?`<button class="btn ghost sm" data-act="desfazer" data-ev="${esc(ev.id)}" aria-label="Desfazer: ${esc(descEv(ev,e,l))}">${icon('undo')}<span>Desfazer</span></button>`:''}</li>`}).join('')}</ul>`:'<p class="muted">Nenhuma entrada, saída ou substituição registrada.</p>'}</div></section>`;
+  const hist=`<section class="card"><div class="card-h"><h2>Histórico de mudanças</h2><span class="mini">${evs.length}</span></div><div class="card-b">${evs.length?`<ul class="hist">${evs.map(ev=>{const ef=proxima(e,ev.data),l=linhaEm(e,ef);const cls=ev.tipo==='entrada'?'in':ev.tipo==='saida'?'out':'sw',ic=ev.tipo==='entrada'?'entra':ev.tipo==='saida'?'sai':ev.tipo==='ausencia'?'cal':'swap';return `<li><span class="hi ${cls}">${icon(ic)}</span><span><span class="t1" style="white-space:normal">${esc(descEv(ev,e,l))}</span><span class="t2">${ev.tipo==='ausencia'?'Só no plantão de':'A partir do plantão de'} ${br(ef)}</span></span>${S.podeEditar?`<button class="btn ghost sm" data-act="desfazer" data-ev="${esc(ev.id)}" aria-label="Desfazer: ${esc(descEv(ev,e,l))}">${icon('undo')}<span>Desfazer</span></button>`:''}</li>`}).join('')}</ul>`:'<p class="muted">Nenhuma entrada, saída ou substituição registrada.</p>'}</div></section>`;
   return `${head}${bannerAviso()}${tabs}${resumoProximo(e)}${avisos.length?`<p class="banner warn">${icon('alert')}<span>${avisos.map(a=>esc(br(a.data)+': '+a.msg)).join('<br>')}</span></p>`:''}<div class="schedule-workspace">${agenda}${folha(e,true)}</div>
     <div class="below"><div class="stack"><section class="card"><div class="card-h"><h2>Ordem do rodízio</h2>${S.podeEditar&&freq>=14?`<button class="lnk" data-act="duplicar">${icon('dup')} Criar semana alternada</button>`:''}</div><div class="card-b"><p class="muted" style="font-size:13.5px;margin-bottom:10px">Posições do próximo plantão, de ${esc(rp[0]||'')} a ${esc(rp[n-1]||'')}.</p>${ring}${ciclo}</div></section>${hist}</div>
     <section class="card"><div class="card-h"><h2>Regras desta escala</h2>${S.podeEditar?'<button class="lnk" data-act="editar-escala">Alterar</button>':''}</div><div class="card-b"><ul class="rules">${textoRegras(e,n).map(([i,t])=>`<li><span class="ri">${icon(i)}</span><span>${t}</span></li>`).join('')}</ul></div></section></div>`;
@@ -501,8 +524,8 @@ function atualizarScrim(){const aberto=dlg.open||dlgc.open;scrim.hidden=!aberto;
 function mostrar(d){if(!d.open){try{d.show()}catch(e){d.setAttribute('open','')}}atualizarScrim();d.scrollTop=0}
 function ocultar(d){if(d.open){try{d.close()}catch(e){d.removeAttribute('open');d.dispatchEvent(new Event('close'))}}atualizarScrim()}
 function abrir(html){dlg.innerHTML=html;mostrar(dlg);const f=dlg.querySelector('[autofocus]')||dlg.querySelector('input,select,textarea,button:not([data-act="fechar"])');if(f){try{f.focus({preventScroll:true})}catch(e){}}}
-function fechar(){ocultar(dlg);S.form=null;S.mov=null;S.sg=null}
-dlg.addEventListener('close',()=>{S.form=null;S.mov=null;S.sg=null;atualizarScrim()});
+function fechar(){ocultar(dlg);S.form=null;S.mov=null;S.sg=null;S.cel=null}
+dlg.addEventListener('close',()=>{S.form=null;S.mov=null;S.sg=null;S.cel=null;atualizarScrim()});
 dlgc.addEventListener('close',atualizarScrim);
 scrim.addEventListener('click',()=>{if(dlgc.open)dlgc._resolver?.(false);else fechar()});
 document.addEventListener('keydown',ev=>{if(ev.key!=='Escape')return;if(dlgc.open){ev.preventDefault();dlgc._resolver?.(false)}else if(dlg.open){ev.preventDefault();fechar()}});
@@ -592,13 +615,13 @@ function abrirMov(e){const d=proxima(e,hojeStr());S.mov={id:e.id,tipo:'troca',da
 function movEsc(){return S.escalas.find(x=>x.id===S.mov.id)}
 function movEvento(){
   const m=S.mov,e=movEsc(),d=proxima(e,m.data);if(!d)return null;
-  const l=linhaEm(e,d);const eq=l?l.equipe:[];
+  const l=linhaEm(e,d);const eq=l?(l.base||l.equipe):[];
   if(m.tipo==='troca'){const ent=m.entra.trim().replace(/\s+/g,' ');if(!eq.includes(m.sai)||!ent)return null;if(eq.some(n=>n.toLowerCase()===ent.toLowerCase()))return{erro:ent+' já está nesta escala.'};return{tipo:'troca',data:d,sai:m.sai,entra:ent}}
   if(m.tipo==='entrada'){const nm=m.nome.trim().replace(/\s+/g,' ');if(!nm)return null;if(eq.some(n=>n.toLowerCase()===nm.toLowerCase()))return{erro:nm+' já está nesta escala.'};return{tipo:'entrada',data:d,nome:nm,posicao:m.posicao}}
   if(m.tipo==='saida'){if(!eq.includes(m.nome))return null;if(eq.length<2)return{erro:'A escala precisa de pelo menos uma pessoa.'};return{tipo:'saida',data:d,nome:m.nome}}
   return null;
 }
-function chips(e,eq,ref,marcar){const r=rotulos(e,eq.length);return eq.map((n,i)=>`<span class="pc ${marcar&&ref&&ref[i]!==n?'ch':''}"><span class="pos ${pc(i)}">${esc(r[i])}</span>${esc(n)}</span>`).join('')}
+function chips(e,eq,ref,marcar){const r=rotulos(e,eq.length);return eq.map((n,i)=>`<span class="pc ${marcar&&ref&&ref[i]!==n?'ch':''}"><span class="pos ${pc(i)}">${esc(r[i])}</span>${esc(nomeOuVago(n))}</span>`).join('')}
 function prevHtml(){
   const e=movEsc(),ev=movEvento(),d=proxima(e,S.mov.data);
   if(!ev||ev.erro)return `<div class="prev"><h3>Prévia</h3><div class="prev-r"><span>—</span><p class="muted" style="font-size:13.5px">${ev&&ev.erro?esc(ev.erro):'Preencha os campos para ver como a escala fica.'}</p></div></div>`;
@@ -609,7 +632,7 @@ function prevHtml(){
     <div class="prev-r"><span>${brC(d2)}<br><small class="muted">seguinte</small></span><div class="prev-c">${chips(e,dep2.equipe)}</div></div></div>`;
 }
 function renderMov(){
-  const m=S.mov,e=movEsc(),d=proxima(e,m.data),l=d?linhaEm(e,d):null,eq=l?l.equipe:[],r=rotulos(e,eq.length),r1=rotulos(e,eq.length+1);
+  const m=S.mov,e=movEsc(),d=proxima(e,m.data),l=d?linhaEm(e,d):null,eq=l?(l.base||l.equipe):[],r=rotulos(e,eq.length),r1=rotulos(e,eq.length+1);
   const sel=(id,val,ph)=>`<select class="sel" id="${id}"><option value="">${ph}</option>${eq.map((n,i)=>`<option value="${esc(n)}" ${n===val?'selected':''}>${esc(n)} (${esc(r[i])})</option>`).join('')}</select>`;
   let campos='';
   if(m.tipo==='troca')campos=`<div class="row2"><div class="fld"><label for="mv-sai">Quem sai</label>${sel('mv-sai',m.sai,'Escolha')}</div><div class="fld"><label for="mv-entra">Quem entra no lugar</label><input class="inp" id="mv-entra" value="${esc(m.entra)}" list="dl-nomes" placeholder="Nome" autocomplete="off"></div></div><p class="info">Quem entra herda <b>exatamente a posição</b> de quem saiu. O rodízio dos demais não muda.</p>`;
@@ -631,9 +654,62 @@ function aplicarMov(){
 }
 
 /* ---- saída em todas as escalas ---- */
+/* ---- ajustar um plantonista a partir de uma célula ---- */
+function abrirCelula(id,d,i){const e=S.escalas.find(x=>x.id===id);if(!e||!linhaEm(e,d))return;S.cel={id,d,i:+i,modo:'vago',nome:''};renderCel()}
+function celCtx(){
+  const c=S.cel,e=S.escalas.find(x=>x.id===c.id),l=linhaEm(e,c.d);
+  const base=l.base[c.i],atual=l.equipe[c.i],rot=rotulos(e,l.base.length)[c.i];
+  const aus=(e.eventos||[]).filter(x=>x.tipo==='ausencia'&&x.data===c.d&&x.nome===base);
+  const semAus=Object.assign({},e,{eventos:(e.eventos||[]).filter(x=>!aus.includes(x))});
+  return {c,e,l,base,atual,rot,aus,semAus};
+}
+function celEvento(){
+  const {c,l,base,semAus}=celCtx(),nm=(c.nome||'').trim().replace(/\s+/g,' '),dia=linhaEm(semAus,c.d);
+  if(c.modo==='vago')return {tipo:'ausencia',data:c.d,nome:base,cobre:''};
+  if(c.modo==='cobre'){if(!nm)return null;if(dia.equipe.some(n=>n&&n.toLowerCase()===nm.toLowerCase()))return {erro:nm+' já está neste plantão.'};return {tipo:'ausencia',data:c.d,nome:base,cobre:nm}}
+  if(c.modo==='troca'){if(!nm)return null;if(l.base.some(n=>n.toLowerCase()===nm.toLowerCase()))return {erro:nm+' já está nesta escala.'};return {tipo:'troca',data:c.d,sai:base,entra:nm}}
+  if(c.modo==='saida'){if(l.base.length<2)return {erro:'A escala precisa de pelo menos uma pessoa.'};return {tipo:'saida',data:c.d,nome:base}}
+  return null;
+}
+function celPrev(){
+  const {c,e,l,semAus}=celCtx(),ev=celEvento();
+  if(!ev||ev.erro)return `<div class="prev"><h3>Prévia</h3><div class="prev-r"><span>—</span><p class="muted" style="font-size:13px">${ev&&ev.erro?esc(ev.erro):(c.modo==='cobre'?'Escreva quem cobre este dia.':'Escreva quem entra no lugar.')}</p></div></div>`;
+  const d2=addDias(c.d,+e.frequencia||14),dep=linhaEm(semAus,c.d,ev),dep2=linhaEm(semAus,d2,ev);
+  return `<div class="prev"><h3>Prévia</h3>
+    <div class="prev-r"><span>${brC(c.d)}<br><small class="muted">antes</small></span><div class="prev-c">${chips(e,l.equipe)}</div></div>
+    <div class="prev-r"><span>${brC(c.d)}<br><small style="color:var(--accent)">depois</small></span><div class="prev-c">${chips(e,dep.equipe,l.equipe,true)}</div></div>
+    <div class="prev-r"><span>${brC(d2)}<br><small class="muted">seguinte</small></span><div class="prev-c">${chips(e,dep2.equipe)}</div></div></div>`;
+}
+function renderCel(){
+  const {c,e,base,atual,rot,aus}=celCtx(),dd=brC(c.d),ev=celEvento();
+  const op=(v,t,sub)=>`<label class="radio"><input type="radio" name="cel-modo" value="${v}" ${c.modo===v?'checked':''}><span><b>${t}</b><span>${sub}</span></span></label>`;
+  const precisaNome=c.modo==='cobre'||c.modo==='troca';
+  abrir(`<form class="dlg-in" id="f-cel" novalidate>${cab('Ajustar plantonista',e.nome+' · '+extenso(c.d)+' de '+c.d.slice(0,4))}<div class="dlg-b">
+    <div class="cel-quem">${av(base,'lg')}<div><b>${esc(base)}</b><span>${esc(rot)} no plantão de ${br(c.d)}</span></div></div>
+    ${aus.length?`<div class="warnbox cel-aus"><span>Neste plantão ${esc(base)} já está fora${aus[0].cobre?' e '+esc(aus[0].cobre)+' cobre':' e a posição está vaga'}.</span><button type="button" class="btn ghost sm" data-act="cel-desfazer">${icon('undo')} ${esc(base)} volta neste dia</button></div>`:''}
+    <fieldset class="fld"><legend>${icon('cal')} Ausência: não foi só neste plantão (${dd})</legend><div class="radios">
+      ${op('vago','Ausente, posição fica vaga','O rodízio não muda: no plantão seguinte '+esc(base)+' volta à posição normal.')}
+      ${op('cobre','Ausente, outra pessoa cobriu','Quem cobre fica em '+esc(rot)+' só em '+dd+'.')}
+    </div></fieldset>
+    <fieldset class="fld"><legend>${icon('sai')} Saiu da escala a partir de ${dd}</legend><div class="radios">
+      ${op('troca','Saiu e outra pessoa entra no lugar','Quem entra herda o lugar de '+esc(base)+' a partir de '+dd+' e segue o rodízio.')}
+      ${op('saida','Saiu sem substituto','A partir de '+dd+', quem estava abaixo sobe uma posição e a escala fica com uma posição a menos.')}
+    </div></fieldset>
+    ${precisaNome?`<div class="fld"><label for="cel-nome">${c.modo==='cobre'?'Quem cobre este dia':'Quem entra no lugar'}</label><input class="inp" id="cel-nome" value="${esc(c.nome)}" list="dl-nomes" placeholder="Nome" autocomplete="off"></div>`:''}
+    <div id="cel-prev">${celPrev()}</div></div>
+    <div class="dlg-f"><span class="sp"></span><button type="button" class="btn ghost" data-act="fechar">Cancelar</button><button type="submit" class="btn pri" id="cel-ok" ${!ev||ev.erro?'disabled':''}>Aplicar</button></div>${dl()}</form>`);
+}
+function refreshCel(){$('#cel-prev').innerHTML=celPrev();const ev=celEvento();$('#cel-ok').disabled=!ev||!!ev.erro}
+function aplicarCel(){
+  const ev=celEvento();if(!ev||ev.erro)return;const {c,semAus}=celCtx();
+  fechar();salvarEscala(Object.assign({},semAus,{eventos:[...semAus.eventos,Object.assign({id:uid('ev-'),criado:Date.now()},ev)]}));
+  toast(ev.tipo==='ausencia'?'Ajustado só no plantão de '+br(c.d)+'.':'Escala atualizada a partir de '+br(c.d)+'.');
+}
+function desfazerAusencia(){const {c,base,semAus}=celCtx();fechar();salvarEscala(semAus);toast(base+' volta ao plantão de '+br(c.d)+'.')}
+
 function afetadas(){
   const g=S.sg;if(!validaData(g.data))return [];
-  return escalasOrd().map(e=>{const d=proxima(e,g.data),l=d&&linhaEm(e,d);if(!l)return null;const i=l.equipe.indexOf(g.nome);return i<0?null:{e,d,rot:rotulos(e,l.equipe.length)[i],eq:l.equipe}}).filter(Boolean);
+  return escalasOrd().map(e=>{const d=proxima(e,g.data),l=d&&linhaEm(e,d);if(!l)return null;const eq=l.base||l.equipe,i=eq.indexOf(g.nome);return i<0?null:{e,d,rot:rotulos(e,eq.length)[i],eq}}).filter(Boolean);
 }
 function abrirSaidaGlobal(nome){S.sg={nome,data:hojeStr(),sub:''};renderSg()}
 function sgHtml(){
@@ -686,8 +762,8 @@ function textoEscala(modo){
   const e=S.escalas.find(x=>x.id===S.escalaSel);if(!e)return '';
   const hoje=hojeStr(),ate=S.faixa==='24'?addDias(hoje,730):addDias(hoje,365),de=S.faixa==='tudo'?e.inicio:hoje;
   const ls=gerar(e,ate).filter(l=>l.data>=de),maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
-  if(modo==='tsv')return ['Data\t'+rM.join('\t'),...ls.map(l=>br(l.data)+'\t'+rM.map((_,i)=>l.equipe[i]||'').join('\t'))].join('\n');
-  return '*'+e.nome.toUpperCase()+'*\n'+ls.map(l=>{const r=rotulos(e,l.equipe.length);return br(l.data)+' | '+l.equipe.map((n,i)=>r[i]+': '+n).join(' · ')}).join('\n');
+  if(modo==='tsv')return ['Data\t'+rM.join('\t'),...ls.map(l=>br(l.data)+'\t'+rM.map((_,i)=>l.equipe[i]===''?'Vago':(l.equipe[i]||'')).join('\t'))].join('\n');
+  return '*'+e.nome.toUpperCase()+'*\n'+ls.map(l=>{const r=rotulos(e,l.equipe.length);return br(l.data)+' | '+l.equipe.map((n,i)=>r[i]+': '+nomeOuVago(n)).join(' · ')}).join('\n');
 }
 
 /* ================= eventos ================= */
@@ -715,6 +791,8 @@ document.addEventListener('click',async ev=>{
     case 'eu-set':S.eu=b.dataset.n;lsSet(LS_EU,S.eu);S.destaque=null;render();toast('Seus plantões aparecem no painel.');break;
     case 'eu-limpar':case 'eu-trocar':S.eu='';lsSet(LS_EU,'');S.destaque=null;render();break;
     case 'saida-global':abrirSaidaGlobal(b.dataset.n);break;
+    case 'celula':abrirCelula(b.dataset.id,b.dataset.d,b.dataset.i);break;
+    case 'cel-desfazer':desfazerAusencia();break;
     case 'ajustes':abrirAjustes();break;
     case 'fechar':fechar();break;
     case 'fe-add':addTeam();break;
@@ -747,6 +825,9 @@ dlg.addEventListener('input',ev=>{
     else if(t.id==='mv-nome'){m.nome=t.value;refreshMov()}
     else if(t.id==='mv-saida'){m.nome=t.value;refreshMov()}
     else if(t.id==='mv-pos'){m.posicao=t.value;refreshMov()}
+  }else if(S.cel){
+    if(t.name==='cel-modo'){S.cel.modo=t.value;renderCel();dlg.querySelector('input[name="cel-modo"]:checked')?.focus()}
+    else if(t.id==='cel-nome'){S.cel.nome=t.value;refreshCel()}
   }else if(S.sg){
     if(t.id==='sg-data'&&validaData(t.value)){S.sg.data=t.value;refreshSg()}
     else if(t.id==='sg-sub'){S.sg.sub=t.value;refreshSg()}
@@ -759,6 +840,7 @@ dlg.addEventListener('submit',ev=>{
   if(id==='f-escala')salvarForm();
   else if(id==='f-mov')aplicarMov();
   else if(id==='f-sg')aplicarSg();
+  else if(id==='f-cel')aplicarCel();
   else if(id==='f-aj'){const eu=$('#aj-eu').value;S.eu=eu;lsSet(LS_EU,eu);S.destaque=null;const sv=$('#aj-svc').value.trim();const mudou=S.podeEditar&&sv!==(S.config.servico||'');fechar();if(mudou)salvarConfig(Object.assign({},S.config,{servico:sv}));else render();toast('Ajustes salvos.')}
 });
 
