@@ -595,13 +595,16 @@ function desenharBordas(){
   document.querySelectorAll('.grade-wrap').forEach(w=>{
     w.querySelectorAll('.col-borda').forEach(x=>x.remove());
     const t=w.querySelector('.grade');if(!t)return;
-    const ths=t.querySelectorAll('thead th.bd');if(!ths.length)return;
+    const cab=[...t.querySelectorAll('thead tr:last-child th')];if(!cab.some(th=>th.classList.contains('bd')))return;
+    /* Posições com borda lado a lado viram um contorno só, sem divisória entre elas. */
+    const grupos=[];let g=null;
+    cab.forEach(th=>{if(th.classList.contains('bd')){if(!g){g=[];grupos.push(g)}g.push(th)}else g=null});
     const wr=w.getBoundingClientRect(),tb=t.getBoundingClientRect();
-    ths.forEach(th=>{
-      const r=th.getBoundingClientRect(),d=document.createElement('div');
+    grupos.forEach(gr=>{
+      const r1=gr[0].getBoundingClientRect(),r2=gr[gr.length-1].getBoundingClientRect(),d=document.createElement('div');
       d.className='col-borda';d.setAttribute('aria-hidden','true');
-      d.style.left=(r.left-wr.left+w.scrollLeft)+'px';d.style.top=(r.top-wr.top+w.scrollTop)+'px';
-      d.style.width=r.width+'px';d.style.height=(tb.bottom-r.top)+'px';
+      d.style.left=(r1.left-wr.left+w.scrollLeft)+'px';d.style.top=(r1.top-wr.top+w.scrollTop)+'px';
+      d.style.width=(r2.right-r1.left)+'px';d.style.height=(tb.bottom-r1.top)+'px';
       w.appendChild(d);
     });
   });
