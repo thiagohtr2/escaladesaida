@@ -353,7 +353,7 @@ function destMapa(e){
   return m;
 }
 function destLab(e,lab){return destMapa(e)[lab]||''}
-function destCls(e,lab){const d=destLab(e,lab);return d==='faixa'?'fx':d==='borda'?'bd':''}
+function destCls(e,lab){const d=destLab(e,lab);return d==='faixa'?'fx':d==='borda'?'bd':d==='ambos'?'fx bd':''}
 const cor=e=>CORES[e.cor]||CORES.verde;
 const LS_DADOS='rodizio-plantoes-local-v1',LS_EU='rodizio-plantoes-eu';
 const S={faixaTemp:{},limpa:false,visao:(['planilha','siglas','cartoes','pessoas'].includes(lsGet('rodizio-visao'))?lsGet('rodizio-visao'):'planilha'),modo:'carregando',aviso:'',podeEditar:false,escalas:[],config:{},view:'escalas',dia:hojeStr(),escalaSel:null,faixa:'proximos',destaque:null,busca:'',pessoaSel:null,eu:lsGet(LS_EU)||''};
@@ -459,7 +459,7 @@ async function decodificar(code){
 /* ---- link compacto (v2): só o essencial da escala, em texto curto, comprimido. Formato: #nome-da-escala.CODIGO ---- */
 function ehLinkPublico(){return location.hash.startsWith('#ver=')||/^#[a-z0-9-]*\.[A-Za-z0-9_-]{8,}$/.test(location.hash)}
 function slugNome(t){return String(t||'escala').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32)||'escala'}
-const limpo=t=>String(t==null?'':t).replace(/[|;,\n\r^_>~]/g,' ').replace(/\s+/g,' ').trim();
+const limpo=t=>String(t==null?'':t).replace(/[|;,\n\r^_>~*]/g,' ').replace(/\s+/g,' ').trim();
 const TIPOS=['troca','saida','entrada','ausencia','fixar','soltar'];
 function compactar(e){
   const f=+e.frequencia||14,k=d=>Math.max(0,Math.ceil(diff(e.inicio,d)/f));
@@ -470,14 +470,14 @@ function compactar(e){
   return ['2',Math.round(Date.now()/6e4).toString(36),limpo(S.config.servico),limpo(e.nome),e.inicio.replace(/-/g,'').slice(2),f===14?'':f,
     (e.rotulos||[]).map(limpo).join('|'),(e.equipe||[]).map(limpo).join('|'),(e.prefixo||'P')==='P'?'':limpo(e.prefixo),e.sentido==='sobe'?'1':'',
     (e.entradaPadrao||'ultima')==='ultima'?'':limpo(e.entradaPadrao),e.cor||'',
-    Object.entries(dm).filter(([,v])=>v).map(([l,v])=>limpo(l)+(v==='faixa'?'^':'_')).join('|'),
+    Object.entries(dm).filter(([,v])=>v).map(([l,v])=>limpo(l)+(v==='faixa'?'^':v==='ambos'?'*':'_')).join('|'),
     fx.map(x=>limpo(x.rot)+'>'+(x.ancora==='fim'?'':limpo(x.ancora))).join('|'),
     (e.periodo||'hoje')==='hoje'?'':e.periodo,limpo(e.lideranca),ev].join('\n').replace(/\n+$/,'');
 }
 function descompactar(txt){
   const c=txt.split('\n');if(c[0]!=='2')throw new Error('link');
   const g=c[1]?parseInt(c[1],36)*6e4:0,ini='20'+c[4].slice(0,2)+'-'+c[4].slice(2,4)+'-'+c[4].slice(4,6),f=+c[5]||14,lista=x=>x?x.split('|'):[];
-  const dest={};lista(c[12]).forEach(x=>{dest[x.slice(0,-1)]=x.endsWith('^')?'faixa':'borda'});
+  const dest={};lista(c[12]).forEach(x=>{dest[x.slice(0,-1)]=x.endsWith('^')?'faixa':x.endsWith('*')?'ambos':'borda'});
   const fixas=lista(c[13]).map(x=>{const i=x.lastIndexOf('>');return {rot:x.slice(0,i),ancora:x.slice(i+1)||'fim'}});
   const eventos=(c[16]?c[16].split(';'):[]).map((x,i)=>{const [t,kk,a,b]=x.split(',');const tipo=TIPOS[+t],data=addDias(ini,parseInt(kk,36)*f),o={id:'p'+i,tipo,data,criado:i};
     if(tipo==='troca'){o.sai=a;o.entra=b}else{o.nome=a;if(tipo==='ausencia')o.cobre=b||'';if(tipo==='entrada'&&b)o.posicao=b;if(tipo==='fixar')o.rot=b}return o});
@@ -597,7 +597,7 @@ function resumoProximo(e){
   const hoje=hojeStr(),d=proxima(e,hoje),l=linhaEm(e,d);if(!l)return '';
   const r=rotulos(e,l.equipe.length),dias=diff(hoje,d),nv=novosDe(l);
   const quando=dias===0?'Hoje':dias===1?'Amanhã':'Em '+dias+' dias';
-  const bd=r.map(x=>destCls(e,x)==='bd');
+  const bd=r.map(x=>destCls(e,x).includes('bd'));
   const cels=l.equipe.map((n,i)=>{const c=[destCls(e,r[i]),bd[i]&&!bd[i-1]?'bd-l':'',bd[i]&&!bd[i+1]?'bd-r':'',n===''?'vago':'',mudouNoDia(l,i)?'pont':'',n&&n===S.eu?'eu':''].filter(Boolean).join(' ');
     return `<li${c?` class="${c}"`:''}><span class="prox-pos">${esc(r[i])}${(l.fixos||{})[l.base[i]]?' · fixo':''}</span><b>${esc(nomeOuVago(n))}${nv.has(n)?'<i class="newdot" title="Entrou nesta data"></i>':''}</b></li>`}).join('');
   const ns=notas(l);
@@ -864,7 +864,7 @@ function renderForm(){
       <ol class="team-ed" id="fe-team">${teamHtml()}</ol>
       <div class="add-row"><label class="sr" for="fe-novo">Nome do plantonista</label><input class="inp" id="fe-novo" placeholder="Nome do plantonista" list="dl-nomes" autocomplete="off"><button type="button" class="btn ghost" data-act="fe-add">${icon('plus')} Adicionar</button></div></fieldset>
     <fieldset class="fld"><legend>Posições fixas</legend><small>Uma posição fixa não muda de lugar quando a escala cresce ou diminui: fica sempre no final ou sempre logo depois de uma posição escolhida (ex.: CHD 1 sempre depois de P3).</small><div class="fix-ed" id="fe-fixas">${fixasHtml()}</div></fieldset>
-    <fieldset class="fld"><legend>Destaque das posições</legend><small>Faixa pinta a coluna inteira da posição; borda só contorna a coluna. As duas usam a cor da escala.</small><div class="dest-ed" id="fe-dest">${destHtml()}</div></fieldset>
+    <fieldset class="fld"><legend>Destaque das posições</legend><small>Faixa pinta a coluna inteira da posição; borda contorna a coluna; faixa + borda faz os dois. Tudo usa a cor da escala.</small><div class="dest-ed" id="fe-dest">${destHtml()}</div></fieldset>
     <div class="fld"><label for="fe-pre">Prefixo das posições que surgirem depois</label><input class="inp" id="fe-pre" data-f="prefixo" value="${esc(f.prefixo)}" maxlength="8" style="max-width:160px"><small>Quando a equipe crescer, a nova posição continua a numeração: com P, depois de P3 vem P4. Você pode renomear aqui a qualquer momento.</small></div>
     <fieldset class="fld"><legend>Rodízio</legend><div class="radios">
       <label class="radio"><input type="radio" name="sentido" value="desce" ${f.sentido!=='sobe'?'checked':''}><span><b>Todos descem uma posição</b><span>A última posição volta para a primeira. É o padrão da tabela original.</span></span></label>
@@ -889,7 +889,7 @@ function fixasHtml(){
 }
 function destHtml(){
   const f=S.form,n=Math.max(f.equipe.length,1),r=rotulos(formEsc(),n);
-  const ops=[['','Nenhum'],['faixa','Faixa'],['borda','Borda']];
+  const ops=[['','Nenhum'],['faixa','Faixa'],['borda','Borda'],['ambos','Faixa + borda']];
   return r.map((lab,i)=>`<div class="dest-row"><span class="dest-lab">${esc(lab)}</span><div class="seg" role="group" aria-label="Destaque de ${esc(lab)}">${ops.map(([v,t])=>`<button type="button" data-act="fe-dest" data-i="${i}" data-v="${v}" aria-pressed="${(f.destaques[i]||'')===v}">${t}</button>`).join('')}</div></div>`).join('');
 }
 function refreshForm(){const fd=$('#fe-dest');if(fd)fd.innerHTML=destHtml();const ff=$('#fe-fixas');if(ff)ff.innerHTML=fixasHtml();const t=$('#fe-team');if(t)t.innerHTML=teamHtml();const s=$('#fe-entrada');if(s)s.innerHTML=entradaOpts();const d=$('#fe-dow');if(d)d.textContent=dowTxt()}
