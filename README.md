@@ -21,3 +21,9 @@ Sistema de escalas de plantão com rodízio automático das posições (Plus, Se
 Publicado como artifact no Claude, o sistema usa o banco de dados compartilhado do artifact: todos que abrem o link veem as mesmas escalas.
 
 Aberto fora do Claude (por exemplo, pelo GitHub Pages), ele funciona em **modo local**: as escalas ficam salvas só no navegador de quem está usando. Para compartilhar os dados fora do Claude, é preciso ligar o sistema a um banco externo (como o Supabase).
+
+## Contas e link fixo (Netlify)
+
+No site publicado no Netlify, cada pessoa entra com e-mail e senha e tem as próprias escalas, salvas na nuvem (Netlify Identity + Netlify Blobs, sem banco externo). O link público de cada escala é curto e fixo (`/e/nome-da-escala-xxxx`) e mostra sempre a versão mais nova.
+
+Para ligar: no painel do Netlify, **Project configuration → Identity → Enable Identity**. Em *Registration*, escolha se qualquer pessoa pode criar conta (*Open*) ou só convidados (*Invite only*). Sem o Identity ligado, o site funciona no modo local (dados só no navegador).
