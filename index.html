@@ -55,6 +55,16 @@ button.cel-data{text-align:left;color:inherit}button.cel-data:hover{color:var(--
 .sheet .ppl thead th.nx{background:var(--ac-m);color:var(--ac-d)}
 .next-overview .next-intro{background:var(--ac-s);border-right-color:var(--ac-m);border-bottom-color:var(--ac-m)}.next-overview .next-intro h2{color:var(--ac-d)}.next-overview .next-intro .eyebrow{color:var(--ac)}.next-overview .next-intro>p,.next-overview .next-intro>span{color:color-mix(in srgb,var(--ac) 55%,#555)}
 .dest-ed{display:grid;gap:8px;margin-top:4px}.dest-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.dest-lab{font-weight:650;font-size:13px;min-width:70px}.dest-row .seg button{min-width:72px}
+body.publico .top,body.publico .workspace-top,body.publico .bnav,body.publico .skip{display:none!important}
+body.publico main{margin:0 auto!important;max-width:1280px;padding:28px 24px 60px!important}
+body.publico .next-team-top .lnk{display:none}
+.pub-head{--ac:var(--accent);margin-bottom:20px;padding:22px 24px;background:#fff;border:1px solid var(--line);border-top:4px solid var(--ac);border-radius:18px;box-shadow:var(--shadow)}
+.pub-brand{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.pub-brand .mark{width:30px;height:30px;border-radius:9px;background:var(--ac);color:#fff;display:grid;place-items:center}.pub-brand .mark .ic{width:18px;height:18px;stroke-width:2}
+.pub-tag{margin-left:auto;display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);font-size:11px;color:var(--ink-3)}.pub-tag .ic{width:13px;height:13px}
+.pub-head h1{font-size:30px;letter-spacing:-.045em;margin-bottom:6px}.pub-head p{font-size:12px;color:var(--ink-2)}.pub-head .pub-meta{color:var(--ink-3);margin-top:4px;font-size:11px}
+@media(max-width:760px){body.publico main{padding:16px 14px 40px!important}.pub-head{padding:18px;border-radius:14px}.pub-head h1{font-size:23px}.pub-tag{margin-left:0}}
+#pub-url{font-size:12px;font-family:ui-monospace,Menlo,monospace}a.btn{text-decoration:none}
 dialog[open]{display:flex;flex-direction:column;position:fixed;top:50%;left:50%;right:auto;bottom:auto;margin:0;height:auto;transform:translate(-50%,-50%);z-index:1001}#dlgc[open]{z-index:1003}#scrim{position:fixed;inset:0;z-index:1000;background:#17244269;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}#scrim[hidden]{display:none}body.modal-aberto{overflow:hidden}dialog::backdrop{background:#17244269;backdrop-filter:blur(3px)}body:has(dialog[open]){overflow:hidden}.dlg-in{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}.dlg-h,.dlg-f{flex:none}.dlg-b{flex:0 1 auto}.dlg-h{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;padding:25px 26px 20px;border-bottom:1px solid var(--line)}.dlg-h h2{font-size:22px;font-weight:650;letter-spacing:-.04em}.dlg-h p{font-size:11px;color:var(--ink-3);margin-top:7px}.dlg-b{padding:24px 26px;display:grid;gap:22px;overflow:auto;min-height:0}.dlg-f{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:17px 26px;border-top:1px solid var(--line);background:#fafbfe;border-radius:0 0 20px 20px}.dlg-f .sp{flex:1}.fld{display:grid;gap:8px;border:0;margin:0;padding:0;min-width:0}.fld>label,.fld>legend{font-size:12px;font-weight:600;padding:0;margin-bottom:1px}.fld small{font-size:10px;color:var(--ink-3);line-height:1.7}.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.team-ed{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:7px}.team-ed li{display:grid;grid-template-columns:80px minmax(0,1fr) 36px 36px 36px;gap:5px;align-items:center}.team-ed li.team-hd{font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-weight:600;padding-bottom:3px}.team-ed li.team-hd span:last-child{grid-column:2/-1}.team-ed .posn{background:var(--pb);color:var(--pi);font-weight:650;text-align:center;border-color:transparent;padding:0 4px;font-size:11px}.team-ed .inp{height:39px;font-size:12px;padding-left:8px;padding-right:8px}.team-ed .ib{width:36px;height:36px;border-radius:8px}.team-ed .ib .ic{width:16px;height:16px}.add-row{display:flex;gap:7px;margin-top:8px}.add-row .inp{flex:1}.radios{display:grid;gap:10px}.radio{display:flex;align-items:flex-start;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;font-size:12px;cursor:pointer}.radio:has(input:checked){background:var(--accent-soft);border-color:#cbd2fc}.radio input{margin-top:3px;accent-color:var(--accent)}.radio b{display:block;font-weight:600;margin-bottom:4px}.radio span{color:var(--ink-2)}.radio span span{font-size:10px}.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.types label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:14px 5px;font-size:11px;font-weight:600;cursor:pointer}.types label:has(input:checked){border-color:#bdc7ff;background:var(--accent-soft);color:var(--accent)}.types input,.swatches input{position:absolute;opacity:0;pointer-events:none}.types label:has(input:focus-visible),.swatches label:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:3px}.swatches{display:flex;gap:13px;flex-wrap:wrap;padding:5px}.swatches label{width:33px;height:33px;border-radius:11px;display:grid;place-items:center;background:var(--c);cursor:pointer}.swatches label:has(input:checked){outline:2px solid var(--c);outline-offset:3px}.prev{border:1px solid var(--line);border-radius:12px;overflow:hidden}.prev h3{padding:12px 15px;background:var(--surface-2);font:650 10px var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}.prev-r{display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px;padding:14px;border-top:1px solid var(--line);align-items:start}.prev-r>span{font-size:10px;font-weight:650;color:var(--ink-2);padding-top:3px}.prev-c{display:flex;flex-wrap:wrap;gap:7px}.pc{display:inline-flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border-radius:6px;background:var(--surface-2);font-size:11px;font-weight:550}.pc .pos{min-width:0;font-size:9px;padding:3px 5px}.pc.ch{outline:1px solid #d3af57;background:var(--warn-soft)}.pc.gone{text-decoration:line-through;opacity:.6}.info{padding:13px 15px;background:var(--surface-2);border-radius:10px;font-size:11px;color:var(--ink-2);line-height:1.8}.info b{color:var(--ink);font-weight:600}.warnbox{font-size:11px;line-height:1.8;background:var(--warn-soft);color:var(--warn);padding:13px 15px;border-radius:10px}.err{font-size:11px;color:var(--danger);min-height:0}.err:empty{display:none}.copy-ta{width:100%;min-height:260px;border:1px solid var(--line);border-radius:10px;padding:12px;font:12px/1.7 ui-monospace,monospace;background:var(--surface-2)}.aff{list-style:none;margin:0;padding:0;display:grid;gap:8px}.aff li{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;background:var(--surface-2);border-radius:9px;padding:12px}.aff .mini{white-space:normal;overflow-wrap:anywhere;text-align:right}.empty-all{max-width:470px;min-height:60vh;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px}.empty-all h1{font-size:28px}.empty-all p{font-size:13px;color:var(--ink-2);line-height:1.8}.loading{display:grid;gap:16px;max-width:800px}.sk{height:120px;border-radius:16px;background:linear-gradient(90deg,#edf0f6,#fff,#edf0f6);background-size:200% 100%;animation:sh 1.5s linear infinite}.sk.short{height:38px;width:50%}@keyframes sh{to{background-position:-200% 0}}#toast{position:fixed;bottom:28px;left:calc(50% + 112px);transform:translate(-50%,15px);opacity:0;z-index:100;max-width:calc(100% - 32px);padding:13px 20px;border-radius:10px;background:var(--ink);color:#fff;font-size:12px;font-weight:550;box-shadow:0 6px 24px #18223820;transition:opacity .18s,transform .18s;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}#toast.erro{background:var(--danger)}
 /* Tablet */
 @media(min-width:1700px){main{margin-right:auto;margin-left:max(224px,calc((100vw - 1416px)/2));max-width:1416px}.workspace-top{padding-left:max(42px,calc((100vw - 1416px)/2 - 182px))}}
@@ -302,6 +312,7 @@ function iniciarLocal(){
   S.escalas=d.escalas;S.config=d.config||{};S.modo='local';S.podeEditar=true;render();
 }
 async function iniciar(){
+  if(location.hash.startsWith('#ver='))return iniciarPublico();
   S.view=viewHash();render();
   let c=window.claude;
   // Site próprio começa na hora; dentro do Claude (página em moldura) espera o runtime dos dados compartilhados.
@@ -326,7 +337,55 @@ async function iniciar(){
 const VIEWS={escalas:'Escalas',painel:'Hoje',plantonistas:'Plantonistas'};
 function viewHash(){const h=location.hash.slice(1);return VIEWS[h]?h:'escalas'}
 function irPara(v){if(location.hash!=='#'+v)location.hash=v;else{S.view=v;render()}}
-window.addEventListener('hashchange',()=>{S.view=viewHash();render();window.scrollTo(0,0)});
+window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#ver=')){iniciarPublico();return}if(S.publico||S.publicoErro)return;S.view=viewHash();render();window.scrollTo(0,0)});
+
+/* ================= link público ================= */
+/* O link leva a própria escala dentro dele (comprimida), então abre em qualquer navegador, sem login e sem banco de dados. */
+const SITE_PUBLICO='https://escaladesaida.netlify.app/';
+function basePublica(){let moldura=false;try{moldura=window.self!==window.top}catch(e){moldura=true}if(moldura||!/^https?:/.test(location.protocol))return SITE_PUBLICO;return location.href.split('#')[0]}
+function b64url(bytes){let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function deB64url(t){let b=t.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';const bin=atob(b);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u}
+async function codificar(obj){
+  let bytes=new TextEncoder().encode(JSON.stringify(obj));
+  if(typeof CompressionStream==='function'){try{const st=new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));return 'z'+b64url(new Uint8Array(await new Response(st).arrayBuffer()))}catch(e){}}
+  return 'j'+b64url(bytes);
+}
+async function decodificar(code){
+  let bytes=deB64url(code.slice(1));
+  if(code[0]==='z'){if(typeof DecompressionStream!=='function')throw new Error('Este navegador é antigo demais para abrir o link. Atualize o navegador e tente de novo.');const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));bytes=new Uint8Array(await new Response(st).arrayBuffer())}
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','eventos'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
+async function iniciarPublico(){
+  S.publico=null;S.publicoErro=null;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';
+  try{
+    const d=await decodificar(decodeURIComponent(location.hash.slice(5)));
+    if(!d||!d.e||!validaData(d.e.inicio))throw new Error('O link está incompleto. Peça um link novo para quem cuida da escala.');
+    S.publico={g:d.g,servico:d.s||''};S.escalas=[d.e];S.escalaSel=d.e.id;S.config={servico:d.s||''};
+  }catch(err){S.publicoErro=(err&&err.message&&/navegador|link/.test(err.message))?err.message:'O link está incompleto ou foi copiado pela metade. Peça um link novo para quem cuida da escala.'}
+  render();window.scrollTo(0,0);
+}
+function dataHora(t){try{return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(t))}catch(e){return ''}}
+function vPublico(){
+  if(S.publicoErro)return `<section class="empty-all">${icon('alert','big')}<h1>Não foi possível abrir esta escala</h1><p>${esc(S.publicoErro)}</p></section>`;
+  const e=S.escalas[0],P=S.publico,nomes=todosNomes(),dest=S.destaque===null?(nomes.includes(S.eu)?S.eu:''):S.destaque;
+  const VIS=[['planilha','escalas','Planilha'],['siglas','layers','Siglas'],['cartoes','painel','Cartões'],['pessoas','plantonistas','Por pessoa']];
+  const vis=`<div class="vis-bar"><span>Visualizar</span><div class="seg" role="group" aria-label="Visualização">${VIS.map(([v,i,t])=>`<button data-act="visao" data-v="${v}" aria-pressed="${S.visao===v}">${icon(i)}${t}</button>`).join('')}</div></div>`;
+  const tool=`<div class="sheet-tool box"><div class="seg" role="group" aria-label="Período">${[['proximos','A partir de hoje'],['24','24 meses'],['tudo','Desde o início']].map(([v,t])=>`<button data-act="faixa" data-v="${v}" aria-pressed="${S.faixa===v}">${t}</button>`).join('')}</div>
+    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button></div></div>`;
+  return `<header class="pub-head" style="--ac:${cor(e)}"><div class="pub-brand"><span class="mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.6 4.2v3.9h-3.9"/></svg></span><span>${esc(P.servico||'Rodízio de Plantões')}</span><span class="pub-tag">${icon('me')} Somente visualização</span></div>
+    <h1>${esc(e.nome)}</h1><p>Toda ${esc(DIAS[dow(e.inicio)])}${dow(e.inicio)%6?'-feira':''} · ${esc(freqTxt(e.frequencia))}</p>${P.g?`<p class="pub-meta">Versão publicada em ${esc(dataHora(P.g))}</p>`:''}</header>
+    ${resumoProximo(e)}<div class="schedule-workspace" style="--ac:${cor(e)}"><div class="workspace-heading"><div><h2>Escala completa</h2><p>Escolha como prefere ver.</p></div>${vis}</div>${tool}${folha(e,true)}</div>`;
+}
+async function abrirLinkPublico(e){
+  abrir(`<div class="dlg-in">${cab('Link público',e.nome)}<div class="dlg-b"><p class="muted">Gerando o link…</p></div></div>`);
+  let url;try{url=basePublica()+'#ver='+(await codificar({v:1,g:Date.now(),s:S.config.servico||'',e:escalaParaLink(e)}))}catch(err){abrir(`<div class="dlg-in">${cab('Link público',e.nome)}<div class="dlg-b"><p class="warnbox">Não foi possível gerar o link neste navegador. Tente pelo Chrome ou Safari atualizados.</p></div></div>`);return}
+  abrir(`<div class="dlg-in">${cab('Link público',e.nome)}<div class="dlg-b">
+    <p>Quem abrir este link vê a escala em todas as visualizações (Planilha, Siglas, Cartões e Por pessoa), sem poder editar e sem precisar de login.</p>
+    <div class="fld"><label for="pub-url">Link</label><input class="inp" id="pub-url" readonly value="${esc(url)}"></div>
+    <p class="warnbox">O link mostra a escala como ela está agora. Depois de fazer mudanças, gere e envie um link novo.</p>
+  </div><div class="dlg-f"><a class="btn ghost" href="${esc(url)}" target="_blank" rel="noopener">${icon('ar')} Abrir</a><span class="sp"></span><button type="button" class="btn ghost" data-act="fechar">Fechar</button><button type="button" class="btn pri" data-act="copiar-link">${icon('copy')} Copiar link</button></div></div>`);
+}
 
 /* ================= componentes ================= */
 function hue(n){let h=7;for(const c of String(n))h=(h*31+c.charCodeAt(0))%360;return h}
@@ -471,7 +530,7 @@ function folha(e,unica){
   const dica=S.visao==='pessoas'?'Deslize para o lado para ver mais datas':S.visao==='planilha'?'Todos os nomes na tela · amplie com dois dedos':'';
   return `<section class="sheet" style="--ac:${cor(e)}" aria-label="${esc(e.nome)}">
     <div class="sheet-bar"><p>${unica?'':`<b>${esc(e.nome)}</b> · `}Toda ${esc(DIAS[dow(e.inicio)])}${dow(e.inicio)%6?'-feira':''} · ${esc(freqTxt(e.frequencia))} · ${D.n} plantonistas · próximo <b>${brC(D.proxD)}</b></p>
-      ${S.podeEditar&&!S.limpa?`<div class="acts"><button class="btn pri sm" data-act="movimentar" data-id="${esc(e.id)}">${icon('swap')} Movimentar equipe</button><button class="btn ghost sm" data-act="incluir" data-id="${esc(e.id)}">${icon('entra')} Incluir plantonista</button><button class="btn ghost sm" data-act="editar-escala" data-id="${esc(e.id)}">${icon('edit')} Editar</button></div>`:''}</div>
+      ${S.podeEditar&&!S.limpa?`<div class="acts"><button class="btn pri sm" data-act="movimentar" data-id="${esc(e.id)}">${icon('swap')} Movimentar equipe</button><button class="btn ghost sm" data-act="incluir" data-id="${esc(e.id)}">${icon('entra')} Incluir plantonista</button><button class="btn ghost sm" data-act="editar-escala" data-id="${esc(e.id)}">${icon('edit')} Editar</button><button class="btn ghost sm" data-act="link-publico" data-id="${esc(e.id)}">${icon('ar')} Link público</button></div>`:''}</div>
     ${conteudo}
     ${S.limpa?`<div class="legend"><span><i class="sw"></i>Próximo plantão</span><span>${D.linhas.length} plantões a partir de hoje</span></div></section>`:`<div class="legend"><span><i class="sw"></i>Próximo plantão</span><span><i class="newdot" style="margin:0"></i>Entrou na equipe nesta data</span><span>${D.linhas.length} plantões</span><span><i class="vg-sw"></i>Ausência no dia</span>${dicaEd}${dica?`<span class="zoom" style="display:inline-flex">${dica}</span>`:''}</div></section>`}`;
 }
@@ -566,7 +625,9 @@ function render(){
   st.className='status '+cls;st.querySelector('.lbl').textContent=txt;st.title=txt;
   document.querySelectorAll('[data-act="nav"][data-v]').forEach(b=>{if(b.classList.contains('brand'))return;const v=b.dataset.v;b.innerHTML=icon(v)+'<span>'+VIEWS[v]+'</span>';if(S.view===v)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   $('[data-act="ajustes"]').innerHTML=icon('ajustes');
-  main.innerHTML=S.view==='painel'?vPainel():S.view==='plantonistas'?vPlantonistas():vEscalas();
+  const pub=!!(S.publico||S.publicoErro);document.body.classList.toggle('publico',pub);
+  if(pub){document.title=(S.publico?S.escalas[0].nome+' · ':'')+'Escala de plantão'}
+  main.innerHTML=pub?vPublico():S.view==='painel'?vPainel():S.view==='plantonistas'?vPlantonistas():vEscalas();
   ajustarTabelas();
   if(fid){const el=document.getElementById(fid);if(el){el.focus();try{if(ss!=null)el.setSelectionRange(ss,ss)}catch(e){}}}
 }
@@ -831,6 +892,7 @@ function textoEscala(modo){
 document.addEventListener('click',async ev=>{
   if(ev.target.closest('.skip')){ev.preventDefault();$('#main').focus();$('#main').scrollIntoView({block:'start'});return}
   const b=ev.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+  if((S.publico||S.publicoErro)&&!['visao','faixa','copiar','fechar'].includes(a))return;
   const esc0=()=>S.escalas.find(x=>x.id===(b.dataset.id||S.escalaSel));
   switch(a){
     case 'nav':irPara(b.dataset.v);break;
@@ -844,6 +906,8 @@ document.addEventListener('click',async ev=>{
     case 'editar-escala':{const e=esc0();if(e)abrirFormEscala(e)}break;
     case 'duplicar':{const e=esc0();if(e)abrirFormEscala(e,true)}break;
     case 'movimentar':{const e=esc0();if(e)abrirMov(e)}break;
+    case 'link-publico':{const e=esc0();if(e)abrirLinkPublico(e)}break;
+    case 'copiar-link':{const i=$('#pub-url');if(!i)break;const ok=()=>toast('Link copiado.');try{navigator.clipboard.writeText(i.value).then(ok,()=>{i.focus();i.select();toast('Selecionei o link: copie com Cmd+C ou Ctrl+C.')})}catch(e){i.focus();i.select()}}break;
     case 'incluir':{const e=esc0();if(e)abrirMov(e,{tipo:'entrada'})}break;
     case 'data-entrada':{const e=esc0();if(e)abrirMov(e,{tipo:'entrada',data:b.dataset.d})}break;
     case 'limpa':S.limpa=b.dataset.v==='1';render();window.scrollTo(0,0);break;
