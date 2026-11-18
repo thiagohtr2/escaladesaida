@@ -828,16 +828,19 @@ function textoRegras(e,n){
     ['cal','Toda mudança vale a partir da data escolhida. Os plantões anteriores ficam como estavam.']
   ];
 }
-/* Período salvo em cada escala: 'hoje' (dia atual), 'tudo' (desde o início) ou '24' (24 meses à frente). Vale para todos e para o link público. */
-const PERIODOS=[['hoje','Dia atual'],['tudo','Desde o início'],['24','24 meses à frente']];
-function periodoDe(e){const v=(S.faixaTemp&&S.faixaTemp[e.id])||e.periodo||'hoje';return v==='proximos'?'hoje':v}
+/* Período salvo em cada escala: 'hoje' (dia atual), 'tudo' (desde o início), '24' ou '48' (meses à frente).
+   No site dá para ver até 48 meses à frente; o link público mostra no máximo 12 meses (24/48 viram "Dia atual" lá). */
+const PERIODOS=[['hoje','Dia atual'],['tudo','Desde o início'],['24','24 meses'],['48','48 meses']];
+const ehPublico=()=>!!(S.publico||S.publicoErro);
+function periodoDe(e){let v=(S.faixaTemp&&S.faixaTemp[e.id])||e.periodo||'hoje';if(v==='proximos')v='hoje';if(ehPublico()&&(v==='24'||v==='48'))v='hoje';return v}
 function faixaDatas(e){
   const hoje=hojeStr(),per=periodoDe(e);
   if(per==='tudo'&&!S.limpa)return [e.inicio,addDias(hoje,365)];
   if(per==='24')return [hoje,addDias(hoje,730)];
+  if(per==='48')return [hoje,addDias(hoje,1461)];
   return [hoje,addDias(hoje,365)];
 }
-function segPeriodo(ids,atual){return `<div class="seg" role="group" aria-label="Período">${PERIODOS.map(([v,t])=>`<button data-act="faixa" data-id="${esc(ids)}" data-v="${v}" aria-pressed="${atual===v}">${t}</button>`).join('')}</div>`}
+function segPeriodo(ids,atual){return `<div class="seg" role="group" aria-label="Período">${PERIODOS.filter(([v])=>!ehPublico()||v==='hoje'||v==='tudo').map(([v,t])=>`<button data-act="faixa" data-id="${esc(ids)}" data-v="${v}" aria-pressed="${atual===v}">${t}</button>`).join('')}</div>`}
 function mapaSiglas(){
   const m={},usadas=new Set();
   for(const n of todosNomes()){
@@ -1311,7 +1314,7 @@ document.addEventListener('click',async ev=>{
     case 'dia-mv':S.dia=addDias(S.dia,+b.dataset.n);render();break;
     case 'ver-escala':case 'sel-escala':S.escalaSel=b.dataset.id;if(S.view!=='escalas')irPara('escalas');else{render();}break;
     case 'faixa':{const v=b.dataset.v,alvo=b.dataset.id==='__todas'?escalasOrd():[S.escalas.find(x=>x.id===b.dataset.id)].filter(Boolean);
-      if(S.podeEditar&&!S.publico&&!S.publicoErro){let mudou=0;alvo.forEach(x=>{delete S.faixaTemp[x.id];if(periodoDe(x)!==v||x.periodo!==v){mudou++;salvarEscala(Object.assign({},x,{periodo:v}))}});if(mudou)toast('Período salvo: '+PERIODOS.find(p=>p[0]===v)[1]+'. Vale para todos e para o link público.');else render()}
+      if(S.podeEditar&&!S.publico&&!S.publicoErro){let mudou=0;alvo.forEach(x=>{delete S.faixaTemp[x.id];if(periodoDe(x)!==v||x.periodo!==v){mudou++;salvarEscala(Object.assign({},x,{periodo:v}))}});if(mudou)toast('Período salvo: '+PERIODOS.find(p=>p[0]===v)[1]+(v==='24'||v==='48'?' à frente. No link público aparecem até 12 meses.':'. Vale para todos e para o link público.'));else render()}
       else{alvo.forEach(x=>S.faixaTemp[x.id]=v);render()}}break;
     case 'visao':S.visao=b.dataset.v;lsSet('rodizio-visao',S.visao);render();break;
     case 'nova-escala':abrirFormEscala(null);break;
