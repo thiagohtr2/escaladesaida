@@ -1366,7 +1366,8 @@ async function baixarPdf(e,btn){
         // cabeçalho das posições: todo na mesma cor escura das faixas, com letra branca
         if(d.section==='head'){d.cell.styles.fillColor=cabEsc;d.cell.styles.textColor=[255,255,255]}
         if(d.section==='body'){
-          if(d.cell.raw==='Vago'){d.cell.styles.fontStyle='bolditalic';if(!escura)d.cell.styles.textColor=[176,58,58]}
+          if(!escura)d.cell.styles.fontStyle='normal'; // negrito só na data e nas faixas
+          if(d.cell.raw==='Vago'){d.cell.styles.fontStyle=escura?'bolditalic':'italic';if(!escura)d.cell.styles.textColor=[176,58,58]}
         }
       },
       didDrawCell:d=>{
