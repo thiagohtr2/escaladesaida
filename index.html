@@ -1335,7 +1335,8 @@ async function baixarPdf(e,btn){
     const proxD=proxima(e,hoje),iProx=ls.findIndex(l=>l.data===proxD);
     const ac=hexRgb(cor(e)),faixa=misturaBranco(ac,.84),faixaCab=misturaBranco(ac,.72),zebra=misturaBranco(ac,.89),faixaZebra=misturaBranco(ac,.75);
     // Data e faixas num tom mais escuro da cor, com letra branca (alternando dois tons)
-    const dataA=paraBranco(escurecer(ac,.62)),dataB=paraBranco(escurecer(ac,.76)),fxA=paraBranco(ac),fxB=paraBranco(escurecer(ac,.86)),cabEsc=paraBranco(escurecer(ac,.5));
+    // a coluna Data fica sempre mais escura que as faixas, mesmo no tom claro dela
+    const fxA=paraBranco(ac),fxB=escurecer(fxA,.88),dataB=escurecer(fxB,.8),dataA=escurecer(dataB,.84),cabEsc=escurecer(dataA,.85);
     const tipos=rM.map(lab=>destCls(e,lab)),temFx=tipos.map(t=>t.includes('fx')),temBd=tipos.map(t=>t.includes('bd'));
     const deitado=rM.length>8,doc=new jsPDF({orientation:deitado?'landscape':'portrait',unit:'mm',format:'a4'});
     const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),M=12;
