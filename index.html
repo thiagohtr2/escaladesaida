@@ -1361,12 +1361,12 @@ async function baixarImagem(e,btn){
     let xi=M;
     if(D.lider){
       const r1='LIDERANÇA',r2=D.lider;g.font='700 12px '+FONTE;const w1=g.measureText(r1).width;g.font='700 16px '+FONTE;const w2=g.measureText(r2).width;
-      const bw=Math.min(W-2*M,w1+w2+38),bh=30,by=64;g.fillStyle=rgb(cabEsc);
+      const bw=Math.min(W-2*M,w1+w2+38),bh=30,by=71;g.fillStyle=rgb(cabEsc);
       if(g.roundRect){g.beginPath();g.roundRect(M,by,bw,bh,7);g.fill()}else g.fillRect(M,by,bw,bh);
       g.fillStyle='rgba(255,255,255,.78)';g.font='700 12px '+FONTE;g.textBaseline='middle';g.fillText(r1,M+12,by+bh/2+.5);
       g.fillStyle='#fff';g.font='700 16px '+FONTE;g.fillText(r2,M+12+w1+12,by+bh/2+.5,bw-w1-36);g.textBaseline='alphabetic';xi=M+bw+16;
     }
-    g.fillStyle='rgb(70,78,95)';g.font='400 15px '+FONTE;g.textBaseline='middle';g.fillText(D.linha2,xi,79.5,W-M-xi);g.textBaseline='alphabetic';
+    g.fillStyle='rgb(70,78,95)';g.font='400 15px '+FONTE;g.textBaseline='middle';g.fillText(D.linha2,xi,86.5,W-M-xi);g.textBaseline='alphabetic';
     const xCol=c=>c<0?M:M+colData+c*colW,wCol=c=>c<0?colData:colW;
     const texto=(t,x,w,yMeio,peso,tam,cor,italico)=>{
       if(!t)return;g.fillStyle=cor;g.textAlign='center';g.textBaseline='middle';
@@ -1434,12 +1434,12 @@ async function baixarPdf(e,btn){
     let xi=M;
     if(D.lider){
       doc.setFont('helvetica','bold');doc.setFontSize(7.5);const w1=doc.getTextWidth('LIDERANÇA');doc.setFontSize(10.5);const w2=doc.getTextWidth(D.lider);
-      const bw=Math.min(W-2*M,w1+w2+11),bh=7,by=19.2;doc.setFillColor(...cabEsc);doc.roundedRect(M,by,bw,bh,1.6,1.6,'F');
+      const bw=Math.min(W-2*M,w1+w2+11),bh=7,by=20.25;doc.setFillColor(...cabEsc);doc.roundedRect(M,by,bw,bh,1.6,1.6,'F');
       doc.setTextColor(225,232,228);doc.setFontSize(7.5);doc.text('LIDERANÇA',M+3.5,by+bh/2,{baseline:'middle'});
       doc.setTextColor(255,255,255);doc.setFontSize(10.5);doc.text(D.lider,M+3.5+w1+3,by+bh/2,{baseline:'middle',maxWidth:bw-w1-9});
       doc.setFont('helvetica','normal');xi=M+bw+4;
     }
-    doc.setFontSize(9.5);doc.setTextColor(70,78,95);doc.text(D.linha2,xi,22.7,{baseline:'middle',maxWidth:W-M-xi});
+    doc.setFontSize(9.5);doc.setTextColor(70,78,95);doc.text(D.linha2,xi,23.75,{baseline:'middle',maxWidth:W-M-xi});
     autoTable(doc,{
       head:[['Data',...rM]],body,startY:30,theme:'grid',showHead:'everyPage',
       margin:{left:M,right:M,top:14,bottom:14},
