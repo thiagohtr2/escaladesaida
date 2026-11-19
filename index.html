@@ -110,7 +110,7 @@ body.publico .prox-ver{display:none}
 .sheet .ppl td.bd{box-shadow:none!important}
 .sheet .ppl td.bd .pv{border-color:var(--ac);color:var(--ac-d);font-weight:650}
 .zap-prev{display:grid;gap:3px;padding:12px 14px;border-radius:12px;background:#e7f7e3;border:1px solid #cfe9c8;font-size:13px;color:#1f2d1c;max-width:420px}.zap-prev span{color:#3c4a39}.zap-prev .zap-link{color:#1a6fb5;word-break:break-all;font-size:12px}
-.fundos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:4px 0}
+.fundos{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:4px 0}
 .fundo-op{display:grid;gap:6px;justify-items:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--ink-2)}
 .fundo-op input{position:absolute;opacity:0;pointer-events:none}
 .fundo-prev{width:100%;max-width:96px;aspect-ratio:168/216;height:auto;border-radius:10px;border:1px solid var(--line);background:#fff;transition:box-shadow .15s,border-color .15s}
@@ -1368,7 +1368,7 @@ const nomeArquivo=(e,ext)=>('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').repla
 
 /* ================= Imagem PNG em alta qualidade (mesmo visual do PDF) ================= */
 /* Fundo do PDF e da imagem (escolhido em Editar escala) */
-const FUNDOS=[['','Sem fundo'],['circulos','Círculos'],['pontos','Pontilhado'],['listras','Listras']];
+const FUNDOS=[['','Sem fundo'],['cor','Só a cor'],['circulos','Círculos'],['pontos','Pontilhado'],['listras','Listras']];
 function desenharPrevFundos(){
   const c=hexRgb(CORES[(S.form&&S.form.cor)||'anil']||'#4758d6');
   document.querySelectorAll('canvas.fundo-prev').forEach(cv=>{
@@ -1385,7 +1385,9 @@ function desenharPrevFundos(){
 function arteFundo(g,W,H,ac,v,t){
   v={circulos:'a',pontos:'b',listras:'c'}[v]||v;
   const a=x=>'rgba('+ac.join(',')+','+x+')',bola=(x,y,r,al)=>{g.fillStyle=a(al);g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.fill()};
-  if(v==='a'){ // círculos suaves sobrepostos, anéis, pontinhos e ondas
+  if(v==='cor'){ // só a cor da escala, bem clarinha
+    g.fillStyle='rgb('+misturaBranco(ac,.94).join(',')+')';g.fillRect(0,0,W,H);
+  }else if(v==='a'){ // círculos suaves sobrepostos, anéis, pontinhos e ondas
     g.fillStyle='rgb('+misturaBranco(ac,.94).join(',')+')';g.fillRect(0,0,W,H);
     const anel=(x,y,r,al,lw)=>{g.strokeStyle=a(al);g.lineWidth=lw;g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.stroke()};
     // canto de cima à direita
