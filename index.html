@@ -189,6 +189,7 @@ const IC={
   plus:'<path d="M12 5v14M5 12h14"/>',
   swap:'<path d="M7 7.5h12.5L16 4M17 16.5H4.5L8 20"/>',
   cl:'<path d="M14.5 6l-6 6 6 6"/>', cr:'<path d="M9.5 6l6 6-6 6"/>',
+  img:'<rect x="4" y="5" width="16" height="14" rx="2.5"/><circle cx="9.5" cy="10" r="1.6"/><path d="m5 17 4.5-4.2 3.2 3 2.6-2.3L19 17"/>',
   pdf:'<path d="M12 4v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 19.5h14"/>',
   up:'<path d="M6 14.5l6-6 6 6"/>', down:'<path d="M6 9.5l6 6 6-6"/>',
   ajustes:'<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/>',
@@ -707,7 +708,7 @@ function vPublico(){
   const VIS=[['planilha','escalas','Planilha'],['siglas','layers','Siglas'],['cartoes','painel','Cartões'],['pessoas','plantonistas','Por pessoa']];
   const vis=`<div class="vis-bar"><span>Visualizar</span><div class="seg" role="group" aria-label="Visualização">${VIS.map(([v,i,t])=>`<button data-act="visao" data-v="${v}" aria-pressed="${S.visao===v}">${icon(i)}${t}</button>`).join('')}</div></div>`;
   const tool=`<div class="sheet-tool box">${segPeriodo(e.id,periodoDe(e))}
-    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)">${icon('pdf')} PDF</button></div></div>`;
+    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)">${icon('pdf')} PDF</button><button class="btn ghost sm" data-act="imagem" data-id="${esc(e.id)}" aria-label="Baixar imagem da escala em alta qualidade (próximos 18 meses)">${icon('img')} Imagem</button></div></div>`;
   return `<header class="pub-head" style="--ac:${cor(e)}"><div class="pub-brand"><span class="mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.6 4.2v3.9h-3.9"/></svg></span><span>${esc(P.servico||'Rodízio de Plantões')}</span><span class="pub-tag">${icon('me')} Somente visualização</span></div>
     <h1>${esc(e.nome)}</h1><p>Toda ${esc(DIAS[dow(e.inicio)])}${dow(e.inicio)%6?'-feira':''} · ${esc(freqTxt(e.frequencia))}${e.lideranca?` · Liderança: <b>${esc(e.lideranca)}</b>`:''}</p>${P.g?`<p class="pub-meta">${P.fixo?'Atualizada em':'Versão publicada em'} ${esc(dataHora(P.g))}</p>`:''}</header>
     ${resumoProximo(e)}<div class="schedule-workspace" style="--ac:${cor(e)}"><div class="workspace-heading"><div><h2>Escala completa</h2><p>Escolha como prefere ver.</p></div>${vis}</div>${tool}${folha(e,true)}</div>`;
@@ -940,12 +941,12 @@ function vEscalas(){
   const tabs=`<div class="esc-tabs" role="group" aria-label="Selecionar escala">${ess.length>1?`<button class="et" data-act="sel-escala" data-id="__todas" aria-pressed="${todas}">${icon('layers')} Todas</button>`:''}${ess.map(x=>`<button class="et" style="--ec:${cor(x)}" data-act="sel-escala" data-id="${esc(x.id)}" aria-pressed="${!todas&&x.id===e.id}"><span class="dot"></span>${esc(x.nome)}</button>`).join('')}</div>`;
   const perAtual=todas?(()=>{const ps=[...new Set(ess.map(periodoDe))];return ps.length===1?ps[0]:''})():periodoDe(e);
   const tool=`<div class="sheet-tool box">${segPeriodo(todas?'__todas':e.id,perAtual)}
-    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn pri sm" data-act="limpa" data-v="1" title="Mostra só a partir de hoje, sem os dias antigos e sem as marcações de mudança">${icon('cal')} Escala atualizada</button>${!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap" aria-label="Copiar escala como texto">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv" aria-label="Copiar escala para planilha">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)" title="Baixar PDF da escala em planilha, próximos 18 meses">${icon('pdf')} PDF</button>`:''}</div></div>`;
+    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn pri sm" data-act="limpa" data-v="1" title="Mostra só a partir de hoje, sem os dias antigos e sem as marcações de mudança">${icon('cal')} Escala atualizada</button>${!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap" aria-label="Copiar escala como texto">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv" aria-label="Copiar escala para planilha">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)" title="Baixar PDF da escala em planilha, próximos 18 meses">${icon('pdf')} PDF</button><button class="btn ghost sm" data-act="imagem" data-id="${esc(e.id)}" aria-label="Baixar imagem da escala em alta qualidade (próximos 18 meses)">${icon('img')} Imagem</button>`:''}</div></div>`;
   const VIS=[['planilha','escalas','Planilha'],['siglas','layers','Siglas'],['cartoes','painel','Cartões'],['pessoas','plantonistas','Por pessoa']];
   const vis=`<div class="vis-bar"><span>Visualizar</span><div class="seg" role="group" aria-label="Visualização">${VIS.map(([v,i,t])=>`<button data-act="visao" data-v="${v}" aria-pressed="${S.visao===v}">${icon(i)}${t}</button>`).join('')}</div></div>`;
   const agenda=`<div class="workspace-heading"><div><h2>Agenda do rodízio</h2><p>A posição de cada pessoa em cada plantão.</p></div>${vis}</div>${tool}`;
   if(S.limpa){
-    const hoje=hojeStr(),copia=!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)">${icon('pdf')} PDF</button>`:'';
+    const hoje=hojeStr(),copia=!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)">${icon('pdf')} PDF</button><button class="btn ghost sm" data-act="imagem" data-id="${esc(e.id)}" aria-label="Baixar imagem da escala em alta qualidade (próximos 18 meses)">${icon('img')} Imagem</button>`:'';
     return `<section class="limpa-bar" style="--ac:${todas?'var(--accent)':cor(e)}"><div><div class="eyebrow">${icon('cal')} Escala atualizada</div><h1>${todas?'Todas as escalas':esc(e.nome)}</h1><p>A partir de hoje, ${esc(extenso(hoje))} de ${hoje.slice(0,4)}, já com todas as mudanças aplicadas.</p></div><div class="acts">${copia}<button class="btn pri sm" data-act="limpa" data-v="0">${icon('x')} Voltar à edição</button></div></section>${tabs}<div class="schedule-workspace" style="--ac:${todas?'var(--accent)':cor(e)}"><div class="workspace-heading">${vis}</div>${(todas?ess:[e]).map(x=>folha(x,!todas)).join('')}</div>`;
   }
   if(todas)return `${head}${bannerAviso()}${tabs}<div class="schedule-workspace">${agenda}${ess.map(x=>folha(x,false)).join('')}</div>`;
@@ -1321,23 +1322,98 @@ const escurecer=(c,f)=>c.map(v=>Math.round(v*f));
 const lumin=c=>{const [r,g,b]=c.map(v=>{v/=255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4});return .2126*r+.7152*g+.0722*b};
 /* escurece até o texto branco ficar bem legível */
 const paraBranco=(c,min=4.6)=>{let x=c.slice(),i=0;while(1.05/(lumin(x)+.05)<min&&i++<30)x=escurecer(x,.93);return x};
+/* Dados e cores usados no PDF e na imagem (mesmo visual) */
+function dadosExport(e){
+  const MESES=18,hoje=hojeStr(),ate=(()=>{const [y,m,d]=hoje.split('-').map(Number),x=new Date(Date.UTC(y,m-1+MESES,d));return x.toISOString().slice(0,10)})();
+  const ls=gerar(e,ate).filter(l=>l.data>=hoje);
+  if(!ls.length)return {MESES,ls};
+  const maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
+  const body=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return [br(l.data),...rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])})]});
+  const ac=hexRgb(cor(e)),zebra=misturaBranco(ac,.89);
+  // data e faixas: tom claro e tom escuro da cor (linha sim, linha não), letra branca; cabeçalho no tom mais escuro
+  const base=paraBranco(ac),fxA=paraBranco(misturaBranco(ac,.3),3.2),fxB=base,cabEsc=escurecer(base,.6);
+  const tipos=rM.map(lab=>destCls(e,lab)),temFx=tipos.map(t=>t.includes('fx')),temBd=tipos.map(t=>t.includes('bd'));
+  const linha2=[e.lideranca?'Liderança: '+e.lideranca:'','Próximos '+MESES+' meses: '+br(ls[0].data)+' a '+br(ls[ls.length-1].data),ls.length+' plantões'].filter(Boolean).join('   ·   ');
+  let gerado='';try{gerado='Gerado em '+new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}catch(x){}
+  return {MESES,ls,rM,body,ac,zebra,fxA,fxB,cabEsc,temFx,temBd,linha2,gerado};
+}
+const nomeArquivo=(e,ext)=>('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').trim()+'.'+ext;
+
+/* ================= Imagem PNG em alta qualidade (mesmo visual do PDF) ================= */
+async function baixarImagem(e,btn){
+  if(!e)return;
+  const rot=btn&&btn.innerHTML;if(btn){btn.disabled=true;btn.innerHTML=icon('img')+' Gerando…'}
+  try{
+    const D=dadosExport(e);
+    if(!D.ls.length){toast('Não há plantões nos próximos '+D.MESES+' meses.',true);return}
+    const {rM,body,ac,zebra,fxA,fxB,cabEsc,temFx,temBd}=D;
+    const FONTE='-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
+    const n=rM.length,M=36,colData=112,colW=Math.max(96,Math.min(150,Math.round(760/n)));
+    const W=M*2+colData+colW*n,topo=104,altCab=40,altL=34,rod=48,H=topo+altCab+altL*body.length+rod;
+    const esc_=Math.max(1,Math.min(3,Math.sqrt(16e6/(W*H))));   // até 3x, sem passar do limite de tamanho do iPhone
+    const cv=document.createElement('canvas');cv.width=Math.round(W*esc_);cv.height=Math.round(H*esc_);
+    const g=cv.getContext('2d');g.scale(esc_,esc_);
+    const rgb=c=>'rgb('+c.join(',')+')';
+    g.fillStyle='#fff';g.fillRect(0,0,W,H);
+    g.fillStyle=rgb(ac);g.fillRect(0,0,W,6);
+    g.textBaseline='alphabetic';g.textAlign='left';
+    g.fillStyle=rgb(ac);g.font='700 30px '+FONTE;g.fillText(e.nome,M,52);
+    g.fillStyle='rgb(70,78,95)';g.font='400 15px '+FONTE;g.fillText(D.linha2,M,80,W-2*M);
+    const xCol=c=>c<0?M:M+colData+c*colW,wCol=c=>c<0?colData:colW;
+    const texto=(t,x,w,yMeio,peso,tam,cor,italico)=>{
+      if(!t)return;g.fillStyle=cor;g.textAlign='center';g.textBaseline='middle';
+      let f=tam;const fonte=()=>(italico?'italic ':'')+peso+' '+f+'px '+FONTE;g.font=fonte();
+      while(g.measureText(t).width>w-12&&f>11){f-=.5;g.font=fonte()}
+      if(g.measureText(t).width<=w-12){g.fillText(t,x+w/2,yMeio+.5);return}
+      const ps=t.split(' '),meio=Math.ceil(ps.length/2),l1=ps.slice(0,meio).join(' '),l2=ps.slice(meio).join(' ');
+      f=Math.min(f,13);g.font=fonte();g.fillText(l1,x+w/2,yMeio-7,w-8);g.fillText(l2,x+w/2,yMeio+8,w-8);
+    };
+    // cabeçalho
+    let y=topo;
+    for(let c=-1;c<n;c++){g.fillStyle=rgb(cabEsc);g.fillRect(xCol(c),y,wCol(c),altCab);texto(c<0?'Data':rM[c],xCol(c),wCol(c),y+altCab/2,700,15,'#fff')}
+    y+=altCab;
+    body.forEach((lin,i)=>{
+      const listra=i%2===1;
+      for(let c=-1;c<n;c++){
+        const escura=c<0||temFx[c],v=lin[c+1];
+        g.fillStyle=escura?rgb(listra?fxB:fxA):(listra?rgb(zebra):'#fff');g.fillRect(xCol(c),y,wCol(c),altL);
+        const vago=v==='Vago';
+        texto(v,xCol(c),wCol(c),y+altL/2,escura?700:400,15,escura?'#fff':vago?'rgb(176,58,58)':'rgb(24,30,44)',vago);
+      }
+      y+=altL;
+    });
+    // linhas da grade
+    g.strokeStyle='rgb(223,227,236)';g.lineWidth=1;g.beginPath();
+    for(let r=0;r<=body.length+1;r++){const yy=topo+(r?altCab+(r-1)*altL:0)+.5;g.moveTo(M,yy);g.lineTo(W-M,yy)}
+    for(let c=-1;c<=n;c++){const xx=(c<n?xCol(c):W-M)+.5;g.moveTo(xx,topo);g.lineTo(xx,y)}
+    g.stroke();
+    // bordas dos destaques (emendadas quando vizinhas)
+    g.strokeStyle=rgb(ac);g.lineWidth=2.5;
+    for(let c=0;c<n;c++){if(!temBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;const x0=xCol(c),x1=xCol(f)+colW;g.strokeRect(x0+1.25,topo+1.25,x1-x0-2.5,y-topo-2.5);c=f}
+    // rodapé
+    g.fillStyle='rgb(140,147,162)';g.font='400 12px '+FONTE;g.textAlign='left';g.textBaseline='alphabetic';g.fillText(D.gerado,M,H-18);
+    const blob=await new Promise(ok=>cv.toBlob(ok,'image/png'));
+    if(!blob)throw new Error('png');
+    const nome=nomeArquivo(e,'png'),arq=new File([blob],nome,{type:'image/png'});
+    const toque=window.matchMedia&&matchMedia('(pointer:coarse)').matches;
+    if(toque&&navigator.canShare&&navigator.canShare({files:[arq]})){
+      try{await navigator.share({files:[arq],title:e.nome});return}catch(err){if(err&&err.name==='AbortError')return}
+    }
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=nome;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
+    toast('Imagem baixada: '+nome);
+  }catch(err){console.error(err);toast('Não foi possível gerar a imagem.',true)}
+  finally{if(btn&&btn.isConnected){btn.disabled=false;btn.innerHTML=rot}}
+}
+
 async function baixarPdf(e,btn){
   if(!e)return;
   const rot=btn&&btn.innerHTML;if(btn){btn.disabled=true;btn.innerHTML=icon('pdf')+' Gerando…'}
   try{
     try{await carregarPdf()}catch(err){toast('Não foi possível carregar o gerador de PDF. Verifique a internet e tente de novo.',true);return}
     const {jsPDF}=window.jspdf,autoTable=window.autoTable;
-    const PDF_MESES=18,hoje=hojeStr(),ate=(()=>{const [y,m,d]=hoje.split('-').map(Number),x=new Date(Date.UTC(y,m-1+PDF_MESES,d));return x.toISOString().slice(0,10)})();
-    const ls=gerar(e,ate).filter(l=>l.data>=hoje);
-    if(!ls.length){toast('Não há plantões nos próximos '+PDF_MESES+' meses.',true);return}
-    const maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
-    const body=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return [br(l.data),...rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])})]});
-    const ac=hexRgb(cor(e)),faixa=misturaBranco(ac,.84),faixaCab=misturaBranco(ac,.72),zebra=misturaBranco(ac,.89),faixaZebra=misturaBranco(ac,.75);
-    // Data e faixas num tom mais escuro da cor, com letra branca (alternando dois tons)
-    // linhas claras bem mais claras que as escuras, para as listras aparecerem também nas faixas e na data
-    // a coluna Data usa as mesmas cores das faixas
-    const base=paraBranco(ac),fxA=paraBranco(misturaBranco(ac,.3),3.2),fxB=base,cabEsc=escurecer(base,.6);
-    const tipos=rM.map(lab=>destCls(e,lab)),temFx=tipos.map(t=>t.includes('fx')),temBd=tipos.map(t=>t.includes('bd'));
+    const D=dadosExport(e);
+    if(!D.ls.length){toast('Não há plantões nos próximos '+D.MESES+' meses.',true);return}
+    const {ls,rM,body,ac,zebra,fxA,fxB,cabEsc,temFx,temBd}=D;
     const deitado=rM.length>8,doc=new jsPDF({orientation:deitado?'landscape':'portrait',unit:'mm',format:'a4'});
     const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),M=12;
     // Tamanho da letra e altura das linhas: tenta caber tudo numa página só
@@ -1348,9 +1424,8 @@ async function baixarPdf(e,btn){
     doc.setFillColor(...ac);doc.rect(0,0,W,3,'F');
     doc.setFont('helvetica','bold');doc.setFontSize(17);doc.setTextColor(...ac);doc.text(e.nome,M,16);
     doc.setFont('helvetica','normal');
-    const linha2=[e.lideranca?'Liderança: '+e.lideranca:'','Próximos '+PDF_MESES+' meses: '+br(ls[0].data)+' a '+br(ls[ls.length-1].data),ls.length+' plantões'].filter(Boolean).join('   ·   ');
-    doc.setFontSize(9.5);doc.setTextColor(70,78,95);doc.text(linha2,M,22.5,{maxWidth:W-2*M});
-    let rodape='';try{rodape='Gerado em '+new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}catch(x){}
+    doc.setFontSize(9.5);doc.setTextColor(70,78,95);doc.text(D.linha2,M,22.5,{maxWidth:W-2*M});
+    const rodape=D.gerado;
     autoTable(doc,{
       head:[['Data',...rM]],body,startY:28,theme:'grid',showHead:'everyPage',
       margin:{left:M,right:M,top:14,bottom:14},
@@ -1385,7 +1460,7 @@ async function baixarPdf(e,btn){
     });
     const total=doc.internal.getNumberOfPages();
     for(let i=1;i<=total;i++){doc.setPage(i);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(140,147,162);doc.text(rodape,M,H-7);doc.text('Página '+i+' de '+total,W-M,H-7,{align:'right'})}
-    const nome=('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').trim()+'.pdf';
+    const nome=nomeArquivo(e,'pdf');
     doc.save(nome);
     toast('PDF baixado: '+nome);
   }catch(err){console.error(err);toast('Não foi possível gerar o PDF.',true)}
@@ -1396,7 +1471,7 @@ async function baixarPdf(e,btn){
 document.addEventListener('click',async ev=>{
   if(ev.target.closest('.skip')){ev.preventDefault();$('#main').focus();$('#main').scrollIntoView({block:'start'});return}
   const b=ev.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
-  if((S.publico||S.publicoErro)&&!['visao','faixa','copiar','fechar','pdf'].includes(a))return;
+  if((S.publico||S.publicoErro)&&!['visao','faixa','copiar','fechar','pdf','imagem'].includes(a))return;
   const esc0=()=>S.escalas.find(x=>x.id===(b.dataset.id||S.escalaSel));
   switch(a){
     case 'nav':irPara(b.dataset.v);break;
@@ -1430,6 +1505,7 @@ document.addEventListener('click',async ev=>{
       if(await confirmar('Desfazer mudança?','"'+descEv(evx,e,l)+'" será removida e a escala será recalculada a partir de '+br(proxima(e,evx.data))+'.','Desfazer',true)){salvarEscala(Object.assign({},e,{eventos:e.eventos.filter(x=>x.id!==evx.id)}));toast('Mudança desfeita.')}}break;
     case 'copiar':copiarTexto(textoEscala(b.dataset.modo));break;
     case 'pdf':baixarPdf(esc0(),b);break;
+    case 'imagem':baixarImagem(esc0(),b);break;
     case 'sel-pessoa':S.pessoaSel=b.dataset.n;render();if(matchMedia('(max-width:899px)').matches)$('.pd-h')?.scrollIntoView({block:'start',behavior:'smooth'});break;
     case 'eu-set':S.eu=b.dataset.n;lsSet(LS_EU,S.eu);S.destaque=null;render();toast('Seus plantões aparecem no painel.');break;
     case 'eu-limpar':case 'eu-trocar':S.eu='';lsSet(LS_EU,'');S.destaque=null;render();break;
