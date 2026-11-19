@@ -707,7 +707,7 @@ function vPublico(){
   const VIS=[['planilha','escalas','Planilha'],['siglas','layers','Siglas'],['cartoes','painel','Cartões'],['pessoas','plantonistas','Por pessoa']];
   const vis=`<div class="vis-bar"><span>Visualizar</span><div class="seg" role="group" aria-label="Visualização">${VIS.map(([v,i,t])=>`<button data-act="visao" data-v="${v}" aria-pressed="${S.visao===v}">${icon(i)}${t}</button>`).join('')}</div></div>`;
   const tool=`<div class="sheet-tool box">${segPeriodo(e.id,periodoDe(e))}
-    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 12 meses)">${icon('pdf')} PDF</button></div></div>`;
+    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)">${icon('pdf')} PDF</button></div></div>`;
   return `<header class="pub-head" style="--ac:${cor(e)}"><div class="pub-brand"><span class="mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.6 4.2v3.9h-3.9"/></svg></span><span>${esc(P.servico||'Rodízio de Plantões')}</span><span class="pub-tag">${icon('me')} Somente visualização</span></div>
     <h1>${esc(e.nome)}</h1><p>Toda ${esc(DIAS[dow(e.inicio)])}${dow(e.inicio)%6?'-feira':''} · ${esc(freqTxt(e.frequencia))}${e.lideranca?` · Liderança: <b>${esc(e.lideranca)}</b>`:''}</p>${P.g?`<p class="pub-meta">${P.fixo?'Atualizada em':'Versão publicada em'} ${esc(dataHora(P.g))}</p>`:''}</header>
     ${resumoProximo(e)}<div class="schedule-workspace" style="--ac:${cor(e)}"><div class="workspace-heading"><div><h2>Escala completa</h2><p>Escolha como prefere ver.</p></div>${vis}</div>${tool}${folha(e,true)}</div>`;
@@ -940,12 +940,12 @@ function vEscalas(){
   const tabs=`<div class="esc-tabs" role="group" aria-label="Selecionar escala">${ess.length>1?`<button class="et" data-act="sel-escala" data-id="__todas" aria-pressed="${todas}">${icon('layers')} Todas</button>`:''}${ess.map(x=>`<button class="et" style="--ec:${cor(x)}" data-act="sel-escala" data-id="${esc(x.id)}" aria-pressed="${!todas&&x.id===e.id}"><span class="dot"></span>${esc(x.nome)}</button>`).join('')}</div>`;
   const perAtual=todas?(()=>{const ps=[...new Set(ess.map(periodoDe))];return ps.length===1?ps[0]:''})():periodoDe(e);
   const tool=`<div class="sheet-tool box">${segPeriodo(todas?'__todas':e.id,perAtual)}
-    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn pri sm" data-act="limpa" data-v="1" title="Mostra só a partir de hoje, sem os dias antigos e sem as marcações de mudança">${icon('cal')} Escala atualizada</button>${!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap" aria-label="Copiar escala como texto">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv" aria-label="Copiar escala para planilha">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 12 meses)" title="Baixar PDF da escala em planilha, próximos 12 meses">${icon('pdf')} PDF</button>`:''}</div></div>`;
+    <div class="grp"><label class="sr" for="destaque">Destacar plantonista</label><select class="sel" id="destaque"><option value="">Destacar plantonista…</option>${nomes.map(x=>`<option ${x===dest?'selected':''}>${esc(x)}</option>`).join('')}</select><button class="btn pri sm" data-act="limpa" data-v="1" title="Mostra só a partir de hoje, sem os dias antigos e sem as marcações de mudança">${icon('cal')} Escala atualizada</button>${!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap" aria-label="Copiar escala como texto">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv" aria-label="Copiar escala para planilha">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)" title="Baixar PDF da escala em planilha, próximos 18 meses">${icon('pdf')} PDF</button>`:''}</div></div>`;
   const VIS=[['planilha','escalas','Planilha'],['siglas','layers','Siglas'],['cartoes','painel','Cartões'],['pessoas','plantonistas','Por pessoa']];
   const vis=`<div class="vis-bar"><span>Visualizar</span><div class="seg" role="group" aria-label="Visualização">${VIS.map(([v,i,t])=>`<button data-act="visao" data-v="${v}" aria-pressed="${S.visao===v}">${icon(i)}${t}</button>`).join('')}</div></div>`;
   const agenda=`<div class="workspace-heading"><div><h2>Agenda do rodízio</h2><p>A posição de cada pessoa em cada plantão.</p></div>${vis}</div>${tool}`;
   if(S.limpa){
-    const hoje=hojeStr(),copia=!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 12 meses)">${icon('pdf')} PDF</button>`:'';
+    const hoje=hojeStr(),copia=!todas?`<button class="btn ghost sm" data-act="copiar" data-modo="zap">${icon('copy')} Texto</button><button class="btn ghost sm" data-act="copiar" data-modo="tsv">${icon('copy')} Planilha</button><button class="btn ghost sm" data-act="pdf" data-id="${esc(e.id)}" aria-label="Baixar PDF da escala (próximos 18 meses)">${icon('pdf')} PDF</button>`:'';
     return `<section class="limpa-bar" style="--ac:${todas?'var(--accent)':cor(e)}"><div><div class="eyebrow">${icon('cal')} Escala atualizada</div><h1>${todas?'Todas as escalas':esc(e.nome)}</h1><p>A partir de hoje, ${esc(extenso(hoje))} de ${hoje.slice(0,4)}, já com todas as mudanças aplicadas.</p></div><div class="acts">${copia}<button class="btn pri sm" data-act="limpa" data-v="0">${icon('x')} Voltar à edição</button></div></section>${tabs}<div class="schedule-workspace" style="--ac:${todas?'var(--accent)':cor(e)}"><div class="workspace-heading">${vis}</div>${(todas?ess:[e]).map(x=>folha(x,!todas)).join('')}</div>`;
   }
   if(todas)return `${head}${bannerAviso()}${tabs}<div class="schedule-workspace">${agenda}${ess.map(x=>folha(x,false)).join('')}</div>`;
@@ -1302,7 +1302,7 @@ function textoEscala(modo){
   return '*'+e.nome.toUpperCase()+'*\n'+(e.lideranca?'Liderança: '+e.lideranca+'\n':'')+ls.map(l=>{const r=rotulos(e,l.equipe.length);return br(l.data)+' | '+l.equipe.map((n,i)=>r[i]+': '+nomeOuVago(n)).join(' · ')}).join('\n');
 }
 
-/* ================= PDF da escala (planilha, próximos 12 meses) ================= */
+/* ================= PDF da escala (planilha, próximos 18 meses) ================= */
 const PDF_LIBS=[['jspdf.umd.min.js','https://cdn.jsdelivr.net/npm/jspdf@4.2.1/dist/jspdf.umd.min.js'],['jspdf.plugin.autotable.min.js','https://cdn.jsdelivr.net/npm/jspdf-autotable@5.0.9/dist/jspdf.plugin.autotable.min.js']];
 let pdfCarregando=null;
 const naMoldura=()=>{try{return window.self!==window.top}catch(e){return true}};
@@ -1327,9 +1327,9 @@ async function baixarPdf(e,btn){
   try{
     try{await carregarPdf()}catch(err){toast('Não foi possível carregar o gerador de PDF. Verifique a internet e tente de novo.',true);return}
     const {jsPDF}=window.jspdf,autoTable=window.autoTable;
-    const hoje=hojeStr(),ate=addDias(hoje,365);
+    const PDF_MESES=18,hoje=hojeStr(),ate=(()=>{const [y,m,d]=hoje.split('-').map(Number),x=new Date(Date.UTC(y,m-1+PDF_MESES,d));return x.toISOString().slice(0,10)})();
     const ls=gerar(e,ate).filter(l=>l.data>=hoje);
-    if(!ls.length){toast('Não há plantões nos próximos 12 meses.',true);return}
+    if(!ls.length){toast('Não há plantões nos próximos '+PDF_MESES+' meses.',true);return}
     const maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
     const body=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return [br(l.data),...rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])})]});
     const ac=hexRgb(cor(e)),faixa=misturaBranco(ac,.84),faixaCab=misturaBranco(ac,.72),zebra=misturaBranco(ac,.89),faixaZebra=misturaBranco(ac,.75);
@@ -1340,7 +1340,7 @@ async function baixarPdf(e,btn){
     const tipos=rM.map(lab=>destCls(e,lab)),temFx=tipos.map(t=>t.includes('fx')),temBd=tipos.map(t=>t.includes('bd'));
     const deitado=rM.length>8,doc=new jsPDF({orientation:deitado?'landscape':'portrait',unit:'mm',format:'a4'});
     const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),M=12;
-    // Tamanho da letra e altura das linhas: tenta caber os 12 meses numa página só
+    // Tamanho da letra e altura das linhas: tenta caber tudo numa página só
     const larguraNome=(W-2*M-22)/rM.length,altLinha=(H-28-17)/(body.length+1.8);
     const fs=Math.max(6.5,Math.min(9.5,larguraNome/2.4,(altLinha-2)/(.3528*1.2))),pad=Math.max(1,Math.min(1.9,(altLinha-fs*.3528*1.2)/2));
     const posBd={};let fundoPag=0;
@@ -1348,7 +1348,7 @@ async function baixarPdf(e,btn){
     doc.setFillColor(...ac);doc.rect(0,0,W,3,'F');
     doc.setFont('helvetica','bold');doc.setFontSize(17);doc.setTextColor(...ac);doc.text(e.nome,M,16);
     doc.setFont('helvetica','normal');
-    const linha2=[(S.config&&S.config.servico)||'',e.lideranca?'Liderança: '+e.lideranca:'','Próximos 12 meses: '+br(ls[0].data)+' a '+br(ls[ls.length-1].data),ls.length+' plantões'].filter(Boolean).join('   ·   ');
+    const linha2=[(S.config&&S.config.servico)||'',e.lideranca?'Liderança: '+e.lideranca:'','Próximos '+PDF_MESES+' meses: '+br(ls[0].data)+' a '+br(ls[ls.length-1].data),ls.length+' plantões'].filter(Boolean).join('   ·   ');
     doc.setFontSize(9.5);doc.setTextColor(70,78,95);doc.text(linha2,M,22.5,{maxWidth:W-2*M});
     let rodape='';try{rodape='Gerado em '+new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}catch(x){}
     autoTable(doc,{
