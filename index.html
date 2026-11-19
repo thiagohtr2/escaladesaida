@@ -1320,7 +1320,7 @@ const misturaBranco=(c,t)=>c.map(v=>Math.round(v+(255-v)*t));
 const escurecer=(c,f)=>c.map(v=>Math.round(v*f));
 const lumin=c=>{const [r,g,b]=c.map(v=>{v/=255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4});return .2126*r+.7152*g+.0722*b};
 /* escurece até o texto branco ficar bem legível */
-const paraBranco=c=>{let x=c.slice(),i=0;while(1.05/(lumin(x)+.05)<4.6&&i++<30)x=escurecer(x,.93);return x};
+const paraBranco=(c,min=4.6)=>{let x=c.slice(),i=0;while(1.05/(lumin(x)+.05)<min&&i++<30)x=escurecer(x,.93);return x};
 async function baixarPdf(e,btn){
   if(!e)return;
   const rot=btn&&btn.innerHTML;if(btn){btn.disabled=true;btn.innerHTML=icon('pdf')+' Gerando…'}
@@ -1335,7 +1335,8 @@ async function baixarPdf(e,btn){
     const ac=hexRgb(cor(e)),faixa=misturaBranco(ac,.84),faixaCab=misturaBranco(ac,.72),zebra=misturaBranco(ac,.89),faixaZebra=misturaBranco(ac,.75);
     // Data e faixas num tom mais escuro da cor, com letra branca (alternando dois tons)
     // a coluna Data fica sempre mais escura que as faixas, mesmo no tom claro dela
-    const fxA=paraBranco(ac),fxB=escurecer(fxA,.88),dataB=escurecer(fxB,.8),dataA=escurecer(dataB,.84),cabEsc=escurecer(dataA,.85);
+    // linhas claras bem mais claras que as escuras, para as listras aparecerem também nas faixas e na data
+    const base=paraBranco(ac),fxA=paraBranco(misturaBranco(ac,.3),3.2),fxB=base,dataB=escurecer(base,.8),dataA=escurecer(base,.56),cabEsc=escurecer(base,.48);
     const tipos=rM.map(lab=>destCls(e,lab)),temFx=tipos.map(t=>t.includes('fx')),temBd=tipos.map(t=>t.includes('bd'));
     const deitado=rM.length>8,doc=new jsPDF({orientation:deitado?'landscape':'portrait',unit:'mm',format:'a4'});
     const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),M=12;
