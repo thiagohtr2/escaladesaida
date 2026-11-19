@@ -110,6 +110,8 @@ body.publico .prox-ver{display:none}
 .sheet .ppl td.bd{box-shadow:none!important}
 .sheet .ppl td.bd .pv{border-color:var(--ac);color:var(--ac-d);font-weight:650}
 .zap-prev{display:grid;gap:3px;padding:12px 14px;border-radius:12px;background:#e7f7e3;border:1px solid #cfe9c8;font-size:13px;color:#1f2d1c;max-width:420px}.zap-prev span{color:#3c4a39}.zap-prev .zap-link{color:#1a6fb5;word-break:break-all;font-size:12px}
+.chk-borda{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0 4px;cursor:pointer}
+.chk-borda input{margin-top:3px;width:18px;height:18px;accent-color:var(--accent);flex:none}.chk-borda>span{display:grid;gap:2px;font-size:13px}.chk-borda>span span{font-size:12px;color:var(--ink-3)}
 .fundo-grp{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 2px}
 .fundos{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:4px 0}
 .fundo-op{display:grid;gap:6px;justify-items:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--ink-2)}
@@ -675,7 +677,7 @@ function compactar(e){
     (e.entradaPadrao||'ultima')==='ultima'?'':limpo(e.entradaPadrao),e.cor||'',
     Object.entries(dm).filter(([,v])=>v).map(([l,v])=>limpo(l)+(v==='faixa'?'^':v==='ambos'?'*':'_')).join('|'),
     fx.map(x=>limpo(x.rot)+'>'+(x.ancora==='fim'?'':limpo(x.ancora))).join('|'),
-    (e.periodo||'hoje')==='hoje'?'':e.periodo,limpo(e.lideranca),ev,e.fundo||''].join('\n').replace(/\n+$/,'');
+    (e.periodo||'hoje')==='hoje'?'':e.periodo,limpo(e.lideranca),ev,e.fundo||'',e.bordaTabela===false?'0':''].join('\n').replace(/\n+$/,'');
 }
 function descompactar(txt){
   const c=txt.split('\n');if(c[0]!=='2')throw new Error('link');
@@ -685,7 +687,7 @@ function descompactar(txt){
   const eventos=(c[16]?c[16].split(';'):[]).map((x,i)=>{const [t,kk,a,b]=x.split(',');const tipo=TIPOS[+t],data=addDias(ini,parseInt(kk,36)*f),o={id:'p'+i,tipo,data,criado:i};
     if(tipo==='troca'){o.sai=a;o.entra=b}else{o.nome=a;if(tipo==='ausencia')o.cobre=b||'';if(tipo==='entrada'&&b)o.posicao=b;if(tipo==='fixar')o.rot=b}return o});
   const e={id:'publica',nome:c[3]||'Escala',inicio:ini,frequencia:f,rotulos:lista(c[6]),equipe:lista(c[7]),prefixo:c[8]||'P',sentido:c[9]==='1'?'sobe':'desce',
-    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:''};
+    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0'};
   return {g,s:c[2]||'',e};
 }
 async function linkCurto(e){
@@ -700,7 +702,7 @@ async function lerLinkPublico(){
   if(code[0]==='z'){if(typeof DecompressionStream!=='function')throw new Error('Este navegador é antigo demais para abrir o link. Atualize o navegador e tente de novo.');const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));bytes=new Uint8Array(await new Response(st).arrayBuffer())}
   return descompactar(new TextDecoder().decode(bytes));
 }
-function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','fixas','fixasFim','periodo','lideranca','eventos','fundo'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
+function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','fixas','fixasFim','periodo','lideranca','eventos','fundo','bordaTabela'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
 async function iniciarPublico(){
   S.publico=null;S.publicoErro=null;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';
   try{
@@ -1047,7 +1049,7 @@ const dl=()=>`<datalist id="dl-nomes">${todosNomes().map(n=>`<option value="${es
 function abrirFormEscala(e,dup){
   const novo=!e||dup;
   const base=e||{nome:'',inicio:proximaSemana(3),frequencia:14,rotulos:['Plus','Semi'],prefixo:'P',equipe:[],sentido:'desce',entradaPadrao:'ultima',cor:'anil',destaques:['faixa'],eventos:[]};
-  S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',fundo:base.fundo||'',periodo:base.periodo||'hoje',inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
+  S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',fundo:base.fundo||'',bordaTabela:base.bordaTabela!==false,periodo:base.periodo||'hoje',inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
     posicoes:rotulos(base,(base.equipe||[]).length),rotulosBase:rotulos(base,(base.equipe||[]).length),fixas:(()=>{const fx=fixasDe(base);return rotulos(base,(base.equipe||[]).length).map(l=>{const f=fx.find(x=>x.rot===l);return f?(f.ancora==='fim'?'fim':'depois:'+f.ancora):''})})(),prefixo:base.prefixo||'P',equipe:dup?[]:[...(base.equipe||[])],sentido:base.sentido||'desce',entradaPadrao:base.entradaPadrao||'ultima',
     cor:dup?(Object.keys(CORES).find(k=>k!==base.cor)||'azul'):(base.cor||'verde'),destaques:rotulos(base,Math.max((base.equipe||[]).length,1)).map(l=>destLab(base,l)),eventos:dup?[]:[...(base.eventos||[])],ordem:base.ordem||Date.now(),dupDe:dup?base.nome:null};
   {const ps=S.form.posicoes;S.form.fixosP=(S.form.eventos||[]).filter(x=>x.tipo==='fixar'&&x.inicial).map(x=>({nome:x.nome,i:ps.indexOf(x.rot)}));}
@@ -1092,7 +1094,8 @@ function renderForm(){
       <label class="radio"><input type="radio" name="sentido" value="sobe" ${f.sentido==='sobe'?'checked':''}><span><b>Todos sobem uma posição</b><span>A primeira posição vai para a última.</span></span></label></div></fieldset>
     <div class="fld"><label for="fe-entrada">Quando entrar alguém novo, ele vai para</label><select class="sel" id="fe-entrada" data-f="entradaPadrao">${entradaOpts()}</select><small>Na hora de registrar a entrada dá para escolher outra posição.</small></div>
     <fieldset class="fld"><legend>Cor da escala</legend><small>Muda a cor da escala inteira: faixas, bordas, próximo plantão e cartões.</small><div class="swatches">${GRUPOS_COR.map(([g,nome])=>`<div class="sw-g" role="group" aria-label="${nome}"><span class="sw-n">${nome}</span><div class="sw-t">${TONS_COR.map(([suf])=>{const k=g+suf;return `<label style="--c:${CORES[k]}" title="${NOMES_COR[k]}"><input type="radio" name="cor" value="${k}" ${f.cor===k?'checked':''}><span class="sr">${NOMES_COR[k]}</span></label>`}).join('')}</div></div>`).join('')}</div></fieldset>
-    <fieldset class="fld"><legend>Fundo do PDF e da imagem</legend><small>Arte suave na cor da escala, usada ao baixar o PDF ou a imagem.</small>${GRUPOS_FUNDO.map(([gk,gn])=>`<p class="fundo-grp">${gn}</p><div class="fundos">${FUNDOS.filter(x=>x[2]===gk).map(([v,nome])=>`<label class="fundo-op"><input type="radio" name="fundo" value="${v}" ${(f.fundo||'')===v?'checked':''}><canvas class="fundo-prev" data-v="${v}" width="168" height="216" aria-hidden="true"></canvas><span>${nome}</span></label>`).join('')}</div>`).join('')}</fieldset>
+    <fieldset class="fld"><legend>Fundo do PDF e da imagem</legend><small>Arte suave na cor da escala, usada ao baixar o PDF ou a imagem.</small>
+      <label class="chk-borda"><input type="checkbox" name="bordaTabela" ${f.bordaTabela!==false?'checked':''}><span><b>Borda em volta da tabela</b><span>Contorno na cor da escala, da Data até a última posição.</span></span></label>${GRUPOS_FUNDO.map(([gk,gn])=>`<p class="fundo-grp">${gn}</p><div class="fundos">${FUNDOS.filter(x=>x[2]===gk).map(([v,nome])=>`<label class="fundo-op"><input type="radio" name="fundo" value="${v}" ${(f.fundo||'')===v?'checked':''}><canvas class="fundo-prev" data-v="${v}" width="168" height="216" aria-hidden="true"></canvas><span>${nome}</span></label>`).join('')}</div>`).join('')}</fieldset>
     ${!f.novo?'<p class="warnbox">Mudar a equipe inicial, a data do primeiro plantão ou o rodízio refaz a escala inteira, inclusive os plantões passados. Para alguém que entra ou sai a partir de uma data, use <b>Movimentar equipe</b>.</p>':''}
     <p class="err" id="fe-err" role="alert"></p>
   </div>
@@ -1156,7 +1159,7 @@ function salvarForm(){
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao=mapa(f.entradaPadrao);
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao='ultima';
   f.eventos=f.eventos.map(ev=>ev.tipo==='entrada'&&ev.posicao&&!['ultima','primeira'].includes(ev.posicao)?Object.assign({},ev,{posicao:mapa(ev.posicao)}):ev);
-  const e={id:f.id,linkId:f.linkId,nome:f.nome.trim(),lideranca:(f.lideranca||'').trim().replace(/\s+/g,' '),fundo:f.fundo||'',periodo:f.periodo||'hoje',inicio:f.inicio,frequencia:f.frequencia,rotulos:fe.rotulos,prefixo:fe.prefixo,equipe:eq,sentido:f.sentido,entradaPadrao:f.entradaPadrao,cor:f.cor,fixas:fe.fixas,destaques:rs.reduce((m,l,i)=>{if(f.destaques[i])m[l]=f.destaques[i];return m},{}),eventos:f.eventos,ordem:f.ordem};
+  const e={id:f.id,linkId:f.linkId,nome:f.nome.trim(),lideranca:(f.lideranca||'').trim().replace(/\s+/g,' '),fundo:f.fundo||'',bordaTabela:f.bordaTabela!==false,periodo:f.periodo||'hoje',inicio:f.inicio,frequencia:f.frequencia,rotulos:fe.rotulos,prefixo:fe.prefixo,equipe:eq,sentido:f.sentido,entradaPadrao:f.entradaPadrao,cor:f.cor,fixas:fe.fixas,destaques:rs.reduce((m,l,i)=>{if(f.destaques[i])m[l]=f.destaques[i];return m},{}),eventos:f.eventos,ordem:f.ordem};
   const novo=f.novo;fechar();S.escalaSel=e.id;salvarEscala(e);toast(novo?'Escala criada.':'Escala atualizada.');irPara('escalas');
 }
 
@@ -1538,9 +1541,15 @@ async function baixarImagem(e,btn){
     for(let r=0;r<=body.length+1;r++){const yy=topo+(r?altCab+(r-1)*altL:0)+.5;g.moveTo(M,yy);g.lineTo(W-M,yy)}
     for(let c=-1;c<=n;c++){const xx=(c<n?xCol(c):W-M)+.5;g.moveTo(xx,topo);g.lineTo(xx,y)}
     g.stroke();
-    // bordas dos destaques (emendadas quando vizinhas)
+    // borda em volta da tabela toda (da Data até a última posição) e, por dentro, só as divisas das colunas com borda:
+    // onde a borda de uma coluna encosta na borda da tabela, as duas viram uma linha só
     g.strokeStyle=rgb(ac);g.lineWidth=2.5;
-    for(let c=0;c<n;c++){if(!temBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;const x0=xCol(c),x1=xCol(f)+colW;g.strokeRect(x0+1.25,topo+1.25,x1-x0-2.5,y-topo-2.5);c=f}
+    const bordaT=e.bordaTabela!==false;
+    for(let c=0;c<n;c++){if(!temBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;const x0=xCol(c),x1=xCol(f)+colW;
+      if(bordaT){g.beginPath();g.moveTo(x0,topo);g.lineTo(x0,y);if(f<n-1){g.moveTo(x1,topo);g.lineTo(x1,y)}g.stroke()}
+      else g.strokeRect(x0+1.25,topo+1.25,x1-x0-2.5,y-topo-2.5);
+      c=f}
+    if(bordaT)g.strokeRect(M+1.25,topo+1.25,W-2*M-2.5,y-topo-2.5);
     const blob=await new Promise(ok=>cv.toBlob(ok,'image/png'));
     if(!blob)throw new Error('png');
     const nome=nomeArquivo(e,'png'),arq=new File([blob],nome,{type:'image/png'});
@@ -1569,7 +1578,7 @@ async function baixarPdf(e,btn){
     // Tamanho da letra e altura das linhas: tenta caber tudo numa página só
     const larguraNome=(W-2*M-22)/rM.length,altLinha=(H-iniY-baixo-3)/(body.length+1.8);
     const fs=Math.max(6.5,Math.min(9.5,larguraNome/2.4,(altLinha-2)/(.3528*1.2))),pad=Math.max(1,Math.min(1.9,(altLinha-fs*.3528*1.2)/2));
-    const posBd={};let fundoPag=0;
+    const posBd={};let fundoPag=0,topoPag=Infinity;
     // Arte de fundo: desenhada como imagem atrás de cada página, com o cartão branco onde a tabela fica
     const fundos=[];
     const imgFundo=(top,bottom)=>{
@@ -1619,16 +1628,21 @@ async function baixarPdf(e,btn){
     autoTable(doc,opcoesTabela({
       willDrawPage:d=>{if(arte&&d.pageNumber>1){const f=fundos[d.pageNumber-1]||{top:14+dy,bottom:H-baixo};doc.addImage(imgFundo(f.top,f.bottom),'JPEG',0,0,W,H)}},
       didDrawCell:d=>{
-        const c=d.column.index-1;if(c<0||!temBd[c])return;
-        const {x,y,width:w,height:h}=d.cell;doc.setDrawColor(...ac);doc.setLineWidth(.7);
-        if(!temBd[c-1])doc.line(x,y,x,y+h);
-        if(!temBd[c+1])doc.line(x+w,y,x+w,y+h);
-        if(d.section==='head')doc.line(x,y,x+w,y);
-        posBd[c]={x,w};if(d.section==='body')fundoPag=Math.max(fundoPag,y+h);
+        // guarda onde ficam as colunas e o topo/fim da tabela nesta página; as bordas são desenhadas no fim da página
+        const c=d.column.index-1,{x,y,width:w,height:h}=d.cell;posBd[c]={x,w};
+        if(d.section==='head')topoPag=Math.min(topoPag,y);else fundoPag=Math.max(fundoPag,y+h);
       },
       didDrawPage:d=>{
-        if(fundoPag){doc.setDrawColor(...ac);doc.setLineWidth(.7);Object.values(posBd).forEach(({x,w})=>doc.line(x,fundoPag,x+w,fundoPag))}
-        fundoPag=0;
+        if(fundoPag&&topoPag<Infinity){
+          // borda em volta da tabela toda; por dentro, só as divisas das colunas com borda (sem engrossar onde encostam na borda da tabela)
+          const n=rM.length;doc.setDrawColor(...ac);doc.setLineWidth(.7);
+          const bordaT=e.bordaTabela!==false;
+          for(let c=0;c<n;c++){if(!temBd[c]||!posBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;const x0=posBd[c].x,x1=posBd[f].x+posBd[f].w;
+            if(bordaT){doc.line(x0,topoPag,x0,fundoPag);if(f<n-1)doc.line(x1,topoPag,x1,fundoPag)}else doc.rect(x0,topoPag,x1-x0,fundoPag-topoPag,'S');
+            c=f}
+          if(bordaT){const xa=posBd[-1]?posBd[-1].x:M,xb=posBd[n-1]?posBd[n-1].x+posBd[n-1].w:W-M;doc.rect(xa,topoPag,xb-xa,fundoPag-topoPag,'S')}
+        }
+        fundoPag=0;topoPag=Infinity;
         if(d.pageNumber>1){doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...ac);doc.text(e.nome+' (continuação)',M,10)}}
     }));
     const total=doc.internal.getNumberOfPages();
@@ -1720,6 +1734,7 @@ dlg.addEventListener('input',ev=>{
     else if(t.name==='sentido')S.form.sentido=t.value;
     else if(t.name==='cor'){S.form.cor=t.value;desenharPrevFundos()}
     else if(t.name==='fundo')S.form.fundo=t.value;
+    else if(t.name==='bordaTabela')S.form.bordaTabela=t.checked;
     else if(t.dataset.fpn!==undefined)S.form.fixosP[+t.dataset.fpn].nome=t.value;
     else if(t.dataset.fpr!==undefined)S.form.fixosP[+t.dataset.fpr].i=+t.value;
   }else if(S.mov){
