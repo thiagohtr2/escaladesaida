@@ -1362,8 +1362,9 @@ async function baixarPdf(e,btn){
         const listra=d.section==='body'&&d.row.index%2===1; // linha sim, linha não na cor da escala (tom claro)
         const escura=c<0||temFx[c];
         if(escura){d.cell.styles.fillColor=d.section==='head'?cabEsc:(listra?fxB:fxA);d.cell.styles.textColor=[255,255,255]}
-        else d.cell.styles.fillColor=d.section==='head'?[243,245,250]:listra?zebra:[255,255,255];
-        if(d.section==='head'&&c>=0&&!temFx[c]&&temBd[c])d.cell.styles.textColor=ac;
+        else d.cell.styles.fillColor=listra?zebra:[255,255,255];
+        // cabeçalho das posições: todo na mesma cor escura das faixas, com letra branca
+        if(d.section==='head'){d.cell.styles.fillColor=cabEsc;d.cell.styles.textColor=[255,255,255]}
         if(d.section==='body'){
           if(d.cell.raw==='Vago'){d.cell.styles.fontStyle='bolditalic';if(!escura)d.cell.styles.textColor=[176,58,58]}
         }
