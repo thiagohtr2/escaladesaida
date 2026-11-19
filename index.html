@@ -1340,7 +1340,7 @@ async function baixarPdf(e,btn){
     // Cabeçalho
     doc.setFillColor(...ac);doc.rect(0,0,W,3,'F');
     doc.setFont('helvetica','bold');doc.setFontSize(17);doc.setTextColor(...ac);doc.text(e.nome,M,16);
-    doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(120,128,145);doc.text('Rodízio de Plantões',W-M,16,{align:'right'});
+    doc.setFont('helvetica','normal');
     const linha2=[(S.config&&S.config.servico)||'',e.lideranca?'Liderança: '+e.lideranca:'','Próximos 12 meses: '+br(ls[0].data)+' a '+br(ls[ls.length-1].data),ls.length+' plantões'].filter(Boolean).join('   ·   ');
     doc.setFontSize(9.5);doc.setTextColor(70,78,95);doc.text(linha2,M,22.5,{maxWidth:W-2*M});
     let rodape='';try{rodape='Gerado em '+new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}catch(x){}
