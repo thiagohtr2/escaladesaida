@@ -1538,9 +1538,12 @@ async function baixarImagem(e,btn){
     for(let r=0;r<=body.length+1;r++){const yy=topo+(r?altCab+(r-1)*altL:0)+.5;g.moveTo(M,yy);g.lineTo(W-M,yy)}
     for(let c=-1;c<=n;c++){const xx=(c<n?xCol(c):W-M)+.5;g.moveTo(xx,topo);g.lineTo(xx,y)}
     g.stroke();
-    // bordas dos destaques (emendadas quando vizinhas)
+    // borda em volta da tabela toda (da Data até a última posição) e, por dentro, só as divisas das colunas com borda:
+    // onde a borda de uma coluna encosta na borda da tabela, as duas viram uma linha só
     g.strokeStyle=rgb(ac);g.lineWidth=2.5;
-    for(let c=0;c<n;c++){if(!temBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;const x0=xCol(c),x1=xCol(f)+colW;g.strokeRect(x0+1.25,topo+1.25,x1-x0-2.5,y-topo-2.5);c=f}
+    for(let c=0;c<n;c++){if(!temBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;
+      g.beginPath();g.moveTo(xCol(c),topo);g.lineTo(xCol(c),y);if(f<n-1){const x1=xCol(f)+colW;g.moveTo(x1,topo);g.lineTo(x1,y)}g.stroke();c=f}
+    g.strokeRect(M+1.25,topo+1.25,W-2*M-2.5,y-topo-2.5);
     const blob=await new Promise(ok=>cv.toBlob(ok,'image/png'));
     if(!blob)throw new Error('png');
     const nome=nomeArquivo(e,'png'),arq=new File([blob],nome,{type:'image/png'});
@@ -1569,7 +1572,7 @@ async function baixarPdf(e,btn){
     // Tamanho da letra e altura das linhas: tenta caber tudo numa página só
     const larguraNome=(W-2*M-22)/rM.length,altLinha=(H-iniY-baixo-3)/(body.length+1.8);
     const fs=Math.max(6.5,Math.min(9.5,larguraNome/2.4,(altLinha-2)/(.3528*1.2))),pad=Math.max(1,Math.min(1.9,(altLinha-fs*.3528*1.2)/2));
-    const posBd={};let fundoPag=0;
+    const posBd={};let fundoPag=0,topoPag=Infinity;
     // Arte de fundo: desenhada como imagem atrás de cada página, com o cartão branco onde a tabela fica
     const fundos=[];
     const imgFundo=(top,bottom)=>{
@@ -1619,16 +1622,19 @@ async function baixarPdf(e,btn){
     autoTable(doc,opcoesTabela({
       willDrawPage:d=>{if(arte&&d.pageNumber>1){const f=fundos[d.pageNumber-1]||{top:14+dy,bottom:H-baixo};doc.addImage(imgFundo(f.top,f.bottom),'JPEG',0,0,W,H)}},
       didDrawCell:d=>{
-        const c=d.column.index-1;if(c<0||!temBd[c])return;
-        const {x,y,width:w,height:h}=d.cell;doc.setDrawColor(...ac);doc.setLineWidth(.7);
-        if(!temBd[c-1])doc.line(x,y,x,y+h);
-        if(!temBd[c+1])doc.line(x+w,y,x+w,y+h);
-        if(d.section==='head')doc.line(x,y,x+w,y);
-        posBd[c]={x,w};if(d.section==='body')fundoPag=Math.max(fundoPag,y+h);
+        // guarda onde ficam as colunas e o topo/fim da tabela nesta página; as bordas são desenhadas no fim da página
+        const c=d.column.index-1,{x,y,width:w,height:h}=d.cell;posBd[c]={x,w};
+        if(d.section==='head')topoPag=Math.min(topoPag,y);else fundoPag=Math.max(fundoPag,y+h);
       },
       didDrawPage:d=>{
-        if(fundoPag){doc.setDrawColor(...ac);doc.setLineWidth(.7);Object.values(posBd).forEach(({x,w})=>doc.line(x,fundoPag,x+w,fundoPag))}
-        fundoPag=0;
+        if(fundoPag&&topoPag<Infinity){
+          // borda em volta da tabela toda; por dentro, só as divisas das colunas com borda (sem engrossar onde encostam na borda da tabela)
+          const n=rM.length;doc.setDrawColor(...ac);doc.setLineWidth(.7);
+          for(let c=0;c<n;c++){if(!temBd[c]||!posBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;
+            doc.line(posBd[c].x,topoPag,posBd[c].x,fundoPag);if(f<n-1&&posBd[f])doc.line(posBd[f].x+posBd[f].w,topoPag,posBd[f].x+posBd[f].w,fundoPag);c=f}
+          const xa=posBd[-1]?posBd[-1].x:M,xb=posBd[n-1]?posBd[n-1].x+posBd[n-1].w:W-M;doc.rect(xa,topoPag,xb-xa,fundoPag-topoPag,'S');
+        }
+        fundoPag=0;topoPag=Infinity;
         if(d.pageNumber>1){doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...ac);doc.text(e.nome+' (continuação)',M,10)}}
     }));
     const total=doc.internal.getNumberOfPages();
