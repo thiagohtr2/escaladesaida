@@ -110,6 +110,7 @@ body.publico .prox-ver{display:none}
 .sheet .ppl td.bd{box-shadow:none!important}
 .sheet .ppl td.bd .pv{border-color:var(--ac);color:var(--ac-d);font-weight:650}
 .zap-prev{display:grid;gap:3px;padding:12px 14px;border-radius:12px;background:#e7f7e3;border:1px solid #cfe9c8;font-size:13px;color:#1f2d1c;max-width:420px}.zap-prev span{color:#3c4a39}.zap-prev .zap-link{color:#1a6fb5;word-break:break-all;font-size:12px}
+.fundo-grp{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 2px}
 .fundos{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:4px 0}
 .fundo-op{display:grid;gap:6px;justify-items:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--ink-2)}
 .fundo-op input{position:absolute;opacity:0;pointer-events:none}
@@ -1091,7 +1092,7 @@ function renderForm(){
       <label class="radio"><input type="radio" name="sentido" value="sobe" ${f.sentido==='sobe'?'checked':''}><span><b>Todos sobem uma posição</b><span>A primeira posição vai para a última.</span></span></label></div></fieldset>
     <div class="fld"><label for="fe-entrada">Quando entrar alguém novo, ele vai para</label><select class="sel" id="fe-entrada" data-f="entradaPadrao">${entradaOpts()}</select><small>Na hora de registrar a entrada dá para escolher outra posição.</small></div>
     <fieldset class="fld"><legend>Cor da escala</legend><small>Muda a cor da escala inteira: faixas, bordas, próximo plantão e cartões.</small><div class="swatches">${GRUPOS_COR.map(([g,nome])=>`<div class="sw-g" role="group" aria-label="${nome}"><span class="sw-n">${nome}</span><div class="sw-t">${TONS_COR.map(([suf])=>{const k=g+suf;return `<label style="--c:${CORES[k]}" title="${NOMES_COR[k]}"><input type="radio" name="cor" value="${k}" ${f.cor===k?'checked':''}><span class="sr">${NOMES_COR[k]}</span></label>`}).join('')}</div></div>`).join('')}</div></fieldset>
-    <fieldset class="fld"><legend>Fundo do PDF e da imagem</legend><small>Arte suave na cor da escala, usada ao baixar o PDF ou a imagem.</small><div class="fundos">${FUNDOS.map(([v,nome])=>`<label class="fundo-op"><input type="radio" name="fundo" value="${v}" ${(f.fundo||'')===v?'checked':''}><canvas class="fundo-prev" data-v="${v}" width="168" height="216" aria-hidden="true"></canvas><span>${nome}</span></label>`).join('')}</div></fieldset>
+    <fieldset class="fld"><legend>Fundo do PDF e da imagem</legend><small>Arte suave na cor da escala, usada ao baixar o PDF ou a imagem.</small>${GRUPOS_FUNDO.map(([gk,gn])=>`<p class="fundo-grp">${gn}</p><div class="fundos">${FUNDOS.filter(x=>x[2]===gk).map(([v,nome])=>`<label class="fundo-op"><input type="radio" name="fundo" value="${v}" ${(f.fundo||'')===v?'checked':''}><canvas class="fundo-prev" data-v="${v}" width="168" height="216" aria-hidden="true"></canvas><span>${nome}</span></label>`).join('')}</div>`).join('')}</fieldset>
     ${!f.novo?'<p class="warnbox">Mudar a equipe inicial, a data do primeiro plantão ou o rodízio refaz a escala inteira, inclusive os plantões passados. Para alguém que entra ou sai a partir de uma data, use <b>Movimentar equipe</b>.</p>':''}
     <p class="err" id="fe-err" role="alert"></p>
   </div>
@@ -1368,7 +1369,10 @@ const nomeArquivo=(e,ext)=>('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').repla
 
 /* ================= Imagem PNG em alta qualidade (mesmo visual do PDF) ================= */
 /* Fundo do PDF e da imagem (escolhido em Editar escala) */
-const FUNDOS=[['','Sem fundo'],['cor','Só a cor'],['circulos','Círculos'],['pontos','Pontilhado'],['listras','Listras']];
+const FUNDOS=[['','Sem fundo','b'],['cor','Cor clarinha','b'],['cor2','Cor média','b'],['cor3','Cor forte','b'],
+  ['circulos','Círculos','c'],['pontos','Pontilhado','c'],['listras','Listras','c'],['bolhas','Bolhas','c'],['folhagem','Folhagem','c'],['aurora','Aurora','c'],['confete','Confete','c'],['ondas','Ondas','c'],
+  ['moldura','Moldura fina','f'],['topo','Faixa no topo','f'],['quadriculado','Quadriculado','f'],['lateral','Faixa lateral','f'],['cantoneiras','Cantoneiras','f']];
+const GRUPOS_FUNDO=[['b','Básicos'],['c','Criativos'],['f','Formais']];
 function desenharPrevFundos(){
   const c=hexRgb(CORES[(S.form&&S.form.cor)||'anil']||'#4758d6');
   document.querySelectorAll('canvas.fundo-prev').forEach(cv=>{
@@ -1381,12 +1385,14 @@ function desenharPrevFundos(){
     g.strokeStyle='rgba(0,0,0,.06)';g.lineWidth=2;g.strokeRect(t.x,t.y,t.w,t.h);
   });
 }
+/* número pseudoaleatório com semente: a arte sai sempre igual */
+const semente=n=>()=>{n=(n*16807)%2147483647;return (n-1)/2147483646};
 /* Arte leve no fundo: formas na cor da escala, bem suaves, e um cartão branco atrás da tabela */
 function arteFundo(g,W,H,ac,v,t){
   v={circulos:'a',pontos:'b',listras:'c'}[v]||v;
   const a=x=>'rgba('+ac.join(',')+','+x+')',bola=(x,y,r,al)=>{g.fillStyle=a(al);g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.fill()};
-  if(v==='cor'){ // só a cor da escala, bem clarinha
-    g.fillStyle='rgb('+misturaBranco(ac,.94).join(',')+')';g.fillRect(0,0,W,H);
+  if(v==='cor'||v==='cor2'||v==='cor3'){ // só a cor da escala: clarinha, média ou forte
+    g.fillStyle='rgb('+misturaBranco(ac,{cor:.93,cor2:.84,cor3:.72}[v]).join(',')+')';g.fillRect(0,0,W,H);
   }else if(v==='a'){ // círculos suaves sobrepostos, anéis, pontinhos e ondas
     g.fillStyle='rgb('+misturaBranco(ac,.94).join(',')+')';g.fillRect(0,0,W,H);
     const anel=(x,y,r,al,lw)=>{g.strokeStyle=a(al);g.lineWidth=lw;g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.stroke()};
@@ -1405,6 +1411,60 @@ function arteFundo(g,W,H,ac,v,t){
     g.fillStyle=a(.07);g.beginPath();g.moveTo(0,H-150);g.bezierCurveTo(W*.3,H-210,W*.55,H-60,W,H-140);g.lineTo(W,H);g.lineTo(0,H);g.fill();
     g.fillStyle=a(.06);g.beginPath();g.moveTo(0,H-90);g.bezierCurveTo(W*.35,H-30,W*.6,H-150,W,H-70);g.lineTo(W,H);g.lineTo(0,H);g.fill();
     g.strokeStyle=a(.14);g.lineWidth=1.5;g.beginPath();g.moveTo(0,H-118);g.bezierCurveTo(W*.32,H-170,W*.58,H-60,W,H-108);g.stroke();
+  }else if(v==='bolhas'){ // bolhas de vários tamanhos subindo pelas laterais
+    g.fillStyle='rgb('+misturaBranco(ac,.95).join(',')+')';g.fillRect(0,0,W,H);
+    const r=semente(7);
+    for(let i=0;i<70;i++){const lado=r()<.5,x=lado?r()*(t.x+40)-20:W-r()*(W-t.x-t.w+40)+20,y=r()*H,rr=4+r()**2.2*34,al=.06+r()*.12;
+      if(r()<.45){g.strokeStyle=a(al+.05);g.lineWidth=1.5;g.beginPath();g.arc(x,y,rr,0,Math.PI*2);g.stroke()}else bola(x,y,rr,al)}
+    for(let i=0;i<24;i++){const x=W*.68+r()*W*.34,y=r()*(t.y-10),rr=3+r()*14;bola(x,y,rr,.05+r()*.1)}
+    for(let i=0;i<18;i++){const x=r()*W,y=t.y+t.h+12+r()*(H-t.y-t.h),rr=3+r()*16;bola(x,y,rr,.06+r()*.1)}
+  }else if(v==='folhagem'){ // folhas orgânicas nos cantos
+    g.fillStyle='rgb('+misturaBranco(ac,.95).join(',')+')';g.fillRect(0,0,W,H);
+    const folha=(x,y,c,ang,al)=>{g.save();g.translate(x,y);g.rotate(ang);g.fillStyle=a(al);g.beginPath();g.moveTo(0,0);g.bezierCurveTo(c*.35,-c*.32,c*.75,-c*.28,c,0);g.bezierCurveTo(c*.75,c*.28,c*.35,c*.32,0,0);g.fill();
+      g.strokeStyle=a(Math.min(.3,al+.08));g.lineWidth=1.2;g.beginPath();g.moveTo(0,0);g.lineTo(c*.92,0);g.stroke();g.restore()};
+    const ramo=(x,y,ang,esc,al)=>{for(let i=0;i<7;i++){const d=i*esc*26,px=x+Math.cos(ang)*d,py=y+Math.sin(ang)*d;folha(px,py,esc*(70-i*6),ang-.9,al);folha(px,py,esc*(66-i*6),ang+.9,al*.85)}
+      g.strokeStyle=a(al+.06);g.lineWidth=2;g.beginPath();g.moveTo(x,y);g.lineTo(x+Math.cos(ang)*esc*190,y+Math.sin(ang)*esc*190);g.stroke()};
+    ramo(W+10,-10,Math.PI*.78,1.1,.12);ramo(W-40,-30,Math.PI*.62,.8,.08);ramo(-10,H+10,-Math.PI*.22,1.15,.11);ramo(30,H+30,-Math.PI*.38,.8,.08);
+  }else if(v==='aurora'){ // manchas de luz suaves que se misturam
+    g.fillStyle='rgb('+misturaBranco(ac,.96).join(',')+')';g.fillRect(0,0,W,H);
+    const luz=(x,y,r,cor,al)=>{const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,'rgba('+cor.join(',')+','+al+')');gr.addColorStop(1,'rgba('+cor.join(',')+',0)');g.fillStyle=gr;g.fillRect(x-r,y-r,2*r,2*r)};
+    luz(W*.85,H*.05,W*.55,ac,.28);luz(W*.15,-40,W*.4,misturaBranco(ac,.4),.3);luz(W*.05,H*.95,W*.6,ac,.22);luz(W*.9,H*.75,W*.45,escurecer(ac,.8),.14);luz(W*.5,H*.45,W*.5,misturaBranco(ac,.5),.12);
+  }else if(v==='confete'){ // confete: bolinhas, quadradinhos e risquinhos nas margens
+    g.fillStyle='rgb('+misturaBranco(ac,.96).join(',')+')';g.fillRect(0,0,W,H);
+    const r=semente(11),tons=[ac,misturaBranco(ac,.35),escurecer(ac,.75)];
+    const fora=(x,y)=>!(x>t.x-18&&x<t.x+t.w+18&&y>t.y-18&&y<t.y+t.h+18)&&!(y<t.y&&x<W*.7&&x>t.x-24);
+    let n=0;while(n<150){const x=r()*W,y=r()*H;if(!fora(x,y))continue;n++;const c=tons[Math.floor(r()*3)],al=.25+r()*.35,tp=r();
+      g.save();g.translate(x,y);g.rotate(r()*Math.PI);g.fillStyle='rgba('+c.join(',')+','+al+')';g.strokeStyle=g.fillStyle;
+      if(tp<.35){g.beginPath();g.arc(0,0,2+r()*3.5,0,Math.PI*2);g.fill()}else if(tp<.7){const q=4+r()*6;g.fillRect(-q/2,-q/2,q,q*.6)}else{g.lineWidth=2.2;g.lineCap='round';g.beginPath();g.moveTo(-6,0);g.quadraticCurveTo(0,-5,6,0);g.stroke()}
+      g.restore()}
+  }else if(v==='ondas'){ // linhas de onda fluindo em cima e embaixo
+    g.fillStyle='rgb('+misturaBranco(ac,.955).join(',')+')';g.fillRect(0,0,W,H);
+    const onda=(y0,amp,fase,al,lw)=>{g.strokeStyle=a(al);g.lineWidth=lw;g.beginPath();for(let x=0;x<=W;x+=6){const y=y0+Math.sin(x/W*Math.PI*2.2+fase)*amp+Math.sin(x/W*Math.PI*5+fase*1.7)*amp*.25;x?g.lineTo(x,y):g.moveTo(x,y)}g.stroke()};
+    for(let i=0;i<9;i++)onda(30+i*9,18+i*1.5,i*.35,.06+i*.012,1.6);
+    for(let i=0;i<10;i++)onda(H-30-i*10,22+i*1.5,2+i*.32,.05+i*.013,1.6);
+    g.fillStyle=a(.06);g.beginPath();g.moveTo(0,H);for(let x=0;x<=W;x+=6)g.lineTo(x,H-60+Math.sin(x/W*Math.PI*2+1)*22);g.lineTo(W,H);g.fill();
+  }else if(v==='moldura'){ // formal: moldura fina dupla
+    g.fillStyle='rgb('+misturaBranco(ac,.97).join(',')+')';g.fillRect(0,0,W,H);
+    g.strokeStyle=a(.55);g.lineWidth=2;g.strokeRect(18,22,W-36,H-40);g.strokeStyle=a(.3);g.lineWidth=1;g.strokeRect(25,29,W-50,H-54);
+    [[18,22],[W-18,22],[18,H-18],[W-18,H-18]].forEach(([x,y])=>{g.fillStyle=a(.55);g.beginPath();g.arc(x,y,3.5,0,Math.PI*2);g.fill()});
+  }else if(v==='topo'){ // formal: faixa clara atrás do título e linha fina no rodapé
+    g.fillStyle='#fff';g.fillRect(0,0,W,H);
+    g.fillStyle='rgb('+misturaBranco(ac,.88).join(',')+')';g.fillRect(0,0,W,t.y-14);
+    g.fillStyle=a(.5);g.fillRect(0,t.y-16,W,2);
+    g.fillStyle='rgb('+misturaBranco(ac,.94).join(',')+')';g.fillRect(0,H-26,W,26);g.fillStyle=a(.4);g.fillRect(0,H-27,W,1.5);
+  }else if(v==='quadriculado'){ // formal: papel quadriculado discreto
+    g.fillStyle='rgb('+misturaBranco(ac,.975).join(',')+')';g.fillRect(0,0,W,H);
+    g.lineWidth=1;for(let x=.5;x<W;x+=18){g.strokeStyle=a(Math.round(x/18)%5===0?.12:.06);g.beginPath();g.moveTo(x,0);g.lineTo(x,H);g.stroke()}
+    for(let y=.5;y<H;y+=18){g.strokeStyle=a(Math.round(y/18)%5===0?.12:.06);g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke()}
+  }else if(v==='lateral'){ // formal: faixa vertical na lateral esquerda
+    g.fillStyle='rgb('+misturaBranco(ac,.97).join(',')+')';g.fillRect(0,0,W,H);
+    const lb=Math.max(16,t.x*.5);g.fillStyle='rgb('+misturaBranco(ac,.8).join(',')+')';g.fillRect(0,0,lb,H);
+    g.fillStyle=a(.6);g.fillRect(lb,0,2.5,H);g.fillStyle=a(.22);g.fillRect(lb+7,0,1,H);
+  }else if(v==='cantoneiras'){ // formal: cantoneiras finas nos quatro cantos
+    g.fillStyle='rgb('+misturaBranco(ac,.97).join(',')+')';g.fillRect(0,0,W,H);
+    const L=Math.min(W,H)*.11,m=20;g.strokeStyle=a(.6);g.lineWidth=2.5;g.lineCap='square';
+    [[m,m+6,1,1],[W-m,m+6,-1,1],[m,H-m,1,-1],[W-m,H-m,-1,-1]].forEach(([x,y,sx,sy])=>{g.beginPath();g.moveTo(x+sx*L,y);g.lineTo(x,y);g.lineTo(x,y+sy*L);g.stroke();
+      g.strokeStyle=a(.3);g.lineWidth=1;g.beginPath();g.moveTo(x+sx*(L*.7),y+sy*7);g.lineTo(x+sx*7,y+sy*7);g.lineTo(x+sx*7,y+sy*(L*.7));g.stroke();g.strokeStyle=a(.6);g.lineWidth=2.5});
   }else if(v==='b'){ // pontilhado nos cantos + arcos concêntricos
     g.fillStyle='rgb('+misturaBranco(ac,.96).join(',')+')';g.fillRect(0,0,W,H);
     const pontos=(cx,cy,raio,al,r)=>{for(let y=10;y<H;y+=15)for(let x=10;x<W;x+=15){const d=Math.hypot(x-cx,y-cy)/raio;if(d<1){g.fillStyle=a(al*(1-d));g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.fill()}}};
