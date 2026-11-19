@@ -1354,7 +1354,8 @@ async function baixarImagem(e,btn){
     const g=cv.getContext('2d');g.scale(esc_,esc_);
     const rgb=c=>'rgb('+c.join(',')+')';
     g.fillStyle='#fff';g.fillRect(0,0,W,H);
-    g.fillStyle=rgb(ac);g.fillRect(0,0,W,6);
+    // moldura na cor da escala em volta da página toda
+    g.fillStyle=rgb(ac);g.fillRect(0,0,W,6);g.fillRect(0,H-6,W,6);g.fillRect(0,0,6,H);g.fillRect(W-6,0,6,H);
     g.textBaseline='alphabetic';g.textAlign='left';
     g.fillStyle=rgb(ac);g.font='700 30px '+FONTE;g.fillText(e.nome,M,52);
     // liderança em destaque: fundo na cor do cabeçalho (P1, P2…), letra branca
@@ -1427,7 +1428,9 @@ async function baixarPdf(e,btn){
     const fs=Math.max(6.5,Math.min(9.5,larguraNome/2.4,(altLinha-2)/(.3528*1.2))),pad=Math.max(1,Math.min(1.9,(altLinha-fs*.3528*1.2)/2));
     const posBd={};let fundoPag=0;
     // Cabeçalho
-    doc.setFillColor(...ac);doc.rect(0,0,W,3,'F');
+    // moldura na cor da escala em volta de cada página
+    const moldura=()=>{doc.setFillColor(...ac);doc.rect(0,0,W,3,'F');doc.rect(0,H-3,W,3,'F');doc.rect(0,0,3,H,'F');doc.rect(W-3,0,3,H,'F')};
+    moldura();
     doc.setFont('helvetica','bold');doc.setFontSize(17);doc.setTextColor(...ac);doc.text(e.nome,M,16);
     doc.setFont('helvetica','normal');
     // liderança em destaque: fundo na cor do cabeçalho (P1, P2…), letra branca
@@ -1473,6 +1476,7 @@ async function baixarPdf(e,btn){
         if(d.pageNumber>1){doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...ac);doc.text(e.nome+' (continuação)',M,10)}}
     });
     const total=doc.internal.getNumberOfPages();
+    for(let i=2;i<=total;i++){doc.setPage(i);moldura()}
     if(total>1)for(let i=1;i<=total;i++){doc.setPage(i);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(140,147,162);doc.text('Página '+i+' de '+total,W-M,H-7,{align:'right'})}
     const nome=nomeArquivo(e,'pdf');
     doc.save(nome);
