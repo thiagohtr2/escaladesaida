@@ -1332,7 +1332,6 @@ async function baixarPdf(e,btn){
     if(!ls.length){toast('Não há plantões nos próximos 12 meses.',true);return}
     const maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
     const body=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return [br(l.data),...rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])})]});
-    const proxD=proxima(e,hoje),iProx=ls.findIndex(l=>l.data===proxD);
     const ac=hexRgb(cor(e)),faixa=misturaBranco(ac,.84),faixaCab=misturaBranco(ac,.72),zebra=misturaBranco(ac,.89),faixaZebra=misturaBranco(ac,.75);
     // Data e faixas num tom mais escuro da cor, com letra branca (alternando dois tons)
     // a coluna Data fica sempre mais escura que as faixas, mesmo no tom claro dela
@@ -1354,7 +1353,7 @@ async function baixarPdf(e,btn){
     autoTable(doc,{
       head:[['Data',...rM]],body,startY:28,theme:'grid',showHead:'everyPage',
       margin:{left:M,right:M,top:14,bottom:14},
-      styles:{font:'helvetica',fontSize:fs,cellPadding:{top:pad,bottom:pad,left:1.2,right:1.2},halign:'center',valign:'middle',lineColor:[223,227,236],lineWidth:.2,textColor:[24,30,44],overflow:'linebreak'},
+      styles:{font:'helvetica',fontStyle:'bold',fontSize:fs,cellPadding:{top:pad,bottom:pad,left:1.2,right:1.2},halign:'center',valign:'middle',lineColor:[223,227,236],lineWidth:.2,textColor:[24,30,44],overflow:'linebreak'},
       headStyles:{fillColor:[243,245,250],textColor:[88,96,118],fontStyle:'bold',fontSize:Math.max(6.5,fs-.5)},
       columnStyles:{0:{fontStyle:'bold',cellWidth:22}},
       didParseCell:d=>{
@@ -1365,8 +1364,7 @@ async function baixarPdf(e,btn){
         else d.cell.styles.fillColor=d.section==='head'?[243,245,250]:listra?zebra:[255,255,255];
         if(d.section==='head'&&c>=0&&!temFx[c]&&temBd[c])d.cell.styles.textColor=ac;
         if(d.section==='body'){
-          if(d.row.index===iProx)d.cell.styles.fontStyle='bold';
-          if(d.cell.raw==='Vago'){d.cell.styles.fontStyle='italic';if(!escura)d.cell.styles.textColor=[176,58,58]}
+          if(d.cell.raw==='Vago'){d.cell.styles.fontStyle='bolditalic';if(!escura)d.cell.styles.textColor=[176,58,58]}
         }
       },
       didDrawCell:d=>{
