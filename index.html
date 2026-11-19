@@ -117,6 +117,7 @@ body.publico .prox-ver{display:none}
 .fundo-op:has(input:checked) .fundo-prev{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 30%,transparent)}
 .fundo-op:has(input:checked) span{color:var(--accent)}
 .fundo-op:has(input:focus-visible) .fundo-prev{outline:2px solid var(--accent);outline-offset:2px}
+.fixp-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.fixp-row .sel{flex:1 1 140px;min-width:0}.fixp-em{font-size:12px;color:var(--ink-3)}
 /* Versões anteriores */
 .versoes{list-style:none;display:grid;gap:8px;margin-top:12px;padding:0}.versoes li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
 .versoes li div{display:grid;gap:2px;min-width:0}.versoes b{font-size:13px}.versoes span{font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1048,6 +1049,7 @@ function abrirFormEscala(e,dup){
   S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',fundo:base.fundo||'',periodo:base.periodo||'hoje',inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
     posicoes:rotulos(base,(base.equipe||[]).length),rotulosBase:rotulos(base,(base.equipe||[]).length),fixas:(()=>{const fx=fixasDe(base);return rotulos(base,(base.equipe||[]).length).map(l=>{const f=fx.find(x=>x.rot===l);return f?(f.ancora==='fim'?'fim':'depois:'+f.ancora):''})})(),prefixo:base.prefixo||'P',equipe:dup?[]:[...(base.equipe||[])],sentido:base.sentido||'desce',entradaPadrao:base.entradaPadrao||'ultima',
     cor:dup?(Object.keys(CORES).find(k=>k!==base.cor)||'azul'):(base.cor||'verde'),destaques:rotulos(base,Math.max((base.equipe||[]).length,1)).map(l=>destLab(base,l)),eventos:dup?[]:[...(base.eventos||[])],ordem:base.ordem||Date.now(),dupDe:dup?base.nome:null};
+  {const ps=S.form.posicoes;S.form.fixosP=(S.form.eventos||[]).filter(x=>x.tipo==='fixar'&&x.inicial).map(x=>({nome:x.nome,i:ps.indexOf(x.rot)}));}
   renderForm();
 }
 function proximaSemana(w){let d=hojeStr();while(dow(d)!==w)d=addDias(d,1);return d}
@@ -1080,6 +1082,7 @@ function renderForm(){
     <fieldset class="fld"><legend>Posições e equipe</legend><small>Cada posição tem seu nome (Plus, Semi, P1…). Ao lado, quem ocupa a posição no primeiro plantão; o rodízio parte daqui. As setas mudam a pessoa de posição.</small>
       <ol class="team-ed" id="fe-team">${teamHtml()}</ol>
       <div class="add-row"><label class="sr" for="fe-novo">Nome do plantonista</label><input class="inp" id="fe-novo" placeholder="Nome do plantonista" list="dl-nomes" autocomplete="off"><button type="button" class="btn ghost" data-act="fe-add">${icon('plus')} Adicionar</button></div></fieldset>
+    <fieldset class="fld"><legend>Plantonista fixo numa posição</legend><small>A pessoa fica sempre na mesma posição, desde o primeiro plantão, e não entra no rodízio (ex.: Rafael sempre no CHD). Os demais giram nas outras posições.</small><div id="fe-fixosp">${fixosPHtml()}</div></fieldset>
     <fieldset class="fld"><legend>Posições fixas</legend><small>Uma posição fixa não muda de lugar quando a escala cresce ou diminui: fica sempre no final ou sempre logo depois de uma posição escolhida (ex.: CHD 1 sempre depois de P3).</small><div class="fix-ed" id="fe-fixas">${fixasHtml()}</div></fieldset>
     <fieldset class="fld"><legend>Destaque das posições</legend><small>Faixa pinta a coluna inteira da posição; borda contorna a coluna; faixa + borda faz os dois. Tudo usa a cor da escala.</small><div class="dest-ed" id="fe-dest">${destHtml()}</div></fieldset>
     <div class="fld"><label for="fe-pre">Prefixo das posições que surgirem depois</label><input class="inp" id="fe-pre" data-f="prefixo" value="${esc(f.prefixo)}" maxlength="8" style="max-width:160px"><small>Quando a equipe crescer, a nova posição continua a numeração: com P, depois de P3 vem P4. Você pode renomear aqui a qualquer momento.</small></div>
@@ -1094,6 +1097,13 @@ function renderForm(){
   </div>
   <div class="dlg-f">${!f.novo?`<button type="button" class="btn danger-ghost" data-act="fe-excluir">${icon('trash')} Excluir</button>`:''}<span class="sp"></span><button type="button" class="btn ghost" data-act="fechar">Cancelar</button><button type="submit" class="btn pri">Salvar escala</button></div>${dl()}</form>`);
   desenharPrevFundos();
+}
+function fixosPHtml(){
+  const f=S.form,eq=f.equipe.map(x=>x.trim()).filter(Boolean),ps=f.posicoes.slice(0,f.equipe.length).map(x=>x.trim());
+  const linhas=(f.fixosP||[]).map((x,k)=>`<div class="fixp-row"><label class="sr" for="fp-n-${k}">Plantonista</label><select class="sel" id="fp-n-${k}" data-fpn="${k}"><option value="">Plantonista…</option>${eq.map(n=>`<option ${n===x.nome?'selected':''}>${esc(n)}</option>`).join('')}</select>
+    <span class="fixp-em">sempre em</span><label class="sr" for="fp-r-${k}">Posição</label><select class="sel" id="fp-r-${k}" data-fpr="${k}"><option value="-1">Posição…</option>${ps.map((l,i)=>`<option value="${i}" ${i===x.i?'selected':''}>${esc(l||'—')}</option>`).join('')}</select>
+    <button type="button" class="ib sm" data-act="fp-del" data-i="${k}" aria-label="Tirar fixação" title="Tirar fixação">${icon('x')}</button></div>`).join('');
+  return linhas+`<button type="button" class="btn ghost sm" data-act="fp-add" ${eq.length?'':'disabled'}>${icon('plus')} Fixar um plantonista</button>`;
 }
 function fixasHtml(){
   const f=S.form,ps=f.posicoes.slice(0,f.equipe.length).map(x=>x.trim()),n=ps.length;
@@ -1111,7 +1121,7 @@ function destHtml(){
   const ops=[['','Nenhum'],['faixa','Faixa'],['borda','Borda'],['ambos','Faixa + borda']];
   return r.map((lab,i)=>`<div class="dest-row"><span class="dest-lab">${esc(lab)}</span><div class="seg" role="group" aria-label="Destaque de ${esc(lab)}">${ops.map(([v,t])=>`<button type="button" data-act="fe-dest" data-i="${i}" data-v="${v}" aria-pressed="${(f.destaques[i]||'')===v}">${t}</button>`).join('')}</div></div>`).join('');
 }
-function refreshForm(){const fd=$('#fe-dest');if(fd)fd.innerHTML=destHtml();const ff=$('#fe-fixas');if(ff)ff.innerHTML=fixasHtml();const t=$('#fe-team');if(t)t.innerHTML=teamHtml();const s=$('#fe-entrada');if(s)s.innerHTML=entradaOpts();const d=$('#fe-dow');if(d)d.textContent=dowTxt()}
+function refreshForm(){const fp=$('#fe-fixosp');if(fp)fp.innerHTML=fixosPHtml();const fd=$('#fe-dest');if(fd)fd.innerHTML=destHtml();const ff=$('#fe-fixas');if(ff)ff.innerHTML=fixasHtml();const t=$('#fe-team');if(t)t.innerHTML=teamHtml();const s=$('#fe-entrada');if(s)s.innerHTML=entradaOpts();const d=$('#fe-dow');if(d)d.textContent=dowTxt()}
 function addTeam(){
   const i=$('#fe-novo'),v=(i.value||'').trim().replace(/\s+/g,' ');if(!v)return;
   if(S.form.equipe.some(n=>n.toLowerCase()===v.toLowerCase())){$('#fe-err').textContent=v+' já está na equipe.';return}
@@ -1132,6 +1142,15 @@ function salvarForm(){
   const fe=formEsc();const rs=rotulos(fe,eq.length);
   if(new Set(rs.map(x=>x.toLowerCase())).size!==rs.length){er.textContent='Duas posições estão com o mesmo nome.';return}
   if(fe.fixas.length&&rs.join('|')!==fe.rotulos.join('|')){er.textContent='A ordem das posições não bate com as posições fixas. Em "Posições fixas", toque em "Usar essa ordem" ou ajuste as fixas.';$('#fe-fixas').scrollIntoView({block:'center'});return}
+  // plantonista fixo desde o início: vira um evento "fixar" na data do primeiro plantão
+  const fp=(f.fixosP||[]).filter(x=>x.nome||x.i>=0);
+  for(const x of fp){
+    if(!x.nome||x.i<0||x.i>=rs.length){er.textContent='Em "Plantonista fixo", escolha o plantonista e a posição (ou toque no X para tirar).';$('#fe-fixosp').scrollIntoView({block:'center'});return}
+    if(!eq.includes(x.nome)){er.textContent=x.nome+' não está mais na equipe: ajuste "Plantonista fixo".';return}
+  }
+  if(new Set(fp.map(x=>x.nome)).size!==fp.length){er.textContent='O mesmo plantonista está fixo duas vezes.';return}
+  if(new Set(fp.map(x=>x.i)).size!==fp.length){er.textContent='Duas pessoas estão fixas na mesma posição.';return}
+  f.eventos=(f.eventos||[]).filter(x=>!(x.tipo==='fixar'&&x.inicial)).concat(fp.map((x,k)=>({id:uid('ev-'),tipo:'fixar',nome:x.nome,rot:rs[x.i],data:f.inicio,criado:k-1000,inicial:true})));
   const novosBase=rotulos(fe,f.rotulosBase.length),novos=rotulos(fe,60),mapa=l=>{const i=f.rotulosBase.indexOf(l);return i>=0?novosBase[i]:l};
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao=mapa(f.entradaPadrao);
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao='ultima';
@@ -1607,6 +1626,8 @@ document.addEventListener('click',async ev=>{
     case 'ajustes':abrirAjustes();break;
     case 'fechar':fechar();break;
     case 'fe-add':addTeam();break;
+    case 'fp-add':S.form.fixosP=S.form.fixosP||[];S.form.fixosP.push({nome:'',i:-1});$('#fe-fixosp').innerHTML=fixosPHtml();$('#fp-n-'+(S.form.fixosP.length-1))?.focus();break;
+    case 'fp-del':S.form.fixosP.splice(+b.dataset.i,1);$('#fe-fixosp').innerHTML=fixosPHtml();break;
     case 'fe-up':case 'fe-down':{const i=+b.dataset.i,j=a==='fe-up'?i-1:i+1,q=S.form.equipe;if(j<0||j>=q.length)break;[q[i],q[j]]=[q[j],q[i]];refreshForm();const nb=dlg.querySelector(`[data-act="${a}"][data-i="${j}"]`);(nb&&!nb.disabled?nb:dlg.querySelector(`[data-team="${j}"]`))?.focus()}break;
     case 'fe-dest':S.form.destaques[+b.dataset.i]=b.dataset.v;$('#fe-dest').innerHTML=destHtml();dlg.querySelector(`[data-act="fe-dest"][data-i="${b.dataset.i}"][data-v="${b.dataset.v}"]`)?.focus();break;
     case 'fe-del':{const f=S.form,n=f.equipe.length;f.posicoes.length=Math.min(f.posicoes.length,n);f.fixas.length=Math.max(f.fixas.length,n);f.destaques.length=Math.max(f.destaques.length,n);
@@ -1637,6 +1658,8 @@ dlg.addEventListener('input',ev=>{
     else if(t.name==='sentido')S.form.sentido=t.value;
     else if(t.name==='cor'){S.form.cor=t.value;desenharPrevFundos()}
     else if(t.name==='fundo')S.form.fundo=t.value;
+    else if(t.dataset.fpn!==undefined)S.form.fixosP[+t.dataset.fpn].nome=t.value;
+    else if(t.dataset.fpr!==undefined)S.form.fixosP[+t.dataset.fpr].i=+t.value;
   }else if(S.mov){
     const m=S.mov;
     if(t.name==='mv-tipo'){m.tipo=t.value;m.nome='';m.sai='';renderMov();dlg.querySelector('input[name="mv-tipo"]:checked')?.focus()}
