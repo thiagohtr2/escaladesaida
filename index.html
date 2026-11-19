@@ -1320,7 +1320,7 @@ const misturaBranco=(c,t)=>c.map(v=>Math.round(v+(255-v)*t));
 const escurecer=(c,f)=>c.map(v=>Math.round(v*f));
 const lumin=c=>{const [r,g,b]=c.map(v=>{v/=255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4});return .2126*r+.7152*g+.0722*b};
 /* escurece até o texto branco ficar bem legível */
-const paraBranco=c=>{let x=c.slice(),i=0;while(1.05/(lumin(x)+.05)<4.6&&i++<30)x=escurecer(x,.93);return x};
+const paraBranco=(c,min=4.6)=>{let x=c.slice(),i=0;while(1.05/(lumin(x)+.05)<min&&i++<30)x=escurecer(x,.93);return x};
 async function baixarPdf(e,btn){
   if(!e)return;
   const rot=btn&&btn.innerHTML;if(btn){btn.disabled=true;btn.innerHTML=icon('pdf')+' Gerando…'}
@@ -1332,11 +1332,11 @@ async function baixarPdf(e,btn){
     if(!ls.length){toast('Não há plantões nos próximos 12 meses.',true);return}
     const maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
     const body=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return [br(l.data),...rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])})]});
-    const proxD=proxima(e,hoje),iProx=ls.findIndex(l=>l.data===proxD);
     const ac=hexRgb(cor(e)),faixa=misturaBranco(ac,.84),faixaCab=misturaBranco(ac,.72),zebra=misturaBranco(ac,.89),faixaZebra=misturaBranco(ac,.75);
     // Data e faixas num tom mais escuro da cor, com letra branca (alternando dois tons)
-    // a coluna Data fica sempre mais escura que as faixas, mesmo no tom claro dela
-    const fxA=paraBranco(ac),fxB=escurecer(fxA,.88),dataB=escurecer(fxB,.8),dataA=escurecer(dataB,.84),cabEsc=escurecer(dataA,.85);
+    // linhas claras bem mais claras que as escuras, para as listras aparecerem também nas faixas e na data
+    // a coluna Data usa as mesmas cores das faixas
+    const base=paraBranco(ac),fxA=paraBranco(misturaBranco(ac,.3),3.2),fxB=base,cabEsc=escurecer(base,.6);
     const tipos=rM.map(lab=>destCls(e,lab)),temFx=tipos.map(t=>t.includes('fx')),temBd=tipos.map(t=>t.includes('bd'));
     const deitado=rM.length>8,doc=new jsPDF({orientation:deitado?'landscape':'portrait',unit:'mm',format:'a4'});
     const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),M=12;
@@ -1354,19 +1354,18 @@ async function baixarPdf(e,btn){
     autoTable(doc,{
       head:[['Data',...rM]],body,startY:28,theme:'grid',showHead:'everyPage',
       margin:{left:M,right:M,top:14,bottom:14},
-      styles:{font:'helvetica',fontSize:fs,cellPadding:{top:pad,bottom:pad,left:1.2,right:1.2},halign:'center',valign:'middle',lineColor:[223,227,236],lineWidth:.2,textColor:[24,30,44],overflow:'linebreak'},
+      styles:{font:'helvetica',fontStyle:'bold',fontSize:fs,cellPadding:{top:pad,bottom:pad,left:1.2,right:1.2},halign:'center',valign:'middle',lineColor:[223,227,236],lineWidth:.2,textColor:[24,30,44],overflow:'linebreak'},
       headStyles:{fillColor:[243,245,250],textColor:[88,96,118],fontStyle:'bold',fontSize:Math.max(6.5,fs-.5)},
       columnStyles:{0:{fontStyle:'bold',cellWidth:22}},
       didParseCell:d=>{
         const c=d.column.index-1;
         const listra=d.section==='body'&&d.row.index%2===1; // linha sim, linha não na cor da escala (tom claro)
         const escura=c<0||temFx[c];
-        if(escura){d.cell.styles.fillColor=d.section==='head'?cabEsc:c<0?(listra?dataA:dataB):(listra?fxB:fxA);d.cell.styles.textColor=[255,255,255]}
+        if(escura){d.cell.styles.fillColor=d.section==='head'?cabEsc:(listra?fxB:fxA);d.cell.styles.textColor=[255,255,255]}
         else d.cell.styles.fillColor=d.section==='head'?[243,245,250]:listra?zebra:[255,255,255];
         if(d.section==='head'&&c>=0&&!temFx[c]&&temBd[c])d.cell.styles.textColor=ac;
         if(d.section==='body'){
-          if(d.row.index===iProx)d.cell.styles.fontStyle='bold';
-          if(d.cell.raw==='Vago'){d.cell.styles.fontStyle='italic';if(!escura)d.cell.styles.textColor=[176,58,58]}
+          if(d.cell.raw==='Vago'){d.cell.styles.fontStyle='bolditalic';if(!escura)d.cell.styles.textColor=[176,58,58]}
         }
       },
       didDrawCell:d=>{
