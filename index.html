@@ -724,7 +724,7 @@ function descompactar(txt){
 async function linkCurto(e){
   const bytes=new TextEncoder().encode(compactar(e));let code='t'+b64url(bytes);
   if(typeof CompressionStream==='function'){try{const st=new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));const z='z'+b64url(new Uint8Array(await new Response(st).arrayBuffer()));if(z.length<code.length)code=z}catch(err){}}
-  return basePublica()+'#'+slugNome(e.nome)+'.'+code;
+  return basePublica()+'#.'+code;
 }
 async function lerLinkPublico(){
   const h=location.hash;
