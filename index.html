@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script>/* link público: esconde o site desde o primeiro instante, para não aparecer a página inicial antes da escala */
+(function(){try{var p=location.pathname,h=location.hash;if(/^\/e\/[a-z0-9-]{3,48}\/?$/i.test(p)||h.indexOf('#ver=')===0||/^#[a-z0-9-]*\.[A-Za-z0-9_-]{8,}$/.test(h))document.documentElement.className+=' pub-cedo'}catch(e){}})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rodízio de Plantões</title>
@@ -110,6 +112,13 @@ body.publico .prox-ver{display:none}
 .sheet .ppl td.bd{box-shadow:none!important}
 .sheet .ppl td.bd .pv{border-color:var(--ac);color:var(--ac-d);font-weight:650}
 .zap-prev{display:grid;gap:3px;padding:12px 14px;border-radius:12px;background:#e7f7e3;border:1px solid #cfe9c8;font-size:13px;color:#1f2d1c;max-width:420px}.zap-prev span{color:#3c4a39}.zap-prev .zap-link{color:#1a6fb5;word-break:break-all;font-size:12px}
+.tom-faixa{display:grid;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0 4px}
+.tom-faixa>span{display:grid;gap:2px;font-size:13px}.tom-faixa>span span{font-size:12px;color:var(--ink-3)}
+.tom-faixa .seg{display:flex;gap:6px;flex-wrap:wrap}
+.tom-op{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--line);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink-2)}
+.tom-op input{position:absolute;opacity:0;pointer-events:none}.tom-op i{width:16px;height:16px;border-radius:5px;background:var(--t);border:1px solid rgba(0,0,0,.08)}
+.tom-op:has(input:checked){border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 22%,transparent)}
+.tom-op:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
 .chk-borda{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0 4px;cursor:pointer}
 .chk-borda input{margin-top:3px;width:18px;height:18px;accent-color:var(--accent);flex:none}.chk-borda>span{display:grid;gap:2px;font-size:13px}.chk-borda>span span{font-size:12px;color:var(--ink-3)}
 .fundo-grp{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 2px}
@@ -162,6 +171,12 @@ dialog[open]{display:flex;flex-direction:column;position:fixed;top:50%;left:50%;
 
 /* Keep the actual schedule close to the top on phones. */
 @media(max-width:760px){.page-kicker,.page-head p,.next-team,.workspace-heading p{display:none}.page-head{align-items:center;margin-bottom:18px}.page-head h1{margin:0;font-size:24px}.page-head .btn{margin-top:0}.next-overview{border-color:#e0e4ff}.next-intro{border-bottom:0;padding:14px 16px}.banner{margin-bottom:15px}.workspace-heading{padding:14px;gap:12px}.grade th,.grade td{padding:.95em .42em}.grade thead th{padding:.9em .45em}.grade tr.note td{font-size:max(.83em,8px)}}
+html.pub-cedo .top,html.pub-cedo .workspace-top,html.pub-cedo .bnav,html.pub-cedo .skip{display:none!important}
+html.pub-cedo main{margin:0 auto!important;max-width:1280px;padding:28px 24px 60px!important}
+@media(max-width:760px){html.pub-cedo main{padding:8px 6px 24px!important}}
+.pub-espera{display:grid;justify-items:center;gap:14px;padding:22vh 0 0;color:var(--ink-3);font-size:13px}
+.pub-espera i{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:girar .8s linear infinite}
+@keyframes girar{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -578,7 +593,7 @@ async function sairConta(expirou){
   gravarSessao(null);S.escalas=[];S.config={};S.importavel=null;S.modo='nuvem';S.tela='login';if(expirou)S.authErro='Sua sessão expirou. Entre de novo.';fechar();render();
 }
 async function iniciarPublicoNuvem(id){
-  S.publico=null;S.publicoErro=null;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';render();
+  S.publico=null;S.publicoErro=null;S.carregandoPublico=true;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';render();
   try{
     const r=await fetch('/api/publico?id='+encodeURIComponent(id),{cache:'no-store'});let j=null;try{j=await r.json()}catch(e){}
     if(!r.ok||!j||!j.e)throw new Error((j&&j.erro)||'Link não encontrado.');
@@ -685,7 +700,7 @@ function compactar(e){
     (e.entradaPadrao||'ultima')==='ultima'?'':limpo(e.entradaPadrao),e.cor||'',
     Object.entries(dm).filter(([,v])=>v).map(([l,v])=>limpo(l)+(v==='faixa'?'^':v==='ambos'?'*':'_')).join('|'),
     fx.map(x=>limpo(x.rot)+'>'+(x.ancora==='fim'?'':limpo(x.ancora))).join('|'),
-    (e.periodo||'hoje')==='hoje'?'':e.periodo,limpo(e.lideranca),ev,e.fundo||'',e.bordaTabela===false?'0':''].join('\n').replace(/\n+$/,'');
+    (e.periodo||'hoje')==='hoje'?'':e.periodo,limpo(e.lideranca),ev,e.fundo||'',e.bordaTabela===false?'0':'',(e.tomFaixa&&e.tomFaixa!=='escura')?e.tomFaixa:''].join('\n').replace(/\n+$/,'');
 }
 function descompactar(txt){
   const c=txt.split('\n');if(c[0]!=='2')throw new Error('link');
@@ -695,7 +710,7 @@ function descompactar(txt){
   const eventos=(c[16]?c[16].split(';'):[]).map((x,i)=>{const [t,kk,a,b]=x.split(',');const tipo=TIPOS[+t],data=addDias(ini,parseInt(kk,36)*f),o={id:'p'+i,tipo,data,criado:i};
     if(tipo==='troca'){o.sai=a;o.entra=b}else{o.nome=a;if(tipo==='ausencia')o.cobre=b||'';if(tipo==='entrada'&&b)o.posicao=b;if(tipo==='fixar')o.rot=b}return o});
   const e={id:'publica',nome:c[3]||'Escala',inicio:ini,frequencia:f,rotulos:lista(c[6]),equipe:lista(c[7]),prefixo:c[8]||'P',sentido:c[9]==='1'?'sobe':'desce',
-    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0'};
+    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0',tomFaixa:['clara','media'].includes(c[19])?c[19]:'escura'};
   return {g,s:c[2]||'',e};
 }
 async function linkCurto(e){
@@ -710,9 +725,9 @@ async function lerLinkPublico(){
   if(code[0]==='z'){if(typeof DecompressionStream!=='function')throw new Error('Este navegador é antigo demais para abrir o link. Atualize o navegador e tente de novo.');const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));bytes=new Uint8Array(await new Response(st).arrayBuffer())}
   return descompactar(new TextDecoder().decode(bytes));
 }
-function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','fixas','fixasFim','periodo','lideranca','eventos','fundo','bordaTabela'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
+function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','fixas','fixasFim','periodo','lideranca','eventos','fundo','bordaTabela','tomFaixa'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
 async function iniciarPublico(){
-  S.publico=null;S.publicoErro=null;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';
+  S.publico=null;S.publicoErro=null;S.carregandoPublico=true;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';
   try{
     const d=await lerLinkPublico();
     if(!d||!d.e||!validaData(d.e.inicio))throw new Error('O link está incompleto. Peça um link novo para quem cuida da escala.');
@@ -724,9 +739,10 @@ function dataHora(t){try{return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',m
 /* Link público: mostra só a escala como imagem (o mesmo visual do PDF e da imagem baixada), somente para ver */
 function vPublico(){
   if(S.publicoErro)return `<section class="empty-all">${icon('alert','big')}<h1>Não foi possível abrir esta escala</h1><p>${esc(S.publicoErro)}</p></section>`;
-  const e=S.escalas[0];try{document.title=e.nome}catch(x){}
+  const e=S.escalas[0];if(!S.publico||!e)return `<section class="pub-espera" aria-busy="true"><i></i><span>Carregando a escala…</span></section>`;
+  try{document.title=e.nome}catch(x){}
   if(!S.pubImg)setTimeout(gerarImagemPublica,0);
-  return `<section class="pub-imagem" style="--ac:${cor(e)}">${S.pubImg?`<img src="${S.pubImg}" alt="${esc('Escala '+e.nome)}" width="${S.pubImgW}" height="${S.pubImgH}">`:`<p class="muted pub-carregando">Carregando a escala…</p>`}</section>`;
+  return S.pubImg?`<section class="pub-imagem" style="--ac:${cor(e)}"><img src="${S.pubImg}" alt="${esc('Escala '+e.nome)}" width="${S.pubImgW}" height="${S.pubImgH}"></section>`:`<section class="pub-espera" aria-busy="true"><i></i><span>Carregando a escala…</span></section>`;
 }
 function gerarImagemPublica(){
   if(S.pubImg||S.pubImgGerando||!S.escalas[0])return;S.pubImgGerando=true;
@@ -1062,7 +1078,7 @@ function render(){
   $('[data-act="ajustes"]').innerHTML=icon('ajustes');
   const logado=S.modo!=='publico'&&!S.tela&&!!NUVEM.sessao;$('#btn-sair').hidden=!logado;$('#btn-sair').innerHTML=icon('sai');
   const cl=$('#conta-lin');cl.hidden=!logado;cl.innerHTML=logado?`<span>Conectado como</span><b>${esc(NUVEM.sessao.nome||NUVEM.sessao.email||'')}</b>${NUVEM.sessao.nome?`<span>${esc(NUVEM.sessao.email||'')}</span>`:''}<button type="button" class="lnk" data-act="sair">${icon('sai')} Sair da conta</button>`:'';
-  const pub=!!(S.publico||S.publicoErro),auth=!!S.tela;document.body.classList.toggle('publico',pub||auth);
+  const pub=!!(S.publico||S.publicoErro||S.carregandoPublico),auth=!!S.tela;document.body.classList.toggle('publico',pub||auth);
   if(pub){document.title=(S.publico?S.escalas[0].nome+' · ':'')+'Escala de plantão'}
   main.innerHTML=auth?vLogin():pub?vPublico():S.view==='painel'?vPainel():S.view==='plantonistas'?vPlantonistas():vEscalas();
   ajustarTabelas();
@@ -1099,7 +1115,7 @@ const dl=()=>`<datalist id="dl-nomes">${todosNomes().map(n=>`<option value="${es
 function abrirFormEscala(e,dup){
   const novo=!e||dup;
   const base=e||{nome:'',inicio:proximaSemana(3),frequencia:14,rotulos:['Plus','Semi'],prefixo:'P',equipe:[],sentido:'desce',entradaPadrao:'ultima',cor:'anil',destaques:['faixa'],eventos:[]};
-  S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',fundo:base.fundo||'',bordaTabela:base.bordaTabela!==false,periodo:base.periodo||'hoje',inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
+  S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',fundo:base.fundo||'',tomFaixa:base.tomFaixa||'escura',bordaTabela:base.bordaTabela!==false,periodo:base.periodo||'hoje',inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
     posicoes:rotulos(base,(base.equipe||[]).length),rotulosBase:rotulos(base,(base.equipe||[]).length),fixas:(()=>{const fx=fixasDe(base);return rotulos(base,(base.equipe||[]).length).map(l=>{const f=fx.find(x=>x.rot===l);return f?(f.ancora==='fim'?'fim':'depois:'+f.ancora):''})})(),prefixo:base.prefixo||'P',equipe:dup?[]:[...(base.equipe||[])],sentido:base.sentido||'desce',entradaPadrao:base.entradaPadrao||'ultima',
     cor:dup?(Object.keys(CORES).find(k=>k!==base.cor)||'azul'):(base.cor||'verde'),destaques:rotulos(base,Math.max((base.equipe||[]).length,1)).map(l=>destLab(base,l)),eventos:dup?[]:[...(base.eventos||[])],ordem:base.ordem||Date.now(),dupDe:dup?base.nome:null};
   {const ps=S.form.posicoes;S.form.fixosP=(S.form.eventos||[]).filter(x=>x.tipo==='fixar'&&x.inicial).map(x=>({nome:x.nome,i:ps.indexOf(x.rot)}));}
@@ -1145,6 +1161,7 @@ function renderForm(){
     <div class="fld"><label for="fe-entrada">Quando entrar alguém novo, ele vai para</label><select class="sel" id="fe-entrada" data-f="entradaPadrao">${entradaOpts()}</select><small>Na hora de registrar a entrada dá para escolher outra posição.</small></div>
     <fieldset class="fld"><legend>Cor da escala</legend><small>Muda a cor da escala inteira: faixas, bordas, próximo plantão e cartões.</small><div class="swatches">${GRUPOS_COR.map(([g,nome])=>`<div class="sw-g" role="group" aria-label="${nome}"><span class="sw-n">${nome}</span><div class="sw-t">${TONS_COR.map(([suf])=>{const k=g+suf;return `<label style="--c:${CORES[k]}" title="${NOMES_COR[k]}"><input type="radio" name="cor" value="${k}" ${f.cor===k?'checked':''}><span class="sr">${NOMES_COR[k]}</span></label>`}).join('')}</div></div>`).join('')}</div></fieldset>
     <fieldset class="fld"><legend>Fundo do PDF e da imagem</legend><small>Arte suave na cor da escala, usada ao baixar o PDF ou a imagem.</small>
+      <div class="tom-faixa"><span><b>Tom das faixas e da data</b><span>Escura usa letra branca; clara e média ficam mais suaves.</span></span><div class="seg" role="radiogroup" aria-label="Tom das faixas">${TONS_FAIXA.map(([v,n])=>`<label class="tom-op" style="--t:rgb(${(v==='clara'?misturaBranco(hexRgb(CORES[f.cor]||'#4758d6'),.8):v==='media'?misturaBranco(hexRgb(CORES[f.cor]||'#4758d6'),.5):paraBranco(hexRgb(CORES[f.cor]||'#4758d6'))).join(',')})"><input type="radio" name="tomFaixa" value="${v}" ${(f.tomFaixa||'escura')===v?'checked':''}><i></i>${n}</label>`).join('')}</div></div>
       <label class="chk-borda"><input type="checkbox" name="bordaTabela" ${f.bordaTabela!==false?'checked':''}><span><b>Borda em volta da tabela</b><span>Contorno na cor da escala, da Data até a última posição.</span></span></label>${GRUPOS_FUNDO.map(([gk,gn])=>`<p class="fundo-grp">${gn}</p><div class="fundos">${FUNDOS.filter(x=>x[2]===gk).map(([v,nome])=>`<label class="fundo-op"><input type="radio" name="fundo" value="${v}" ${(f.fundo||'')===v?'checked':''}><canvas class="fundo-prev" data-v="${v}" width="168" height="216" aria-hidden="true"></canvas><span>${nome}</span></label>`).join('')}</div>`).join('')}</fieldset>
     ${!f.novo?'<p class="warnbox">Mudar a equipe inicial, a data do primeiro plantão ou o rodízio refaz a escala inteira, inclusive os plantões passados. Para alguém que entra ou sai a partir de uma data, use <b>Movimentar equipe</b>.</p>':''}
     <p class="err" id="fe-err" role="alert"></p>
@@ -1209,7 +1226,7 @@ function salvarForm(){
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao=mapa(f.entradaPadrao);
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao='ultima';
   f.eventos=f.eventos.map(ev=>ev.tipo==='entrada'&&ev.posicao&&!['ultima','primeira'].includes(ev.posicao)?Object.assign({},ev,{posicao:mapa(ev.posicao)}):ev);
-  const e={id:f.id,linkId:f.linkId,nome:f.nome.trim(),lideranca:(f.lideranca||'').trim().replace(/\s+/g,' '),fundo:f.fundo||'',bordaTabela:f.bordaTabela!==false,periodo:f.periodo||'hoje',inicio:f.inicio,frequencia:f.frequencia,rotulos:fe.rotulos,prefixo:fe.prefixo,equipe:eq,sentido:f.sentido,entradaPadrao:f.entradaPadrao,cor:f.cor,fixas:fe.fixas,destaques:rs.reduce((m,l,i)=>{if(f.destaques[i])m[l]=f.destaques[i];return m},{}),eventos:f.eventos,ordem:f.ordem};
+  const e={id:f.id,linkId:f.linkId,nome:f.nome.trim(),lideranca:(f.lideranca||'').trim().replace(/\s+/g,' '),fundo:f.fundo||'',tomFaixa:f.tomFaixa||'escura',bordaTabela:f.bordaTabela!==false,periodo:f.periodo||'hoje',inicio:f.inicio,frequencia:f.frequencia,rotulos:fe.rotulos,prefixo:fe.prefixo,equipe:eq,sentido:f.sentido,entradaPadrao:f.entradaPadrao,cor:f.cor,fixas:fe.fixas,destaques:rs.reduce((m,l,i)=>{if(f.destaques[i])m[l]=f.destaques[i];return m},{}),eventos:f.eventos,ordem:f.ordem};
   const novo=f.novo;fechar();S.escalaSel=e.id;salvarEscala(e);toast(novo?'Escala criada.':'Escala atualizada.');irPara('escalas');
 }
 
@@ -1413,10 +1430,15 @@ function dadosExport(e){
   const body=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return [br(l.data),...rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])})]});
   const ac=hexRgb(cor(e)),zebra=misturaBranco(ac,.89);
   // data e faixas: tom claro e tom escuro da cor (linha sim, linha não), letra branca; cabeçalho no tom mais escuro
-  const base=paraBranco(ac),fxA=paraBranco(misturaBranco(ac,.3),3.2),fxB=base,cabEsc=escurecer(base,.6);
+  const base=paraBranco(ac),cabEsc=escurecer(base,.6),tom=TONS_FAIXA.some(x=>x[0]===e.tomFaixa)?e.tomFaixa:'escura';
+  // tom da faixa e da coluna Data: clara, média ou escura (linha clara / linha escura)
+  const fxA=tom==='clara'?misturaBranco(ac,.86):tom==='media'?misturaBranco(ac,.62):paraBranco(misturaBranco(ac,.3),3.2);
+  const fxB=tom==='clara'?misturaBranco(ac,.74):tom==='media'?misturaBranco(ac,.46):base;
+  // letra branca quando o fundo é escuro o bastante; senão, um tom bem escuro da cor
+  const tinta=paraBranco(escurecer(base,.55),7),letra=c=>1.05/(lumin(c)+.05)>=3.4?[255,255,255]:tinta,txtA=letra(fxA),txtB=letra(fxB);
   const tipos=rM.map(lab=>destCls(e,lab)),temFx=tipos.map(t=>t.includes('fx')),temBd=tipos.map(t=>t.includes('bd'));
   const lider=(e.lideranca||'').trim(),linha2=['Próximos '+MESES+' meses: '+br(ls[0].data)+' a '+br(ls[ls.length-1].data),ls.length+' plantões'].join('   ·   ');
-  return {MESES,ls,rM,body,ac,zebra,fxA,fxB,cabEsc,temFx,temBd,linha2,lider};
+  return {MESES,ls,rM,body,ac,zebra,fxA,fxB,txtA,txtB,cabEsc,temFx,temBd,linha2,lider};
 }
 const nomeArquivo=(e,ext)=>('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').trim()+'.'+ext;
 
@@ -1425,6 +1447,7 @@ const nomeArquivo=(e,ext)=>('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').repla
 const FUNDOS=[['','Sem fundo','b'],['cor','Cor clarinha','b'],['cor2','Cor média','b'],['cor3','Cor forte','b'],
   ['circulos','Círculos','c'],['pontos','Pontilhado','c'],['listras','Listras','c'],['bolhas','Bolhas','c'],['folhagem','Folhagem','c'],['aurora','Aurora','c'],['confete','Confete','c'],['ondas','Ondas','c'],
   ['moldura','Moldura fina','f'],['topo','Faixa no topo','f'],['quadriculado','Quadriculado','f'],['lateral','Faixa lateral','f'],['cantoneiras','Cantoneiras','f']];
+const TONS_FAIXA=[['clara','Clara'],['media','Média'],['escura','Escura']];
 const GRUPOS_FUNDO=[['b','Básicos'],['c','Criativos'],['f','Formais']];
 function desenharPrevFundos(){
   const c=hexRgb(CORES[(S.form&&S.form.cor)||'anil']||'#4758d6');
@@ -1580,7 +1603,7 @@ function desenharImagem(e){
       const escura=c<0||temFx[c],v=lin[c+1];
       g.fillStyle=escura?rgb(listra?fxB:fxA):(listra?rgb(zebra):'#fff');g.fillRect(xCol(c),y,wCol(c),altL);
       const vago=v==='Vago';
-      texto(v,xCol(c),wCol(c),y+altL/2,escura?700:400,15,escura?'#fff':vago?'rgb(176,58,58)':'rgb(24,30,44)',vago);
+      texto(v,xCol(c),wCol(c),y+altL/2,escura?700:400,15,escura?rgb(listra?D.txtB:D.txtA):vago?'rgb(176,58,58)':'rgb(24,30,44)',vago);
     }
     y+=altL;
   });
@@ -1652,7 +1675,7 @@ async function baixarPdf(e,btn){
         const c=d.column.index-1;
         const listra=d.section==='body'&&d.row.index%2===1; // linha sim, linha não na cor da escala (tom claro)
         const escura=c<0||temFx[c];
-        if(escura){d.cell.styles.fillColor=d.section==='head'?cabEsc:(listra?fxB:fxA);d.cell.styles.textColor=[255,255,255]}
+        if(escura){d.cell.styles.fillColor=d.section==='head'?cabEsc:(listra?fxB:fxA);d.cell.styles.textColor=d.section==='head'?[255,255,255]:(listra?D.txtB:D.txtA)}
         else d.cell.styles.fillColor=listra?zebra:[255,255,255];
         // cabeçalho das posições: todo na mesma cor escura das faixas, com letra branca
         if(d.section==='head'){d.cell.styles.fillColor=cabEsc;d.cell.styles.textColor=[255,255,255]}
@@ -1793,6 +1816,7 @@ dlg.addEventListener('input',ev=>{
     else if(t.name==='cor'){S.form.cor=t.value;desenharPrevFundos()}
     else if(t.name==='fundo')S.form.fundo=t.value;
     else if(t.name==='bordaTabela')S.form.bordaTabela=t.checked;
+    else if(t.name==='tomFaixa')S.form.tomFaixa=t.value;
     else if(t.dataset.fpn!==undefined)S.form.fixosP[+t.dataset.fpn].nome=t.value;
     else if(t.dataset.fpr!==undefined)S.form.fixosP[+t.dataset.fpr].i=+t.value;
   }else if(S.mov){
