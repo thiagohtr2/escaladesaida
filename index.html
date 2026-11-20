@@ -1439,9 +1439,11 @@ function dadosExport(e){
   const fxB=tom==='clara'?misturaBranco(ac,.74):tom==='media'?misturaBranco(ac,.46):base;
   // letra branca quando o fundo é escuro o bastante; senão, um tom bem escuro da cor
   const tinta=paraBranco(escurecer(base,.55),7),letra=c=>1.05/(lumin(c)+.05)>=3.4?[255,255,255]:tinta,txtA=letra(fxA),txtB=letra(fxB);
+  // a coluna Data fica sempre no tom escuro, com letra branca (o tom escolhido vale só para as faixas dos nomes)
+  const dataA=paraBranco(misturaBranco(ac,.3),3.2),dataB=base;
   const tipos=rM.map(lab=>destCls(e,lab)),temFx=tipos.map(t=>t.includes('fx')),temBd=tipos.map(t=>t.includes('bd'));
   const lider=(e.lideranca||'').trim(),linha2=['Plantões de '+br(ls[0].data)+' a '+br(ls[ls.length-1].data),ls.length+' plantões'].join('   ·   ');
-  return {MESES,ls,rM,body,ac,zebra,fxA,fxB,txtA,txtB,cabEsc,temFx,temBd,linha2,lider};
+  return {MESES,ls,rM,body,ac,zebra,fxA,fxB,txtA,txtB,dataA,dataB,cabEsc,temFx,temBd,linha2,lider};
 }
 const nomeArquivo=(e,ext)=>('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').trim()+'.'+ext;
 
@@ -1605,9 +1607,9 @@ function desenharImagem(e){
     const listra=i%2===1;
     for(let c=-1;c<n;c++){
       const escura=c<0||temFx[c],v=lin[c+1];
-      g.fillStyle=escura?rgb(listra?fxB:fxA):(listra?rgb(zebra):'#fff');g.fillRect(xCol(c),y,wCol(c),altL);
+      g.fillStyle=c<0?rgb(listra?D.dataB:D.dataA):escura?rgb(listra?fxB:fxA):(listra?rgb(zebra):'#fff');g.fillRect(xCol(c),y,wCol(c),altL);
       const vago=v==='Vago';
-      texto(v,xCol(c),wCol(c),y+altL/2,escura?700:400,15,escura?rgb(listra?D.txtB:D.txtA):vago?'rgb(176,58,58)':'rgb(24,30,44)',vago);
+      texto(v,xCol(c),wCol(c),y+altL/2,escura?700:400,15,c<0?'#fff':escura?rgb(listra?D.txtB:D.txtA):vago?'rgb(176,58,58)':'rgb(24,30,44)',vago);
     }
     y+=altL;
   });
@@ -1679,7 +1681,7 @@ async function baixarPdf(e,btn){
         const c=d.column.index-1;
         const listra=d.section==='body'&&d.row.index%2===1; // linha sim, linha não na cor da escala (tom claro)
         const escura=c<0||temFx[c];
-        if(escura){d.cell.styles.fillColor=d.section==='head'?cabEsc:(listra?fxB:fxA);d.cell.styles.textColor=d.section==='head'?[255,255,255]:(listra?D.txtB:D.txtA)}
+        if(escura){d.cell.styles.fillColor=d.section==='head'?cabEsc:c<0?(listra?D.dataB:D.dataA):(listra?fxB:fxA);d.cell.styles.textColor=d.section==='head'||c<0?[255,255,255]:(listra?D.txtB:D.txtA)}
         else d.cell.styles.fillColor=listra?zebra:[255,255,255];
         // cabeçalho das posições: todo na mesma cor escura das faixas, com letra branca
         if(d.section==='head'){d.cell.styles.fillColor=cabEsc;d.cell.styles.textColor=[255,255,255]}
