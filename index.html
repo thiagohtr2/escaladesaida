@@ -710,7 +710,7 @@ function descompactar(txt){
   const eventos=(c[16]?c[16].split(';'):[]).map((x,i)=>{const [t,kk,a,b]=x.split(',');const tipo=TIPOS[+t],data=addDias(ini,parseInt(kk,36)*f),o={id:'p'+i,tipo,data,criado:i};
     if(tipo==='troca'){o.sai=a;o.entra=b}else{o.nome=a;if(tipo==='ausencia')o.cobre=b||'';if(tipo==='entrada'&&b)o.posicao=b;if(tipo==='fixar')o.rot=b}return o});
   const e={id:'publica',nome:c[3]||'Escala',inicio:ini,frequencia:f,rotulos:lista(c[6]),equipe:lista(c[7]),prefixo:c[8]||'P',sentido:c[9]==='1'?'sobe':'desce',
-    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0',tomFaixa:['clara','media'].includes(c[19])?c[19]:'escura',visivel:['hoje','10dias'].includes(c[20])?c[20]:'inicio'};
+    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0',tomFaixa:['clara','media'].includes(c[19])?c[19]:'escura',visivel:['hoje','ult10','10dias'].includes(c[20])?c[20]:'inicio'};
   return {g,s:c[2]||'',e};
 }
 async function linkCurto(e){
@@ -1115,7 +1115,7 @@ const dl=()=>`<datalist id="dl-nomes">${todosNomes().map(n=>`<option value="${es
 function abrirFormEscala(e,dup){
   const novo=!e||dup;
   const base=e||{nome:'',inicio:proximaSemana(3),frequencia:14,rotulos:['Plus','Semi'],prefixo:'P',equipe:[],sentido:'desce',entradaPadrao:'ultima',cor:'anil',destaques:['faixa'],eventos:[]};
-  S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',visivel:base.visivel||'inicio',fundo:base.fundo||'',tomFaixa:base.tomFaixa||'escura',bordaTabela:base.bordaTabela!==false,periodo:base.periodo||(novo?'tudo':'hoje'),inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
+  S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',visivel:visivelDe(base),fundo:base.fundo||'',tomFaixa:base.tomFaixa||'escura',bordaTabela:base.bordaTabela!==false,periodo:base.periodo||(novo?'tudo':'hoje'),inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
     posicoes:rotulos(base,(base.equipe||[]).length),rotulosBase:rotulos(base,(base.equipe||[]).length),fixas:(()=>{const fx=fixasDe(base);return rotulos(base,(base.equipe||[]).length).map(l=>{const f=fx.find(x=>x.rot===l);return f?(f.ancora==='fim'?'fim':'depois:'+f.ancora):''})})(),prefixo:base.prefixo||'P',equipe:dup?[]:[...(base.equipe||[])],sentido:base.sentido||'desce',entradaPadrao:base.entradaPadrao||'ultima',
     cor:dup?(Object.keys(CORES).find(k=>k!==base.cor)||'azul'):(base.cor||'verde'),destaques:rotulos(base,Math.max((base.equipe||[]).length,1)).map(l=>destLab(base,l)),eventos:dup?[]:[...(base.eventos||[])],ordem:base.ordem||Date.now(),dupDe:dup?base.nome:null};
   {const ps=S.form.posicoes;S.form.fixosP=(S.form.eventos||[]).filter(x=>x.tipo==='fixar'&&x.inicial).map(x=>({nome:x.nome,i:ps.indexOf(x.rot)}));}
@@ -1426,8 +1426,10 @@ const paraBranco=(c,min=4.6)=>{let x=c.slice(),i=0;while(1.05/(lumin(x)+.05)<min
 function dadosExport(e){
   const MESES=18,hoje=hojeStr(),ate=(()=>{const [y,m,d]=hoje.split('-').map(Number),x=new Date(Date.UTC(y,m-1+MESES,d));return x.toISOString().slice(0,10)})();
   // o que as pessoas veem: a partir de hoje, últimos 10 dias ou desde o começo da escala
-  const vis=VISIVEL.some(x=>x[0]===e.visivel)?e.visivel:'inicio',desde=vis==='hoje'?hoje:vis==='10dias'?addDias(hoje,-10):e.inicio;
-  const ls=gerar(e,ate).filter(l=>l.data>=desde);
+  const vis=visivelDe(e),todas=gerar(e,ate);
+  let ls=todas;
+  if(vis==='hoje')ls=todas.filter(l=>l.data>=hoje);
+  else if(vis==='ult10'){const i=todas.findIndex(l=>l.data>=hoje),corte=i<0?todas.length:i;ls=todas.slice(Math.max(0,corte-10))}
   if(!ls.length)return {MESES,ls};
   const maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
   const body=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return [br(l.data),...rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])})]});
@@ -1452,7 +1454,9 @@ const nomeArquivo=(e,ext)=>('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').repla
 const FUNDOS=[['','Sem fundo','b'],['cor','Cor clarinha','b'],['cor2','Cor média','b'],['cor3','Cor forte','b'],
   ['circulos','Círculos','c'],['pontos','Pontilhado','c'],['listras','Listras','c'],['bolhas','Bolhas','c'],['folhagem','Folhagem','c'],['aurora','Aurora','c'],['confete','Confete','c'],['ondas','Ondas','c'],
   ['moldura','Moldura fina','f'],['topo','Faixa no topo','f'],['quadriculado','Quadriculado','f'],['lateral','Faixa lateral','f'],['cantoneiras','Cantoneiras','f']];
-const VISIVEL=[['hoje','A partir de hoje','Só os plantões de hoje em diante.'],['10dias','Últimos 10 dias','Mostra também os plantões dos 10 dias anteriores.'],['inicio','Desde o começo','Desde o primeiro plantão da escala.']];
+const VISIVEL=[['hoje','A partir de hoje','Só os plantões de hoje em diante.'],['ult10','Últimos 10 plantões','Mostra também os 10 plantões anteriores a hoje.'],['inicio','Desde o começo','Desde o primeiro plantão da escala.']];
+/* '10dias' era o nome antigo de "últimos 10 plantões" */
+const visivelDe=e=>{const v=e.visivel==='10dias'?'ult10':e.visivel;return VISIVEL.some(x=>x[0]===v)?v:'inicio'};
 const TONS_FAIXA=[['clara','Clara'],['media','Média'],['escura','Escura']];
 const GRUPOS_FUNDO=[['b','Básicos'],['c','Criativos'],['f','Formais']];
 function desenharPrevFundos(){
