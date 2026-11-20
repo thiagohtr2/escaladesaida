@@ -138,6 +138,10 @@ body.publico .prox-ver{display:none}
 .pub-imagem img{display:block;width:100%;max-width:960px;height:auto;border-radius:14px;box-shadow:0 10px 40px rgba(15,23,42,.12);background:#fff}
 .pub-carregando{padding:60px 0;text-align:center}
 @media(max-width:760px){body.publico main{padding:8px 6px 24px!important}.pub-imagem img{border-radius:8px;box-shadow:0 4px 18px rgba(15,23,42,.10)}}
+.ir-hoje{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;border:0;border-radius:999px;padding:11px 20px;font:700 14px/1 inherit;font-family:inherit;color:#fff;background:#1f2937;box-shadow:0 8px 24px rgba(15,23,42,.25);cursor:pointer}
+.ir-hoje[hidden]{display:none}
+.pub-cab{position:sticky;top:0;z-index:5;background-repeat:no-repeat;opacity:0;pointer-events:none;transition:opacity .15s;box-shadow:0 4px 12px rgba(15,23,42,.18)}
+.pub-cab.on{opacity:1}
 /* Versões anteriores */
 .versoes{list-style:none;display:grid;gap:8px;margin-top:12px;padding:0}.versoes li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
 .versoes li div{display:grid;gap:2px;min-width:0}.versoes b{font-size:13px}.versoes span{font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -742,7 +746,7 @@ function vPublico(){
   const e=S.escalas[0];if(!S.publico||!e)return `<section class="pub-espera" aria-busy="true"><i></i><span>Carregando a escala…</span></section>`;
   try{document.title=e.nome}catch(x){}
   if(!S.pubImg)setTimeout(gerarImagemPublica,0);
-  return S.pubImg?`<section class="pub-imagem" style="--ac:${cor(e)}"><img src="${S.pubImg}" alt="${esc('Escala '+e.nome)}" width="${S.pubImgW}" height="${S.pubImgH}"></section>`:`<section class="pub-espera" aria-busy="true"><i></i><span>Carregando a escala…</span></section>`;
+  return S.pubImg?`<section class="pub-imagem" style="--ac:${cor(e)}"><div class="pub-cab" aria-hidden="true" style="background-image:url('${S.pubImg}')"></div><img src="${S.pubImg}" alt="${esc('Escala '+e.nome)}" width="${S.pubImgW}" height="${S.pubImgH}"></section>`:`<section class="pub-espera" aria-busy="true"><i></i><span>Carregando a escala…</span></section>`;
 }
 function gerarImagemPublica(){
   if(S.pubImg||S.pubImgGerando||!S.escalas[0])return;S.pubImgGerando=true;
@@ -750,9 +754,33 @@ function gerarImagemPublica(){
     const cv=desenharImagem(S.escalas[0],{hoje:true});
     if(!cv){S.publicoErro='Esta escala não tem plantões nos próximos 18 meses.';S.pubImgGerando=false;render();return}
     cv.toBlob(b=>{S.pubImgGerando=false;if(!b){S.publicoErro='Não foi possível mostrar a escala neste aparelho.';render();return}
-      S.pubImg=URL.createObjectURL(b);S.pubImgW=cv.width;S.pubImgH=cv.height;render()},'image/png');
+      S.pubImg=URL.createObjectURL(b);S.pubImgW=cv.width;S.pubImgH=cv.height;S.pubHojeY=cv.hojeY;S.pubCab=cv.cab;render();posicionarHoje(true)},'image/png');
   }catch(err){console.error(err);S.pubImgGerando=false;S.publicoErro='Não foi possível mostrar a escala neste aparelho.';render()}
 }
+/* Deixa a faixa HOJE sempre à vista: ao abrir, a página já rola até ela; se a pessoa rolar para longe, aparece um botão para voltar */
+function yHojePublico(){const im=document.querySelector('.pub-imagem img');if(!im||S.pubHojeY==null)return null;const r=im.getBoundingClientRect();return r.top+window.scrollY+r.height*S.pubHojeY}
+function posicionarHoje(inicio){
+  const ir=()=>{const y=yHojePublico();if(y==null)return;const alvo=Math.max(0,y-Math.min(window.innerHeight*.28,220));
+    if(!inicio||alvo>40)window.scrollTo({top:alvo,behavior:inicio?'auto':'smooth'});atualizarBotaoHoje()};
+  const im=document.querySelector('.pub-imagem img');if(!im)return;
+  if(im.complete&&im.naturalWidth)requestAnimationFrame(ir);else im.addEventListener('load',()=>requestAnimationFrame(ir),{once:true});
+}
+/* cabeçalho (Data, Plus, P1…) preso no topo da tela quando a pessoa rola a escala */
+function ajustarCabPublico(){
+  const im=document.querySelector('.pub-imagem img'),cb=document.querySelector('.pub-cab');if(!im||!cb||!S.pubCab)return;
+  const h=im.clientHeight,w=im.clientWidth,top=h*S.pubCab[0],alt=h*S.pubCab[1];
+  cb.style.width=w+'px';cb.style.height=alt+'px';cb.style.marginBottom=(-alt)+'px';cb.style.backgroundSize=w+'px '+h+'px';cb.style.backgroundPosition='0 '+(-top)+'px';
+  const r=im.getBoundingClientRect();cb.classList.toggle('on',r.top+top<0&&r.bottom>alt*3);
+}
+function atualizarBotaoHoje(){ajustarCabPublico();
+  let bt=document.getElementById('ir-hoje');const y=yHojePublico();
+  if(y==null){if(bt)bt.hidden=true;return}
+  if(!bt){bt=document.createElement('button');bt.id='ir-hoje';bt.type='button';bt.className='ir-hoje';bt.addEventListener('click',()=>posicionarHoje(false));document.body.appendChild(bt)}
+  const v=y-window.scrollY,fora=v<40||v>window.innerHeight-60;bt.hidden=!fora;
+  bt.innerHTML=(v<40?'↑':'↓')+' Hoje';
+}
+window.addEventListener('scroll',()=>{if(S.pubImg)atualizarBotaoHoje()},{passive:true});
+window.addEventListener('resize',()=>{if(S.pubImg)atualizarBotaoHoje()});
 function vPublicoCompleto(){
   if(S.publicoErro)return `<section class="empty-all">${icon('alert','big')}<h1>Não foi possível abrir esta escala</h1><p>${esc(S.publicoErro)}</p></section>`;
   const e=S.escalas[0],P=S.publico,nomes=todosNomes(),dest=S.destaque===null?(nomes.includes(S.eu)?S.eu:''):S.destaque;
@@ -1655,6 +1683,7 @@ function desenharImagem(e,opc){
   if(bordaT)g.strokeRect(M+1.25,topo+1.25,W-2*M-2.5,y-topo-2.5);
   // contorno no próximo plantão
   if(iProx>=0){g.strokeStyle=rgb(cabEsc);g.lineWidth=3.5;g.strokeRect(M+1.75,yLinha(iProx)+1.75,W-2*M-3.5,altL-3.5)}
+  cv.hojeY=iProx>=0?bandaT/H:null;cv.cab=[topo/H,altCab/H];   // cabeçalho da tabela (para ficar preso no topo do link)   // posição da faixa HOJE (fração da altura), para o link rolar até ela
   return cv;
 }
 async function baixarImagem(e,btn){
