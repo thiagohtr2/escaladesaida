@@ -710,7 +710,7 @@ function descompactar(txt){
   const eventos=(c[16]?c[16].split(';'):[]).map((x,i)=>{const [t,kk,a,b]=x.split(',');const tipo=TIPOS[+t],data=addDias(ini,parseInt(kk,36)*f),o={id:'p'+i,tipo,data,criado:i};
     if(tipo==='troca'){o.sai=a;o.entra=b}else{o.nome=a;if(tipo==='ausencia')o.cobre=b||'';if(tipo==='entrada'&&b)o.posicao=b;if(tipo==='fixar')o.rot=b}return o});
   const e={id:'publica',nome:c[3]||'Escala',inicio:ini,frequencia:f,rotulos:lista(c[6]),equipe:lista(c[7]),prefixo:c[8]||'P',sentido:c[9]==='1'?'sobe':'desce',
-    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0',tomFaixa:['clara','media'].includes(c[19])?c[19]:'escura',visivel:['hoje','10dias'].includes(c[20])?c[20]:'inicio'};
+    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0',tomFaixa:['clara','media'].includes(c[19])?c[19]:'escura',visivel:['hoje','ult10','10dias'].includes(c[20])?c[20]:'inicio'};
   return {g,s:c[2]||'',e};
 }
 async function linkCurto(e){
@@ -747,7 +747,7 @@ function vPublico(){
 function gerarImagemPublica(){
   if(S.pubImg||S.pubImgGerando||!S.escalas[0])return;S.pubImgGerando=true;
   try{
-    const cv=desenharImagem(S.escalas[0]);
+    const cv=desenharImagem(S.escalas[0],{hoje:true});
     if(!cv){S.publicoErro='Esta escala não tem plantões nos próximos 18 meses.';S.pubImgGerando=false;render();return}
     cv.toBlob(b=>{S.pubImgGerando=false;if(!b){S.publicoErro='Não foi possível mostrar a escala neste aparelho.';render();return}
       S.pubImg=URL.createObjectURL(b);S.pubImgW=cv.width;S.pubImgH=cv.height;render()},'image/png');
@@ -1115,7 +1115,7 @@ const dl=()=>`<datalist id="dl-nomes">${todosNomes().map(n=>`<option value="${es
 function abrirFormEscala(e,dup){
   const novo=!e||dup;
   const base=e||{nome:'',inicio:proximaSemana(3),frequencia:14,rotulos:['Plus','Semi'],prefixo:'P',equipe:[],sentido:'desce',entradaPadrao:'ultima',cor:'anil',destaques:['faixa'],eventos:[]};
-  S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',visivel:base.visivel||'inicio',fundo:base.fundo||'',tomFaixa:base.tomFaixa||'escura',bordaTabela:base.bordaTabela!==false,periodo:base.periodo||(novo?'tudo':'hoje'),inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
+  S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',visivel:visivelDe(base),fundo:base.fundo||'',tomFaixa:base.tomFaixa||'escura',bordaTabela:base.bordaTabela!==false,periodo:base.periodo||(novo?'tudo':'hoje'),inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
     posicoes:rotulos(base,(base.equipe||[]).length),rotulosBase:rotulos(base,(base.equipe||[]).length),fixas:(()=>{const fx=fixasDe(base);return rotulos(base,(base.equipe||[]).length).map(l=>{const f=fx.find(x=>x.rot===l);return f?(f.ancora==='fim'?'fim':'depois:'+f.ancora):''})})(),prefixo:base.prefixo||'P',equipe:dup?[]:[...(base.equipe||[])],sentido:base.sentido||'desce',entradaPadrao:base.entradaPadrao||'ultima',
     cor:dup?(Object.keys(CORES).find(k=>k!==base.cor)||'azul'):(base.cor||'verde'),destaques:rotulos(base,Math.max((base.equipe||[]).length,1)).map(l=>destLab(base,l)),eventos:dup?[]:[...(base.eventos||[])],ordem:base.ordem||Date.now(),dupDe:dup?base.nome:null};
   {const ps=S.form.posicoes;S.form.fixosP=(S.form.eventos||[]).filter(x=>x.tipo==='fixar'&&x.inicial).map(x=>({nome:x.nome,i:ps.indexOf(x.rot)}));}
@@ -1426,8 +1426,10 @@ const paraBranco=(c,min=4.6)=>{let x=c.slice(),i=0;while(1.05/(lumin(x)+.05)<min
 function dadosExport(e){
   const MESES=18,hoje=hojeStr(),ate=(()=>{const [y,m,d]=hoje.split('-').map(Number),x=new Date(Date.UTC(y,m-1+MESES,d));return x.toISOString().slice(0,10)})();
   // o que as pessoas veem: a partir de hoje, últimos 10 dias ou desde o começo da escala
-  const vis=VISIVEL.some(x=>x[0]===e.visivel)?e.visivel:'inicio',desde=vis==='hoje'?hoje:vis==='10dias'?addDias(hoje,-10):e.inicio;
-  const ls=gerar(e,ate).filter(l=>l.data>=desde);
+  const vis=visivelDe(e),todas=gerar(e,ate);
+  let ls=todas;
+  if(vis==='hoje')ls=todas.filter(l=>l.data>=hoje);
+  else if(vis==='ult10'){const i=todas.findIndex(l=>l.data>=hoje),corte=i<0?todas.length:i;ls=todas.slice(Math.max(0,corte-10))}
   if(!ls.length)return {MESES,ls};
   const maxN=Math.max(1,...ls.map(l=>l.equipe.length)),rM=rotulos(e,maxN);
   const body=ls.map(l=>{const rl=rotulos(e,l.equipe.length);return [br(l.data),...rM.map(lab=>{const i=rl.indexOf(lab);return i<0?'':(l.equipe[i]===''?'Vago':l.equipe[i])})]});
@@ -1452,7 +1454,9 @@ const nomeArquivo=(e,ext)=>('Escala '+e.nome).replace(/[\\/:*?"<>|]+/g,'').repla
 const FUNDOS=[['','Sem fundo','b'],['cor','Cor clarinha','b'],['cor2','Cor média','b'],['cor3','Cor forte','b'],
   ['circulos','Círculos','c'],['pontos','Pontilhado','c'],['listras','Listras','c'],['bolhas','Bolhas','c'],['folhagem','Folhagem','c'],['aurora','Aurora','c'],['confete','Confete','c'],['ondas','Ondas','c'],
   ['moldura','Moldura fina','f'],['topo','Faixa no topo','f'],['quadriculado','Quadriculado','f'],['lateral','Faixa lateral','f'],['cantoneiras','Cantoneiras','f']];
-const VISIVEL=[['hoje','A partir de hoje','Só os plantões de hoje em diante.'],['10dias','Últimos 10 dias','Mostra também os plantões dos 10 dias anteriores.'],['inicio','Desde o começo','Desde o primeiro plantão da escala.']];
+const VISIVEL=[['hoje','A partir de hoje','Só os plantões de hoje em diante.'],['ult10','Últimos 10 plantões','Mostra também os 10 plantões anteriores a hoje.'],['inicio','Desde o começo','Desde o primeiro plantão da escala.']];
+/* '10dias' era o nome antigo de "últimos 10 plantões" */
+const visivelDe=e=>{const v=e.visivel==='10dias'?'ult10':e.visivel;return VISIVEL.some(x=>x[0]===v)?v:'inicio'};
 const TONS_FAIXA=[['clara','Clara'],['media','Média'],['escura','Escura']];
 const GRUPOS_FUNDO=[['b','Básicos'],['c','Criativos'],['f','Formais']];
 function desenharPrevFundos(){
@@ -1564,19 +1568,23 @@ function arteFundo(g,W,H,ac,v,t){
   const p=12;if(g.roundRect){g.beginPath();g.roundRect(t.x-p,t.y-p,t.w+2*p,t.h+2*p,16);g.fill()}else g.fillRect(t.x-p,t.y-p,t.w+2*p,t.h+2*p);g.restore();
 }
 /* Desenha a escala (mesmo visual do PDF) num canvas em alta resolução */
-function desenharImagem(e){
+function desenharImagem(e,opc){
+  opc=opc||{};
   const D=dadosExport(e);
   if(!D.ls.length)return null;
   const {rM,body,ac,zebra,fxA,fxB,cabEsc,temFx,temBd}=D;
   const FONTE='-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
   const arte=FUNDOS.some(x=>x[0]&&x[0]===e.fundo)?e.fundo:'',dy=arte?20:0;   // com fundo, mais margem para a arte aparecer
   const n=rM.length,M=arte?64:36,colData=112,colW=Math.max(96,Math.min(150,Math.round(760/n)));
-  const W=M*2+colData+colW*n,topo=114+(arte?36:0),altCab=40,altL=34,rod=arte?72:36,H=topo+altCab+altL*body.length+rod;
+  // marcação do dia de hoje (só no link, que está sempre atualizado): faixa "HOJE" antes do próximo plantão
+  const hojeS=hojeStr(),iProx=opc.hoje?D.ls.findIndex(l=>l.data>=hojeS):-1,altHoje=iProx>=0?34:0;
+  const W=M*2+colData+colW*n,topo=114+(arte?36:0),altCab=40,altL=34,rod=arte?72:36,H=topo+altCab+altL*body.length+altHoje+rod;
+  const yLinha=i=>topo+altCab+i*altL+(iProx>=0&&i>=iProx?altHoje:0);
   const esc_=Math.max(1,Math.min(3,Math.sqrt(16e6/(W*H))));   // até 3x, sem passar do limite de tamanho do iPhone
   const cv=document.createElement('canvas');cv.width=Math.round(W*esc_);cv.height=Math.round(H*esc_);
   const g=cv.getContext('2d');g.scale(esc_,esc_);
   const rgb=c=>'rgb('+c.join(',')+')';
-  if(arte)arteFundo(g,W,H,ac,arte,{x:M,y:topo,w:W-2*M,h:altCab+altL*body.length});else{g.fillStyle='#fff';g.fillRect(0,0,W,H)}
+  if(arte)arteFundo(g,W,H,ac,arte,{x:M,y:topo,w:W-2*M,h:altCab+altL*body.length+altHoje});else{g.fillStyle='#fff';g.fillRect(0,0,W,H)}
   g.fillStyle=rgb(ac);g.fillRect(0,0,W,6);
   g.textBaseline='alphabetic';g.textAlign='left';
   g.fillStyle=rgb(ac);g.font='700 '+(arte?32:30)+'px '+FONTE;g.fillText(e.nome,M,52+dy+(arte?2:0));
@@ -1604,7 +1612,7 @@ function desenharImagem(e){
   for(let c=-1;c<n;c++){g.fillStyle=rgb(cabEsc);g.fillRect(xCol(c),y,wCol(c),altCab);texto(c<0?'Data':rM[c],xCol(c),wCol(c),y+altCab/2,700,15,'#fff')}
   y+=altCab;
   body.forEach((lin,i)=>{
-    const listra=i%2===1;
+    const listra=i%2===1;y=yLinha(i);
     for(let c=-1;c<n;c++){
       const escura=c<0||temFx[c],v=lin[c+1];
       g.fillStyle=c<0?rgb(listra?D.dataB:D.dataA):escura?rgb(listra?fxB:fxA):(listra?rgb(zebra):'#fff');g.fillRect(xCol(c),y,wCol(c),altL);
@@ -1613,20 +1621,40 @@ function desenharImagem(e){
     }
     y+=altL;
   });
+  // plantões que já passaram ficam mais apagados
+  if(iProx>0){g.fillStyle='rgba(255,255,255,.5)';g.fillRect(M,topo+altCab,W-2*M,iProx*altL)}
   // linhas da grade
   g.strokeStyle='rgb(223,227,236)';g.lineWidth=1;g.beginPath();
-  for(let r=0;r<=body.length+1;r++){const yy=topo+(r?altCab+(r-1)*altL:0)+.5;g.moveTo(M,yy);g.lineTo(W-M,yy)}
-  for(let c=-1;c<=n;c++){const xx=(c<n?xCol(c):W-M)+.5;g.moveTo(xx,topo);g.lineTo(xx,y)}
+  const bandaT=iProx>=0?yLinha(iProx)-altHoje:0,bandaB=bandaT+altHoje;
+  const vert=(x)=>{if(altHoje){g.moveTo(x,topo);g.lineTo(x,bandaT);g.moveTo(x,bandaB);g.lineTo(x,y)}else{g.moveTo(x,topo);g.lineTo(x,y)}};
+  g.moveTo(M,topo+.5);g.lineTo(W-M,topo+.5);
+  for(let r=0;r<=body.length;r++){const yy=(r<body.length?yLinha(r):yLinha(body.length-1)+altL)+.5;g.moveTo(M,yy);g.lineTo(W-M,yy);if(r===iProx&&altHoje){g.moveTo(M,bandaT+.5);g.lineTo(W-M,bandaT+.5)}}
+  for(let c=-1;c<=n;c++)vert((c<n?xCol(c):W-M)+.5);
   g.stroke();
+  if(altHoje){
+    // faixa do HOJE: linha na cor da escala, etiqueta à esquerda e aviso do próximo plantão à direita
+    g.fillStyle='rgb('+misturaBranco(ac,.92).join(',')+')';g.fillRect(M,bandaT,W-2*M,altHoje);
+    const ym=bandaT+altHoje/2;g.fillStyle=rgb(ac);g.fillRect(M,ym-1.25,W-2*M,2.5);
+    const dd=hojeS.split('-'),rot='HOJE · '+(DIAS[dow(hojeS)]||'').slice(0,3)+' '+dd[2]+'/'+dd[1];
+    g.font='800 13px '+FONTE;const pw=g.measureText(rot).width+26,px=M+10;
+    g.fillStyle=rgb(cabEsc);if(g.roundRect){g.beginPath();g.roundRect(px,ym-12,pw,24,12);g.fill()}else g.fillRect(px,ym-12,pw,24);
+    g.fillStyle='#fff';g.textAlign='left';g.textBaseline='middle';g.fillText(rot,px+13,ym+.5);
+    const prox=D.ls[iProx].data===hojeS?'Plantão de hoje ↓':'Próximo plantão: '+br(D.ls[iProx].data).slice(0,5)+' ↓';
+    g.font='700 13px '+FONTE;const tw=g.measureText(prox).width+22,tx=W-M-10-tw;
+    g.fillStyle='rgb('+misturaBranco(ac,.92).join(',')+')';g.fillRect(tx,ym-11,tw,22);
+    g.fillStyle=rgb(cabEsc);g.textAlign='center';g.fillText(prox,tx+tw/2,ym+.5);g.textAlign='left';g.textBaseline='alphabetic';
+  }
   // borda em volta da tabela toda (da Data até a última posição) e, por dentro, só as divisas das colunas com borda:
   // onde a borda de uma coluna encosta na borda da tabela, as duas viram uma linha só
   g.strokeStyle=rgb(ac);g.lineWidth=2.5;
   const bordaT=e.bordaTabela!==false;
   for(let c=0;c<n;c++){if(!temBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;const x0=xCol(c),x1=xCol(f)+colW;
-    if(bordaT){g.beginPath();g.moveTo(x0,topo);g.lineTo(x0,y);if(f<n-1){g.moveTo(x1,topo);g.lineTo(x1,y)}g.stroke()}
+    if(bordaT){g.beginPath();vert(x0);if(f<n-1)vert(x1);g.stroke()}
     else g.strokeRect(x0+1.25,topo+1.25,x1-x0-2.5,y-topo-2.5);
     c=f}
   if(bordaT)g.strokeRect(M+1.25,topo+1.25,W-2*M-2.5,y-topo-2.5);
+  // contorno no próximo plantão
+  if(iProx>=0){g.strokeStyle=rgb(cabEsc);g.lineWidth=3.5;g.strokeRect(M+1.75,yLinha(iProx)+1.75,W-2*M-3.5,altL-3.5)}
   return cv;
 }
 async function baixarImagem(e,btn){
