@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script>/* link público: esconde o site desde o primeiro instante, para não aparecer a página inicial antes da escala */
+(function(){try{var p=location.pathname,h=location.hash;if(/^\/e\/[a-z0-9-]{3,48}\/?$/i.test(p)||h.indexOf('#ver=')===0||/^#[a-z0-9-]*\.[A-Za-z0-9_-]{8,}$/.test(h))document.documentElement.className+=' pub-cedo'}catch(e){}})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rodízio de Plantões</title>
@@ -162,6 +164,12 @@ dialog[open]{display:flex;flex-direction:column;position:fixed;top:50%;left:50%;
 
 /* Keep the actual schedule close to the top on phones. */
 @media(max-width:760px){.page-kicker,.page-head p,.next-team,.workspace-heading p{display:none}.page-head{align-items:center;margin-bottom:18px}.page-head h1{margin:0;font-size:24px}.page-head .btn{margin-top:0}.next-overview{border-color:#e0e4ff}.next-intro{border-bottom:0;padding:14px 16px}.banner{margin-bottom:15px}.workspace-heading{padding:14px;gap:12px}.grade th,.grade td{padding:.95em .42em}.grade thead th{padding:.9em .45em}.grade tr.note td{font-size:max(.83em,8px)}}
+html.pub-cedo .top,html.pub-cedo .workspace-top,html.pub-cedo .bnav,html.pub-cedo .skip{display:none!important}
+html.pub-cedo main{margin:0 auto!important;max-width:1280px;padding:28px 24px 60px!important}
+@media(max-width:760px){html.pub-cedo main{padding:8px 6px 24px!important}}
+.pub-espera{display:grid;justify-items:center;gap:14px;padding:22vh 0 0;color:var(--ink-3);font-size:13px}
+.pub-espera i{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:girar .8s linear infinite}
+@keyframes girar{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -578,7 +586,7 @@ async function sairConta(expirou){
   gravarSessao(null);S.escalas=[];S.config={};S.importavel=null;S.modo='nuvem';S.tela='login';if(expirou)S.authErro='Sua sessão expirou. Entre de novo.';fechar();render();
 }
 async function iniciarPublicoNuvem(id){
-  S.publico=null;S.publicoErro=null;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';render();
+  S.publico=null;S.publicoErro=null;S.carregandoPublico=true;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';render();
   try{
     const r=await fetch('/api/publico?id='+encodeURIComponent(id),{cache:'no-store'});let j=null;try{j=await r.json()}catch(e){}
     if(!r.ok||!j||!j.e)throw new Error((j&&j.erro)||'Link não encontrado.');
@@ -712,7 +720,7 @@ async function lerLinkPublico(){
 }
 function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','fixas','fixasFim','periodo','lideranca','eventos','fundo','bordaTabela'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
 async function iniciarPublico(){
-  S.publico=null;S.publicoErro=null;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';
+  S.publico=null;S.publicoErro=null;S.carregandoPublico=true;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';
   try{
     const d=await lerLinkPublico();
     if(!d||!d.e||!validaData(d.e.inicio))throw new Error('O link está incompleto. Peça um link novo para quem cuida da escala.');
@@ -724,9 +732,10 @@ function dataHora(t){try{return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',m
 /* Link público: mostra só a escala como imagem (o mesmo visual do PDF e da imagem baixada), somente para ver */
 function vPublico(){
   if(S.publicoErro)return `<section class="empty-all">${icon('alert','big')}<h1>Não foi possível abrir esta escala</h1><p>${esc(S.publicoErro)}</p></section>`;
-  const e=S.escalas[0];try{document.title=e.nome}catch(x){}
+  const e=S.escalas[0];if(!S.publico||!e)return `<section class="pub-espera" aria-busy="true"><i></i><span>Carregando a escala…</span></section>`;
+  try{document.title=e.nome}catch(x){}
   if(!S.pubImg)setTimeout(gerarImagemPublica,0);
-  return `<section class="pub-imagem" style="--ac:${cor(e)}">${S.pubImg?`<img src="${S.pubImg}" alt="${esc('Escala '+e.nome)}" width="${S.pubImgW}" height="${S.pubImgH}">`:`<p class="muted pub-carregando">Carregando a escala…</p>`}</section>`;
+  return S.pubImg?`<section class="pub-imagem" style="--ac:${cor(e)}"><img src="${S.pubImg}" alt="${esc('Escala '+e.nome)}" width="${S.pubImgW}" height="${S.pubImgH}"></section>`:`<section class="pub-espera" aria-busy="true"><i></i><span>Carregando a escala…</span></section>`;
 }
 function gerarImagemPublica(){
   if(S.pubImg||S.pubImgGerando||!S.escalas[0])return;S.pubImgGerando=true;
@@ -1062,7 +1071,7 @@ function render(){
   $('[data-act="ajustes"]').innerHTML=icon('ajustes');
   const logado=S.modo!=='publico'&&!S.tela&&!!NUVEM.sessao;$('#btn-sair').hidden=!logado;$('#btn-sair').innerHTML=icon('sai');
   const cl=$('#conta-lin');cl.hidden=!logado;cl.innerHTML=logado?`<span>Conectado como</span><b>${esc(NUVEM.sessao.nome||NUVEM.sessao.email||'')}</b>${NUVEM.sessao.nome?`<span>${esc(NUVEM.sessao.email||'')}</span>`:''}<button type="button" class="lnk" data-act="sair">${icon('sai')} Sair da conta</button>`:'';
-  const pub=!!(S.publico||S.publicoErro),auth=!!S.tela;document.body.classList.toggle('publico',pub||auth);
+  const pub=!!(S.publico||S.publicoErro||S.carregandoPublico),auth=!!S.tela;document.body.classList.toggle('publico',pub||auth);
   if(pub){document.title=(S.publico?S.escalas[0].nome+' · ':'')+'Escala de plantão'}
   main.innerHTML=auth?vLogin():pub?vPublico():S.view==='painel'?vPainel():S.view==='plantonistas'?vPlantonistas():vEscalas();
   ajustarTabelas();
