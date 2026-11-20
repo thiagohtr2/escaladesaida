@@ -121,6 +121,10 @@ body.publico .prox-ver{display:none}
 .fundo-op:has(input:checked) span{color:var(--accent)}
 .fundo-op:has(input:focus-visible) .fundo-prev{outline:2px solid var(--accent);outline-offset:2px}
 .fixp-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.fixp-row .sel{flex:1 1 140px;min-width:0}.fixp-em{font-size:12px;color:var(--ink-3)}
+.links-esc{list-style:none;padding:0;margin:12px 0;display:grid;gap:8px}
+.links-esc li{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-left:4px solid var(--ec);border-radius:12px}
+.le-t{display:grid;gap:2px;min-width:0}.le-t b{font-size:14px}.le-t span{font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.le-a{display:flex;gap:6px;flex-wrap:wrap}
 /* Versões anteriores */
 .versoes{list-style:none;display:grid;gap:8px;margin-top:12px;padding:0}.versoes li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
 .versoes li div{display:grid;gap:2px;min-width:0}.versoes b{font-size:13px}.versoes span{font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -741,6 +745,32 @@ async function abrirLinkPublico(e){
   </div><div class="dlg-f"><a class="btn ghost" href="${esc(url)}" target="_blank" rel="noopener">${icon('ar')} Abrir</a><span class="sp"></span><button type="button" class="btn ghost" data-act="copiar-link">${icon('copy')} Copiar só o link</button><button type="button" class="btn pri" data-act="copiar-zap" data-msg="${esc('*'+e.nome+'*\nEscala de plantão'+(e.lideranca?' · Liderança: '+e.lideranca:'')+'\n'+url)}">${icon('copy')} Copiar mensagem</button></div></div>`);
 }
 
+/* Um link público para cada escala, todos numa lista (cada link mostra só a sua escala) */
+async function abrirLinksTodas(){
+  const lista=[...S.escalas].sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+  abrir(`<div class="dlg-in">${cab('Links das escalas','Um link para cada escala')}<div class="dlg-b"><p class="muted">Gerando os links…</p></div></div>`);
+  const links=[];
+  try{
+    if(S.modo==='nuvem'){
+      if(NUVEM.pendente||NUVEM.salvando)await enviarNuvem();
+      let mudou=false;
+      for(const e of lista){
+        const r=await api('/api/link',{method:'POST',body:JSON.stringify({escalaId:e.id,nome:e.nome,atual:e.linkId||''})});
+        if(e.linkId!==r.id){const i=S.escalas.findIndex(x=>x.id===e.id);if(i>=0){S.escalas[i]=Object.assign({},S.escalas[i],{linkId:r.id});mudou=true}}
+        links.push({e,url:location.origin+'/e/'+r.id});
+      }
+      if(mudou)agendarNuvem();
+    }else for(const e of lista)links.push({e,url:await linkCurto(e)});
+  }catch(err){abrir(`<div class="dlg-in">${cab('Links das escalas','')}<div class="dlg-b"><p class="warnbox">${esc(err.message||'Não foi possível gerar os links agora.')}</p></div></div>`);return}
+  const fixo=S.modo==='nuvem';
+  abrir(`<div class="dlg-in">${cab('Links das escalas',links.length+(links.length>1?' escalas':' escala'))}<div class="dlg-b">
+    <p class="muted">Cada link abre só a escala dele, para ver (sem editar e sem login).${fixo?' Os links são fixos: mostram sempre a versão mais nova.':' Depois de mudanças, gere os links de novo.'}</p>
+    <ul class="links-esc">${links.map(({e,url})=>`<li style="--ec:${cor(e)}"><div class="le-t"><b>${esc(e.nome)}</b><span>${esc(url.replace(/^https?:\/\//,''))}</span></div>
+      <div class="le-a"><button type="button" class="btn ghost sm" data-act="copiar-url" data-url="${esc(url)}">${icon('copy')} Copiar</button><button type="button" class="btn ghost sm" data-act="copiar-url" data-url="${esc(e.nome+'\n'+url)}" data-zap="1" aria-label="Copiar mensagem para o WhatsApp">${icon('copy')} Mensagem</button><a class="btn ghost sm" href="${esc(url)}" target="_blank" rel="noopener">${icon('ar')} Abrir</a></div></li>`).join('')}</ul>
+    <button type="button" class="btn ghost sm" data-act="copiar-url" data-url="${esc(links.map(({e,url})=>e.nome+': '+url).join('\n'))}">${icon('copy')} Copiar todos os links</button>
+  </div><div class="dlg-f"><span class="sp"></span><button type="button" class="btn pri" data-act="fechar">Fechar</button></div></div>`);
+}
+
 /* ================= componentes ================= */
 function hue(n){let h=7;for(const c of String(n))h=(h*31+c.charCodeAt(0))%360;return h}
 function iniciais(n){const p=String(n).trim().split(/\s+/);return((p[0]||'')[0]||'').toUpperCase()+((p[1]||'')[0]||'').toUpperCase()||'?'}
@@ -948,7 +978,7 @@ function vEscalas(){
   const todas=S.escalaSel==='__todas'&&ess.length>1;
   const e=todas?null:(ess.find(x=>x.id===S.escalaSel)||ess[0]);if(e)S.escalaSel=e.id;
   const nomes=todosNomes(),dest=S.destaque===null?(nomes.includes(S.eu)?S.eu:''):S.destaque;
-  const head=pageHead('Escalas de plantão','Acompanhe as posições, organize a equipe e deixe o rodízio fluir.',S.podeEditar?`<button class="btn pri" data-act="nova-escala">${icon('plus')} Nova escala</button>`:'');
+  const head=pageHead('Escalas de plantão','Acompanhe as posições, organize a equipe e deixe o rodízio fluir.',S.podeEditar?`${S.escalas.length?`<button class="btn ghost" data-act="links-todas">${icon('ar')} Links das escalas</button>`:''}<button class="btn pri" data-act="nova-escala">${icon('plus')} Nova escala</button>`:'');
   const tabs=`<div class="esc-tabs" role="group" aria-label="Selecionar escala">${ess.length>1?`<button class="et" data-act="sel-escala" data-id="__todas" aria-pressed="${todas}">${icon('layers')} Todas</button>`:''}${ess.map(x=>`<button class="et" style="--ec:${cor(x)}" data-act="sel-escala" data-id="${esc(x.id)}" aria-pressed="${!todas&&x.id===e.id}"><span class="dot"></span>${esc(x.nome)}</button>`).join('')}</div>`;
   const perAtual=todas?(()=>{const ps=[...new Set(ess.map(periodoDe))];return ps.length===1?ps[0]:''})():periodoDe(e);
   const tool=`<div class="sheet-tool box">${segPeriodo(todas?'__todas':e.id,perAtual)}
@@ -1675,6 +1705,8 @@ document.addEventListener('click',async ev=>{
     case 'duplicar':{const e=esc0();if(e)abrirFormEscala(e,true)}break;
     case 'movimentar':{const e=esc0();if(e)abrirMov(e)}break;
     case 'link-publico':{const e=esc0();if(e)abrirLinkPublico(e)}break;
+    case 'links-todas':abrirLinksTodas();break;
+    case 'copiar-url':{const t=b.dataset.url||'';const ok=()=>toast(b.dataset.zap?'Mensagem copiada.':'Copiado.');try{navigator.clipboard.writeText(t).then(ok,()=>copiarTexto(t))}catch(e){copiarTexto(t)}}break;
     case 'auth':S.tela=b.dataset.v;S.authErro='';S.authMsg='';render();$('#au-email')?.focus();break;
     case 'sair':sairConta(false);break;
     case 'recarregar':carregarNuvem();break;
