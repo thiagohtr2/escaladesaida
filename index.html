@@ -747,7 +747,7 @@ function vPublico(){
 function gerarImagemPublica(){
   if(S.pubImg||S.pubImgGerando||!S.escalas[0])return;S.pubImgGerando=true;
   try{
-    const cv=desenharImagem(S.escalas[0]);
+    const cv=desenharImagem(S.escalas[0],{hoje:true});
     if(!cv){S.publicoErro='Esta escala não tem plantões nos próximos 18 meses.';S.pubImgGerando=false;render();return}
     cv.toBlob(b=>{S.pubImgGerando=false;if(!b){S.publicoErro='Não foi possível mostrar a escala neste aparelho.';render();return}
       S.pubImg=URL.createObjectURL(b);S.pubImgW=cv.width;S.pubImgH=cv.height;render()},'image/png');
@@ -1568,19 +1568,23 @@ function arteFundo(g,W,H,ac,v,t){
   const p=12;if(g.roundRect){g.beginPath();g.roundRect(t.x-p,t.y-p,t.w+2*p,t.h+2*p,16);g.fill()}else g.fillRect(t.x-p,t.y-p,t.w+2*p,t.h+2*p);g.restore();
 }
 /* Desenha a escala (mesmo visual do PDF) num canvas em alta resolução */
-function desenharImagem(e){
+function desenharImagem(e,opc){
+  opc=opc||{};
   const D=dadosExport(e);
   if(!D.ls.length)return null;
   const {rM,body,ac,zebra,fxA,fxB,cabEsc,temFx,temBd}=D;
   const FONTE='-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
   const arte=FUNDOS.some(x=>x[0]&&x[0]===e.fundo)?e.fundo:'',dy=arte?20:0;   // com fundo, mais margem para a arte aparecer
   const n=rM.length,M=arte?64:36,colData=112,colW=Math.max(96,Math.min(150,Math.round(760/n)));
-  const W=M*2+colData+colW*n,topo=114+(arte?36:0),altCab=40,altL=34,rod=arte?72:36,H=topo+altCab+altL*body.length+rod;
+  // marcação do dia de hoje (só no link, que está sempre atualizado): faixa "HOJE" antes do próximo plantão
+  const hojeS=hojeStr(),iProx=opc.hoje?D.ls.findIndex(l=>l.data>=hojeS):-1,altHoje=iProx>=0?34:0;
+  const W=M*2+colData+colW*n,topo=114+(arte?36:0),altCab=40,altL=34,rod=arte?72:36,H=topo+altCab+altL*body.length+altHoje+rod;
+  const yLinha=i=>topo+altCab+i*altL+(iProx>=0&&i>=iProx?altHoje:0);
   const esc_=Math.max(1,Math.min(3,Math.sqrt(16e6/(W*H))));   // até 3x, sem passar do limite de tamanho do iPhone
   const cv=document.createElement('canvas');cv.width=Math.round(W*esc_);cv.height=Math.round(H*esc_);
   const g=cv.getContext('2d');g.scale(esc_,esc_);
   const rgb=c=>'rgb('+c.join(',')+')';
-  if(arte)arteFundo(g,W,H,ac,arte,{x:M,y:topo,w:W-2*M,h:altCab+altL*body.length});else{g.fillStyle='#fff';g.fillRect(0,0,W,H)}
+  if(arte)arteFundo(g,W,H,ac,arte,{x:M,y:topo,w:W-2*M,h:altCab+altL*body.length+altHoje});else{g.fillStyle='#fff';g.fillRect(0,0,W,H)}
   g.fillStyle=rgb(ac);g.fillRect(0,0,W,6);
   g.textBaseline='alphabetic';g.textAlign='left';
   g.fillStyle=rgb(ac);g.font='700 '+(arte?32:30)+'px '+FONTE;g.fillText(e.nome,M,52+dy+(arte?2:0));
@@ -1608,7 +1612,7 @@ function desenharImagem(e){
   for(let c=-1;c<n;c++){g.fillStyle=rgb(cabEsc);g.fillRect(xCol(c),y,wCol(c),altCab);texto(c<0?'Data':rM[c],xCol(c),wCol(c),y+altCab/2,700,15,'#fff')}
   y+=altCab;
   body.forEach((lin,i)=>{
-    const listra=i%2===1;
+    const listra=i%2===1;y=yLinha(i);
     for(let c=-1;c<n;c++){
       const escura=c<0||temFx[c],v=lin[c+1];
       g.fillStyle=c<0?rgb(listra?D.dataB:D.dataA):escura?rgb(listra?fxB:fxA):(listra?rgb(zebra):'#fff');g.fillRect(xCol(c),y,wCol(c),altL);
@@ -1617,20 +1621,40 @@ function desenharImagem(e){
     }
     y+=altL;
   });
+  // plantões que já passaram ficam mais apagados
+  if(iProx>0){g.fillStyle='rgba(255,255,255,.5)';g.fillRect(M,topo+altCab,W-2*M,iProx*altL)}
   // linhas da grade
   g.strokeStyle='rgb(223,227,236)';g.lineWidth=1;g.beginPath();
-  for(let r=0;r<=body.length+1;r++){const yy=topo+(r?altCab+(r-1)*altL:0)+.5;g.moveTo(M,yy);g.lineTo(W-M,yy)}
-  for(let c=-1;c<=n;c++){const xx=(c<n?xCol(c):W-M)+.5;g.moveTo(xx,topo);g.lineTo(xx,y)}
+  const bandaT=iProx>=0?yLinha(iProx)-altHoje:0,bandaB=bandaT+altHoje;
+  const vert=(x)=>{if(altHoje){g.moveTo(x,topo);g.lineTo(x,bandaT);g.moveTo(x,bandaB);g.lineTo(x,y)}else{g.moveTo(x,topo);g.lineTo(x,y)}};
+  g.moveTo(M,topo+.5);g.lineTo(W-M,topo+.5);
+  for(let r=0;r<=body.length;r++){const yy=(r<body.length?yLinha(r):yLinha(body.length-1)+altL)+.5;g.moveTo(M,yy);g.lineTo(W-M,yy);if(r===iProx&&altHoje){g.moveTo(M,bandaT+.5);g.lineTo(W-M,bandaT+.5)}}
+  for(let c=-1;c<=n;c++)vert((c<n?xCol(c):W-M)+.5);
   g.stroke();
+  if(altHoje){
+    // faixa do HOJE: linha na cor da escala, etiqueta à esquerda e aviso do próximo plantão à direita
+    g.fillStyle='rgb('+misturaBranco(ac,.92).join(',')+')';g.fillRect(M,bandaT,W-2*M,altHoje);
+    const ym=bandaT+altHoje/2;g.fillStyle=rgb(ac);g.fillRect(M,ym-1.25,W-2*M,2.5);
+    const dd=hojeS.split('-'),rot='HOJE · '+(DIAS[dow(hojeS)]||'').slice(0,3)+' '+dd[2]+'/'+dd[1];
+    g.font='800 13px '+FONTE;const pw=g.measureText(rot).width+26,px=M+10;
+    g.fillStyle=rgb(cabEsc);if(g.roundRect){g.beginPath();g.roundRect(px,ym-12,pw,24,12);g.fill()}else g.fillRect(px,ym-12,pw,24);
+    g.fillStyle='#fff';g.textAlign='left';g.textBaseline='middle';g.fillText(rot,px+13,ym+.5);
+    const prox=D.ls[iProx].data===hojeS?'Plantão de hoje ↓':'Próximo plantão: '+br(D.ls[iProx].data).slice(0,5)+' ↓';
+    g.font='700 13px '+FONTE;const tw=g.measureText(prox).width+22,tx=W-M-10-tw;
+    g.fillStyle='rgb('+misturaBranco(ac,.92).join(',')+')';g.fillRect(tx,ym-11,tw,22);
+    g.fillStyle=rgb(cabEsc);g.textAlign='center';g.fillText(prox,tx+tw/2,ym+.5);g.textAlign='left';g.textBaseline='alphabetic';
+  }
   // borda em volta da tabela toda (da Data até a última posição) e, por dentro, só as divisas das colunas com borda:
   // onde a borda de uma coluna encosta na borda da tabela, as duas viram uma linha só
   g.strokeStyle=rgb(ac);g.lineWidth=2.5;
   const bordaT=e.bordaTabela!==false;
   for(let c=0;c<n;c++){if(!temBd[c])continue;let f=c;while(f+1<n&&temBd[f+1])f++;const x0=xCol(c),x1=xCol(f)+colW;
-    if(bordaT){g.beginPath();g.moveTo(x0,topo);g.lineTo(x0,y);if(f<n-1){g.moveTo(x1,topo);g.lineTo(x1,y)}g.stroke()}
+    if(bordaT){g.beginPath();vert(x0);if(f<n-1)vert(x1);g.stroke()}
     else g.strokeRect(x0+1.25,topo+1.25,x1-x0-2.5,y-topo-2.5);
     c=f}
   if(bordaT)g.strokeRect(M+1.25,topo+1.25,W-2*M-2.5,y-topo-2.5);
+  // contorno no próximo plantão
+  if(iProx>=0){g.strokeStyle=rgb(cabEsc);g.lineWidth=3.5;g.strokeRect(M+1.75,yLinha(iProx)+1.75,W-2*M-3.5,altL-3.5)}
   return cv;
 }
 async function baixarImagem(e,btn){
