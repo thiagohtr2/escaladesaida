@@ -146,6 +146,8 @@ body.publico .prox-ver{display:none}
 .pub-rolo .pub-tab{display:block;width:100%;height:auto}
 .pub-cab{position:sticky;top:0;z-index:2;background-repeat:no-repeat;background-position:0 0;pointer-events:none}
 @media(max-width:760px){.pub-quadro{border-radius:8px;box-shadow:0 4px 18px rgba(15,23,42,.10)}}
+.evt-row{display:grid;gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+.evt-l1,.evt-l2{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.evt-l1 .inp{flex:1 1 160px}.evt-l2 .sel{flex:1 1 130px;min-width:0}.evt-l2 .evt-n{flex:0 0 150px}
 /* Versões anteriores */
 .versoes{list-style:none;display:grid;gap:8px;margin-top:12px;padding:0}.versoes li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
 .versoes li div{display:grid;gap:2px;min-width:0}.versoes b{font-size:13px}.versoes span{font-size:12px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -368,6 +370,30 @@ function montarLinha(e,st,fx){
   let si=0;for(let i=0;i<nTot;i++)if(out[i]===null)out[i]=si<st.length?st[si++]:sobra.shift();
   return out;
 }
+/* ---- Plantonistas eventuais: não entram no rodízio; vêm só em alguns plantões (ex.: último sábado do mês).
+   No dia em que vêm, abre uma posição a mais; a cada vinda descem uma posição (P1→P2→…→volta ao início). ---- */
+const REGRAS_EVENTUAL=[['ultimo','Último plantão do mês'],['primeiro','Primeiro plantão do mês'],['enesimo','Plantão Nº do mês'],['cadaN','A cada N plantões']];
+function eventuaisDe(e){return (Array.isArray(e&&e.eventuais)?e.eventuais:[]).filter(x=>x&&String(x.nome||'').trim()&&REGRAS_EVENTUAL.some(r=>r[0]===x.regra))}
+function vemNoPlantao(ev,d,k,freq,e){
+  const mes=x=>x.slice(0,7);if(ev.desde&&validaData(ev.desde)&&d<ev.desde)return false;
+  if(ev.regra==='ultimo')return mes(addDias(d,freq))!==mes(d);
+  if(ev.regra==='primeiro')return mes(addDias(d,-freq))!==mes(d);
+  if(ev.regra==='enesimo')return Math.floor((+d.slice(8,10)-1)/freq)+1===(+ev.n||1);
+  if(ev.regra==='cadaN'){const n=Math.max(1,+ev.n||1),k0=ev.desde&&validaData(ev.desde)&&ev.desde>e.inicio?Math.ceil(diff(e.inicio,ev.desde)/freq):0;return k>=k0&&(k-k0)%n===0}
+  return false;
+}
+/* encaixa o eventual na linha: os fixos ficam nas suas posições, ele na posição da vez, e os demais seguem a ordem deles */
+function encaixarEventual(e,linha,fx,nome,vez,posIni){
+  const n=linha.length+1,L=rotulos(e,n),out=new Array(n).fill(null),fixosNomes=new Set(fx.keys()),travadas=new Set(fixasDe(e).map(f=>f.rot));
+  for(const [nm,r] of fx){const i=L.indexOf(r);if(i>=0&&linha.includes(nm))out[i]=nm}
+  const livres=L.map((r,i)=>i).filter(i=>out[i]===null&&!travadas.has(L[i]));
+  const lista=livres.length?livres:L.map((r,i)=>i).filter(i=>out[i]===null);
+  const ini=Math.max(0,lista.indexOf(L.indexOf(posIni)));
+  out[lista[(ini+vez)%lista.length]]=nome;
+  const resto=linha.filter(nm=>!(fixosNomes.has(nm)&&out.includes(nm)));let ri=0;
+  for(let i=0;i<n;i++)if(out[i]===null)out[i]=ri<resto.length?resto[ri++]:'';
+  return out;
+}
 /* Gera todos os plantões do primeiro até "ate". A cada data: gira, depois aplica as mudanças com data ≤ data do plantão. */
 function gerar(e,ate,extra){
   const out=[]; if(!e||!validaData(e.inicio)) return out;
@@ -375,18 +401,20 @@ function gerar(e,ate,extra){
   const evs=ordenarEventos(todosEv.filter(x=>x.tipo!=='ausencia'));
   const aus={};ordenarEventos(todosEv.filter(x=>x.tipo==='ausencia')).forEach(x=>{(aus[x.data]=aus[x.data]||[]).push(x)});
   const freq=+e.frequencia||14; let st=[...(e.equipe||[])], ei=0, d=e.inicio, k=0;const fx=new Map();
+  const evt=eventuaisDe(e),vezes=evt.map(()=>0);
   while(d<=ate&&k<1200){
     if(k>0) st=girar(st,e.sentido);
     const aplicados=[],avisos=[];
     while(ei<evs.length&&evs[ei].data<=d){const ev=evs[ei++];const er=aplicar(e,st,ev,fx);if(er)avisos.push({data:d,msg:er,ev});else aplicados.push(ev)}
-    const base=montarLinha(e,st,fx);
+    let base=montarLinha(e,st,fx);const eventuaisHoje=[];
+    evt.forEach((x,j)=>{if(vemNoPlantao(x,d,k,freq,e)&&!base.includes(x.nome)){base=encaixarEventual(e,base,fx,x.nome,vezes[j]++,x.pos);eventuaisHoje.push(x.nome)}});
     /* Ausência de um dia: só este plantão muda (vago ou outra pessoa cobre); o rodízio segue igual. */
     const eq=base.slice(),pontuais=[];
     for(const a of (aus[d]||[])){const i=eq.indexOf(a.nome);
       if(i<0){avisos.push({data:d,msg:a.nome+' não estava neste plantão; a ausência foi ignorada.',ev:a});continue}
       if(a.cobre&&eq.includes(a.cobre)){avisos.push({data:d,msg:a.cobre+' já estava neste plantão; a cobertura de '+a.nome+' foi ignorada.',ev:a});continue}
       eq[i]=a.cobre||'';pontuais.push(a)}
-    out.push({data:d,k,equipe:eq,base,eventos:aplicados,pontuais,avisos,fixos:Object.fromEntries(fx)});
+    out.push({data:d,k,equipe:eq,base,eventos:aplicados,pontuais,avisos,fixos:Object.fromEntries(fx),eventuais:eventuaisHoje});
     d=addDias(d,freq);k++;
   }
   return out;
@@ -708,7 +736,7 @@ function compactar(e){
     (e.entradaPadrao||'ultima')==='ultima'?'':limpo(e.entradaPadrao),e.cor||'',
     Object.entries(dm).filter(([,v])=>v).map(([l,v])=>limpo(l)+(v==='faixa'?'^':v==='ambos'?'*':'_')).join('|'),
     fx.map(x=>limpo(x.rot)+'>'+(x.ancora==='fim'?'':limpo(x.ancora))).join('|'),
-    (e.periodo||'hoje')==='hoje'?'':e.periodo,limpo(e.lideranca),ev,e.fundo||'',e.bordaTabela===false?'0':'',(e.tomFaixa&&e.tomFaixa!=='escura')?e.tomFaixa:'',(e.visivel&&e.visivel!=='inicio')?e.visivel:''].join('\n').replace(/\n+$/,'');
+    (e.periodo||'hoje')==='hoje'?'':e.periodo,limpo(e.lideranca),ev,e.fundo||'',e.bordaTabela===false?'0':'',(e.tomFaixa&&e.tomFaixa!=='escura')?e.tomFaixa:'',(e.visivel&&e.visivel!=='inicio')?e.visivel:'',eventuaisDe(e).map(x=>[encodeURIComponent(x.nome),x.regra,+x.n||1,encodeURIComponent(x.pos||''),x.desde?x.desde.replace(/-/g,'').slice(2):''].join(',')).join(';')].join('\n').replace(/\n+$/,'');
 }
 function descompactar(txt){
   const c=txt.split('\n');if(c[0]!=='2')throw new Error('link');
@@ -718,7 +746,7 @@ function descompactar(txt){
   const eventos=(c[16]?c[16].split(';'):[]).map((x,i)=>{const [t,kk,a,b]=x.split(',');const tipo=TIPOS[+t],data=addDias(ini,parseInt(kk,36)*f),o={id:'p'+i,tipo,data,criado:i};
     if(tipo==='troca'){o.sai=a;o.entra=b}else{o.nome=a;if(tipo==='ausencia')o.cobre=b||'';if(tipo==='entrada'&&b)o.posicao=b;if(tipo==='fixar')o.rot=b}return o});
   const e={id:'publica',nome:c[3]||'Escala',inicio:ini,frequencia:f,rotulos:lista(c[6]),equipe:lista(c[7]),prefixo:c[8]||'P',sentido:c[9]==='1'?'sobe':'desce',
-    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0',tomFaixa:['clara','media'].includes(c[19])?c[19]:'escura',visivel:['hoje','ult10','10dias'].includes(c[20])?c[20]:'inicio'};
+    entradaPadrao:c[10]||'ultima',cor:c[11]||'anil',destaques:dest,fixas,periodo:c[14]||'hoje',lideranca:c[15]||'',eventos,fundo:FUNDOS.some(x=>x[0]===c[17])?c[17]:'',bordaTabela:c[18]!=='0',tomFaixa:['clara','media'].includes(c[19])?c[19]:'escura',visivel:['hoje','ult10','10dias'].includes(c[20])?c[20]:'inicio',eventuais:(c[21]||'').split(';').filter(Boolean).map(t=>{const [nm,rg,nn,ps,ds]=t.split(',');return {nome:decodeURIComponent(nm||''),regra:rg,n:+nn||1,pos:decodeURIComponent(ps||''),desde:ds&&ds.length===6?'20'+ds.slice(0,2)+'-'+ds.slice(2,4)+'-'+ds.slice(4,6):''}})};
   return {g,s:c[2]||'',e};
 }
 async function linkCurto(e){
@@ -733,7 +761,7 @@ async function lerLinkPublico(){
   if(code[0]==='z'){if(typeof DecompressionStream!=='function')throw new Error('Este navegador é antigo demais para abrir o link. Atualize o navegador e tente de novo.');const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));bytes=new Uint8Array(await new Response(st).arrayBuffer())}
   return descompactar(new TextDecoder().decode(bytes));
 }
-function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','fixas','fixasFim','periodo','lideranca','eventos','fundo','bordaTabela','tomFaixa','visivel'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
+function escalaParaLink(e){const c=['id','nome','inicio','frequencia','rotulos','prefixo','equipe','sentido','entradaPadrao','cor','destaques','fixas','fixasFim','periodo','lideranca','eventos','fundo','bordaTabela','tomFaixa','visivel','eventuais'];const o={};c.forEach(k=>{if(e[k]!==undefined)o[k]=e[k]});return JSON.parse(JSON.stringify(o))}
 async function iniciarPublico(){
   S.publico=null;S.publicoErro=null;S.carregandoPublico=true;S.modo='publico';S.podeEditar=false;S.limpa=false;S.view='escalas';
   try{
@@ -1165,6 +1193,7 @@ function abrirFormEscala(e,dup){
   S.form={id:novo?uid('esc-'):e.id,novo,linkId:dup?undefined:base.linkId,nome:dup?base.nome+' (semana alternada)':base.nome,lideranca:base.lideranca||'',visivel:visivelDe(base),fundo:base.fundo||'',tomFaixa:base.tomFaixa||'escura',bordaTabela:base.bordaTabela!==false,periodo:base.periodo||(novo?'tudo':'hoje'),inicio:dup?addDias(base.inicio,7):base.inicio,frequencia:+base.frequencia||14,
     posicoes:rotulos(base,(base.equipe||[]).length),rotulosBase:rotulos(base,(base.equipe||[]).length),fixas:(()=>{const fx=fixasDe(base);return rotulos(base,(base.equipe||[]).length).map(l=>{const f=fx.find(x=>x.rot===l);return f?(f.ancora==='fim'?'fim':'depois:'+f.ancora):''})})(),prefixo:base.prefixo||'P',equipe:dup?[]:[...(base.equipe||[])],sentido:base.sentido||'desce',entradaPadrao:base.entradaPadrao||'ultima',
     cor:dup?(Object.keys(CORES).find(k=>k!==base.cor)||'azul'):(base.cor||'verde'),destaques:rotulos(base,Math.max((base.equipe||[]).length,1)).map(l=>destLab(base,l)),eventos:dup?[]:[...(base.eventos||[])],ordem:base.ordem||Date.now(),dupDe:dup?base.nome:null};
+  S.form.eventuais=eventuaisDe(base).map(x=>Object.assign({},x));
   {const ps=S.form.posicoes;S.form.fixosP=(S.form.eventos||[]).filter(x=>x.tipo==='fixar'&&x.inicial).map(x=>({nome:x.nome,i:ps.indexOf(x.rot)}));}
   renderForm();
 }
@@ -1199,6 +1228,7 @@ function renderForm(){
       <ol class="team-ed" id="fe-team">${teamHtml()}</ol>
       <div class="add-row"><label class="sr" for="fe-novo">Nome do plantonista</label><input class="inp" id="fe-novo" placeholder="Nome do plantonista" list="dl-nomes" autocomplete="off"><button type="button" class="btn ghost" data-act="fe-add">${icon('plus')} Adicionar</button></div></fieldset>
     <fieldset class="fld"><legend>Plantonista fixo numa posição</legend><small>A pessoa fica sempre na mesma posição, desde o primeiro plantão, e não entra no rodízio (ex.: Rafael sempre no CHD). Os demais giram nas outras posições.</small><div id="fe-fixosp">${fixosPHtml()}</div></fieldset>
+    <fieldset class="fld"><legend>Plantonista eventual</legend><small>Para quem não vem em todo plantão (ex.: só no último sábado do mês). Não entra no rodízio: no dia em que vem abre uma posição a mais, e a cada vinda desce uma posição.</small><div id="fe-eventuais">${eventuaisHtml()}</div></fieldset>
     <fieldset class="fld"><legend>Posições fixas</legend><small>Uma posição fixa não muda de lugar quando a escala cresce ou diminui: fica sempre no final ou sempre logo depois de uma posição escolhida (ex.: CHD 1 sempre depois de P3).</small><div class="fix-ed" id="fe-fixas">${fixasHtml()}</div></fieldset>
     <fieldset class="fld"><legend>Destaque das posições</legend><small>Faixa pinta a coluna inteira da posição; borda contorna a coluna; faixa + borda faz os dois. Tudo usa a cor da escala.</small><div class="dest-ed" id="fe-dest">${destHtml()}</div></fieldset>
     <div class="fld"><label for="fe-pre">Prefixo das posições que surgirem depois</label><input class="inp" id="fe-pre" data-f="prefixo" value="${esc(f.prefixo)}" maxlength="8" style="max-width:160px"><small>Quando a equipe crescer, a nova posição continua a numeração: com P, depois de P3 vem P4. Você pode renomear aqui a qualquer momento.</small></div>
@@ -1216,6 +1246,21 @@ function renderForm(){
   </div>
   <div class="dlg-f">${!f.novo?`<button type="button" class="btn danger-ghost" data-act="fe-excluir">${icon('trash')} Excluir</button>`:''}<span class="sp"></span><button type="button" class="btn ghost" data-act="fechar">Cancelar</button><button type="submit" class="btn pri">Salvar escala</button></div>${dl()}</form>`);
   desenharPrevFundos();
+}
+function eventuaisHtml(){
+  const f=S.form,ps=f.posicoes.slice(0,f.equipe.length).map(x=>x.trim()).filter(Boolean),freq=+f.frequencia||14;
+  const datas=[];if(validaData(f.inicio))for(let i=0,d=f.inicio;i<80;i++,d=addDias(d,freq))datas.push(d);
+  const linhas=(f.eventuais||[]).map((x,k)=>{
+    const nOpts=x.regra==='enesimo'?[1,2,3,4,5]:x.regra==='cadaN'?[2,3,4,5,6,8,10,12]:null;
+    return `<div class="evt-row">
+      <div class="evt-l1"><label class="sr" for="ev-n-${k}">Nome</label><input class="inp" id="ev-n-${k}" data-evn="${k}" placeholder="Nome do plantonista" value="${esc(x.nome||'')}" autocomplete="off">
+      <button type="button" class="ib sm" data-act="ev-del" data-i="${k}" aria-label="Remover plantonista eventual" title="Remover">${icon('x')}</button></div>
+      <div class="evt-l2"><label class="sr" for="ev-r-${k}">Quando vem</label><select class="sel" id="ev-r-${k}" data-evr="${k}">${REGRAS_EVENTUAL.map(([v,t])=>`<option value="${v}" ${x.regra===v?'selected':''}>${t}</option>`).join('')}</select>
+      ${nOpts?`<label class="sr" for="ev-q-${k}">${x.regra==='enesimo'?'Qual plantão do mês':'A cada quantos plantões'}</label><select class="sel evt-n" id="ev-q-${k}" data-evq="${k}">${nOpts.map(v=>`<option value="${v}" ${(+x.n||nOpts[0])===v?'selected':''}>${x.regra==='enesimo'?v+'º do mês':'a cada '+v}</option>`).join('')}</select>`:''}</div>
+      <div class="evt-l2"><span class="fixp-em">começa em</span><label class="sr" for="ev-p-${k}">Primeira posição</label><select class="sel" id="ev-p-${k}" data-evp="${k}">${ps.map(l=>`<option ${l===x.pos?'selected':''}>${esc(l)}</option>`).join('')}</select>
+      <span class="fixp-em">a partir de</span><label class="sr" for="ev-d-${k}">A partir de</label><select class="sel" id="ev-d-${k}" data-evd="${k}"><option value="">início da escala</option>${datas.map(d=>`<option value="${d}" ${x.desde===d?'selected':''}>${br(d)}</option>`).join('')}</select></div>
+    </div>`}).join('');
+  return linhas+`<button type="button" class="btn ghost sm" data-act="ev-add">${icon('plus')} Adicionar plantonista eventual</button>`;
 }
 function fixosPHtml(){
   const f=S.form,eq=f.equipe.map(x=>x.trim()).filter(Boolean),ps=f.posicoes.slice(0,f.equipe.length).map(x=>x.trim());
@@ -1240,7 +1285,7 @@ function destHtml(){
   const ops=[['','Nenhum'],['faixa','Faixa'],['borda','Borda'],['ambos','Faixa + borda']];
   return r.map((lab,i)=>`<div class="dest-row"><span class="dest-lab">${esc(lab)}</span><div class="seg" role="group" aria-label="Destaque de ${esc(lab)}">${ops.map(([v,t])=>`<button type="button" data-act="fe-dest" data-i="${i}" data-v="${v}" aria-pressed="${(f.destaques[i]||'')===v}">${t}</button>`).join('')}</div></div>`).join('');
 }
-function refreshForm(){const fp=$('#fe-fixosp');if(fp)fp.innerHTML=fixosPHtml();const fd=$('#fe-dest');if(fd)fd.innerHTML=destHtml();const ff=$('#fe-fixas');if(ff)ff.innerHTML=fixasHtml();const t=$('#fe-team');if(t)t.innerHTML=teamHtml();const s=$('#fe-entrada');if(s)s.innerHTML=entradaOpts();const d=$('#fe-dow');if(d)d.textContent=dowTxt()}
+function refreshForm(){const fp=$('#fe-fixosp');if(fp)fp.innerHTML=fixosPHtml();const fev=$('#fe-eventuais');if(fev&&!fev.contains(document.activeElement))fev.innerHTML=eventuaisHtml();const fd=$('#fe-dest');if(fd)fd.innerHTML=destHtml();const ff=$('#fe-fixas');if(ff)ff.innerHTML=fixasHtml();const t=$('#fe-team');if(t)t.innerHTML=teamHtml();const s=$('#fe-entrada');if(s)s.innerHTML=entradaOpts();const d=$('#fe-dow');if(d)d.textContent=dowTxt()}
 function addTeam(){
   const i=$('#fe-novo'),v=(i.value||'').trim().replace(/\s+/g,' ');if(!v)return;
   if(S.form.equipe.some(n=>n.toLowerCase()===v.toLowerCase())){$('#fe-err').textContent=v+' já está na equipe.';return}
@@ -1269,12 +1314,19 @@ function salvarForm(){
   }
   if(new Set(fp.map(x=>x.nome)).size!==fp.length){er.textContent='O mesmo plantonista está fixo duas vezes.';return}
   if(new Set(fp.map(x=>x.i)).size!==fp.length){er.textContent='Duas pessoas estão fixas na mesma posição.';return}
+  // plantonistas eventuais
+  const evts=(f.eventuais||[]).map(x=>Object.assign({},x,{nome:String(x.nome||'').trim().replace(/\s+/g,' ')})).filter(x=>x.nome);
+  for(const x of evts){
+    if(eq.includes(x.nome)){er.textContent=x.nome+' já está na equipe do rodízio. Plantonista eventual não entra no rodízio: tire da equipe ou do campo "Plantonista eventual".';$('#fe-eventuais').scrollIntoView({block:'center'});return}
+  }
+  if(new Set(evts.map(x=>x.nome)).size!==evts.length){er.textContent='O mesmo plantonista eventual aparece duas vezes.';return}
+  f.eventuaisOk=evts.map(x=>({id:x.id||uid('evt-'),nome:x.nome,regra:x.regra,n:+x.n||1,pos:x.pos||'',desde:x.desde||''}));
   f.eventos=(f.eventos||[]).filter(x=>!(x.tipo==='fixar'&&x.inicial)).concat(fp.map((x,k)=>({id:uid('ev-'),tipo:'fixar',nome:x.nome,rot:rs[x.i],data:f.inicio,criado:k-1000,inicial:true})));
   const novosBase=rotulos(fe,f.rotulosBase.length),novos=rotulos(fe,60),mapa=l=>{const i=f.rotulosBase.indexOf(l);return i>=0?novosBase[i]:l};
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao=mapa(f.entradaPadrao);
   if(!['ultima','primeira'].includes(f.entradaPadrao)&&!novos.includes(f.entradaPadrao))f.entradaPadrao='ultima';
   f.eventos=f.eventos.map(ev=>ev.tipo==='entrada'&&ev.posicao&&!['ultima','primeira'].includes(ev.posicao)?Object.assign({},ev,{posicao:mapa(ev.posicao)}):ev);
-  const e={id:f.id,linkId:f.linkId,nome:f.nome.trim(),lideranca:(f.lideranca||'').trim().replace(/\s+/g,' '),visivel:f.visivel||'inicio',fundo:f.fundo||'',tomFaixa:f.tomFaixa||'escura',bordaTabela:f.bordaTabela!==false,periodo:f.periodo||'hoje',inicio:f.inicio,frequencia:f.frequencia,rotulos:fe.rotulos,prefixo:fe.prefixo,equipe:eq,sentido:f.sentido,entradaPadrao:f.entradaPadrao,cor:f.cor,fixas:fe.fixas,destaques:rs.reduce((m,l,i)=>{if(f.destaques[i])m[l]=f.destaques[i];return m},{}),eventos:f.eventos,ordem:f.ordem};
+  const e={id:f.id,linkId:f.linkId,nome:f.nome.trim(),lideranca:(f.lideranca||'').trim().replace(/\s+/g,' '),visivel:f.visivel||'inicio',eventuais:f.eventuaisOk||[],fundo:f.fundo||'',tomFaixa:f.tomFaixa||'escura',bordaTabela:f.bordaTabela!==false,periodo:f.periodo||'hoje',inicio:f.inicio,frequencia:f.frequencia,rotulos:fe.rotulos,prefixo:fe.prefixo,equipe:eq,sentido:f.sentido,entradaPadrao:f.entradaPadrao,cor:f.cor,fixas:fe.fixas,destaques:rs.reduce((m,l,i)=>{if(f.destaques[i])m[l]=f.destaques[i];return m},{}),eventos:f.eventos,ordem:f.ordem};
   const novo=f.novo;fechar();S.escalaSel=e.id;salvarEscala(e);toast(novo?'Escala criada.':'Escala atualizada.');irPara('escalas');
 }
 
@@ -1873,6 +1925,8 @@ document.addEventListener('click',async ev=>{
     case 'ajustes':abrirAjustes();break;
     case 'fechar':fechar();break;
     case 'fe-add':addTeam();break;
+    case 'ev-add':S.form.eventuais=S.form.eventuais||[];S.form.eventuais.push({id:uid('evt-'),nome:'',regra:'ultimo',n:1,pos:(S.form.posicoes[0]||'').trim(),desde:''});$('#fe-eventuais').innerHTML=eventuaisHtml();$('#ev-n-'+(S.form.eventuais.length-1))?.focus();break;
+    case 'ev-del':S.form.eventuais.splice(+b.dataset.i,1);$('#fe-eventuais').innerHTML=eventuaisHtml();break;
     case 'fp-add':S.form.fixosP=S.form.fixosP||[];S.form.fixosP.push({nome:'',i:-1});$('#fe-fixosp').innerHTML=fixosPHtml();$('#fp-n-'+(S.form.fixosP.length-1))?.focus();break;
     case 'fp-del':S.form.fixosP.splice(+b.dataset.i,1);$('#fe-fixosp').innerHTML=fixosPHtml();break;
     case 'fe-up':case 'fe-down':{const i=+b.dataset.i,j=a==='fe-up'?i-1:i+1,q=S.form.equipe;if(j<0||j>=q.length)break;[q[i],q[j]]=[q[j],q[i]];refreshForm();const nb=dlg.querySelector(`[data-act="${a}"][data-i="${j}"]`);(nb&&!nb.disabled?nb:dlg.querySelector(`[data-team="${j}"]`))?.focus()}break;
@@ -1894,7 +1948,8 @@ document.addEventListener('change',ev=>{
   else if(t.id==='destaque'){S.destaque=t.value;render()}
   else if(t.id==='eu-sel'&&t.value){S.eu=t.value;lsSet(LS_EU,S.eu);S.destaque=null;render()}
 });
-document.addEventListener('input',ev=>{if(ev.target.id==='busca'){S.busca=ev.target.value;render()}});
+document.addEventListener('input',ev=>{if(ev.target.id==='busca'){S.busca=ev.target.value;render()}
+  else if(ev.target.dataset&&ev.target.dataset.evn!==undefined&&S.form&&S.form.eventuais)S.form.eventuais[+ev.target.dataset.evn].nome=ev.target.value});
 dlg.addEventListener('input',ev=>{
   const t=ev.target;
   if(S.form){
@@ -1909,6 +1964,10 @@ dlg.addEventListener('input',ev=>{
     else if(t.name==='tomFaixa')S.form.tomFaixa=t.value;
     else if(t.name==='visivel')S.form.visivel=t.value;
     else if(t.dataset.fpn!==undefined)S.form.fixosP[+t.dataset.fpn].nome=t.value;
+    else if(t.dataset.evr!==undefined){const x=S.form.eventuais[+t.dataset.evr];x.regra=t.value;x.n=t.value==='cadaN'?2:1;$('#fe-eventuais').innerHTML=eventuaisHtml()}
+    else if(t.dataset.evq!==undefined)S.form.eventuais[+t.dataset.evq].n=+t.value;
+    else if(t.dataset.evp!==undefined)S.form.eventuais[+t.dataset.evp].pos=t.value;
+    else if(t.dataset.evd!==undefined)S.form.eventuais[+t.dataset.evd].desde=t.value;
     else if(t.dataset.fpr!==undefined)S.form.fixosP[+t.dataset.fpr].i=+t.value;
   }else if(S.mov){
     const m=S.mov;
